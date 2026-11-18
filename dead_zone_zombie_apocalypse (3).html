@@ -3,18 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#06090e">
-<title>DEAD ZONE: ZOMBIE APOCALYPSE</title>
-<link rel="manifest" href="manifest.json">
+  <title>DEAD ZONE: ZOMBIE APOCALYPSE</title>
+  <link rel="manifest" href="manifest.json">
 <style>
   :root {
     color-scheme: dark;
     --primary: #d91e18;
-    --primary-glow: rgba(217, 30, 24, 0.65);
+    --primary-glow: rgba(217, 30, 24, 0.6);
     --bg-dark: #06090e;
-    --panel: rgba(12, 16, 24, 0.88);
-    --gold: #facc15;
-    --cyan: #38bdf8;
+    --panel: rgba(12, 16, 24, 0.85);
   }
   * {
     box-sizing: border-box;
@@ -53,89 +50,52 @@
     background: radial-gradient(circle at center, rgba(35, 10, 12, 0.92) 0%, rgba(4, 6, 10, 0.98) 100%);
     text-align: center;
     z-index: 20;
-    padding: 16px;
-    backdrop-filter: blur(8px);
-    overflow-y: auto;
+    padding: 20px;
+    backdrop-filter: blur(6px);
   }
   h1 {
-    font-size: clamp(40px, 8.5vw, 88px);
+    font-size: clamp(44px, 10vw, 96px);
     margin: 0;
     color: var(--primary);
     text-shadow: 0 0 35px var(--primary-glow), 0 4px 0 #4a0404;
     line-height: 1;
   }
   h2 {
-    margin: 4px 0 10px;
+    margin: 6px 0 20px;
     letter-spacing: 6px;
-    color: #cbd5e1;
-    font-size: clamp(13px, 2.4vw, 19px);
+    color: #94a3b8;
+    font-size: clamp(14px, 3vw, 20px);
     font-weight: 700;
   }
-  .campaign-tag {
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 2.5px;
-    color: var(--gold);
-    margin-bottom: 8px;
+  .desc {
+    max-width: 600px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #cbd5e1;
+    background: var(--panel);
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
   }
-
-  /* Auto Device Detection Badge */
-  #device-detect-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 16px;
-    border-radius: 20px;
-    font-size: 11.5px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-  #device-detect-badge.vr-mode { background: rgba(147, 51, 234, 0.25); border-color: #c084fc; color: #e9d5ff; }
-  #device-detect-badge.mobile-mode { background: rgba(34, 197, 94, 0.22); border-color: #4ade80; color: #bbf7d0; }
-  #device-detect-badge.pc-mode { background: rgba(56, 189, 248, 0.22); border-color: #38bdf8; color: #bae6fd; }
-
-  /* 3 Level Location Cards */
   .level-select {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 12px;
-    max-width: 680px;
-    width: 100%;
+    margin-bottom: 14px;
   }
-  .lvl-btn {
-    padding: 9px 18px;
-    font-size: 13px;
-    font-weight: 700;
-    background: rgba(30, 41, 59, 0.85);
-    color: #cbd5e1;
-    border: 2px solid #334155;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .lvl-btn.active {
-    background: rgba(217, 30, 24, 0.28);
-    border-color: var(--primary);
-    color: #fff;
-    box-shadow: 0 0 16px var(--primary-glow);
-  }
-
-  /* Mode Select (Zombies vs Animals) */
   .mode-select {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: 18px;
   }
   .mode-btn {
-    padding: 9px 22px;
-    font-size: 14px;
+    padding: 12px 26px;
+    font-size: 16px;
     font-family: Impact, 'Arial Black', sans-serif;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     background: rgba(15, 23, 42, 0.9);
     color: #94a3b8;
     border: 2px solid #334155;
@@ -144,123 +104,38 @@
     transition: all 0.2s;
   }
   .mode-btn.active {
-    background: rgba(217, 30, 24, 0.32);
+    background: rgba(217, 30, 24, 0.28);
     border-color: #f87171;
     color: #fff;
-    box-shadow: 0 0 16px var(--primary-glow);
+    box-shadow: 0 0 18px var(--primary-glow);
+    transform: scale(1.04);
   }
-
-  /* Gun Selection UI (Pick One Weapon for Game) */
-  .gun-select-card {
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 12px;
-    padding: 10px 14px;
-    margin-bottom: 12px;
-    max-width: 680px;
-    width: 100%;
-  }
-  .gun-select-header {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-  .gun-select-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-  @media (max-width: 640px) {
-    .gun-select-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  .gun-card {
-    background: rgba(30, 41, 59, 0.7);
+  .lvl-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    background: rgba(30, 41, 59, 0.8);
+    color: #cbd5e1;
     border: 2px solid #334155;
     border-radius: 8px;
-    padding: 8px 6px;
     cursor: pointer;
     transition: all 0.2s;
-    text-align: center;
   }
-  .gun-card:hover {
-    border-color: #64748b;
-  }
-  .gun-card.active {
+  .lvl-btn.active {
     background: rgba(217, 30, 24, 0.25);
-    border-color: #f87171;
-    box-shadow: 0 0 14px var(--primary-glow);
-    transform: scale(1.02);
-  }
-  .gun-card-name {
-    font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 13px;
+    border-color: var(--primary);
     color: #fff;
-    letter-spacing: 1px;
+    box-shadow: 0 0 15px var(--primary-glow);
   }
-  .gun-card-desc {
-    font-size: 10px;
-    font-weight: 700;
-    color: #94a3b8;
-    margin-top: 3px;
-  }
-
-  /* Session Duration Time Limit Setter */
-  .session-card {
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 10px;
-    padding: 8px 14px;
-    margin-bottom: 14px;
-    max-width: 600px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-  .session-title {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--gold);
-  }
-  .time-btn-group {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .time-btn {
-    padding: 5px 12px;
-    font-size: 11px;
-    font-weight: 800;
-    background: rgba(30, 41, 59, 0.8);
-    color: #94a3b8;
-    border: 1px solid #475569;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .time-btn.active {
-    background: rgba(250, 204, 21, 0.22);
-    border-color: #facc15;
-    color: #fff;
-    box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
-  }
-
-  /* Play Buttons */
   .btn-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 8px;
+    gap: 12px;
   }
   .play-btn {
-    padding: 12px 28px;
-    font-size: 18px;
+    padding: 14px 32px;
+    font-size: 20px;
     font-family: Impact, 'Arial Black', sans-serif;
     letter-spacing: 2px;
     background: linear-gradient(180deg, #dc2626, #7f1d1d);
@@ -269,14 +144,14 @@
     border-radius: 10px;
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(185, 28, 28, 0.45);
-    transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
+    transition: transform 0.1s, filter 0.2s;
   }
-  .play-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
-  .play-btn:active { transform: translateY(1px); }
-  .play-btn.featured {
-    box-shadow: 0 0 25px rgba(239, 68, 68, 0.7), 0 6px 20px rgba(185, 28, 28, 0.5);
-    border-color: #fca5a5;
-    transform: scale(1.03);
+  .play-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+  }
+  .play-btn:active {
+    transform: translateY(1px);
   }
   .play-btn.secondary {
     background: linear-gradient(180deg, #1e293b, #0f172a);
@@ -284,19 +159,7 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
   }
 
-  .controls-hint {
-    font-size: 11px;
-    color: #94a3b8;
-    background: var(--panel);
-    padding: 7px 14px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.08);
-    max-width: 620px;
-    line-height: 1.4;
-  }
-  #note { font-size: 11.5px; color: var(--cyan); margin-top: 6px; }
-
-  /* In-Game HUD */
+  /* HUD & Action Bar */
   #hud {
     position: fixed;
     inset: 0;
@@ -304,64 +167,27 @@
     display: none;
     z-index: 10;
   }
-
-  /* Top Left Mission / Session Timer Badge */
-  #hud-timer-badge {
-    position: absolute;
-    top: max(14px, env(safe-area-inset-top));
-    left: max(16px, env(safe-area-inset-left));
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--panel);
-    padding: 7px 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.65);
-    backdrop-filter: blur(8px);
-    pointer-events: auto;
-  }
-  .timer-content { display: flex; flex-direction: column; text-align: left; }
-  .timer-title { font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #94a3b8; }
-  .timer-digits {
-    font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 20px;
-    letter-spacing: 1.5px;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .timer-digits.warning {
-    color: #ef4444;
-    animation: timer-flash 0.8s infinite;
-  }
-  @keyframes timer-flash {
-    0%, 100% { opacity: 1; text-shadow: 0 0 12px rgba(239, 68, 68, 0.8); }
-    50% { opacity: 0.35; text-shadow: none; }
-  }
-
   #top-bar {
     position: absolute;
-    top: max(14px, env(safe-area-inset-top));
+    top: max(12px, env(safe-area-inset-top));
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 12px;
+    gap: 14px;
     align-items: center;
     background: var(--panel);
     padding: 8px 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    font-weight: 800;
-    font-size: clamp(12px, 2.2vw, 16px);
-    letter-spacing: 1.5px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-weight: 700;
+    font-size: clamp(12px, 2.3vw, 17px);
+    letter-spacing: 1px;
     white-space: nowrap;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
-    backdrop-filter: blur(8px);
   }
   #sys-controls {
     position: absolute;
-    top: max(14px, env(safe-area-inset-top));
-    right: max(16px, env(safe-area-inset-right));
+    top: max(12px, env(safe-area-inset-top));
+    right: max(14px, env(safe-area-inset-right));
     display: flex;
     gap: 8px;
     pointer-events: auto;
@@ -369,7 +195,7 @@
   }
   .sys-btn {
     padding: 8px 12px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 1px;
     background: rgba(15, 23, 42, 0.88);
@@ -378,31 +204,64 @@
     border-radius: 8px;
     cursor: pointer;
     backdrop-filter: blur(4px);
-    transition: background 0.15s;
+    transition: background 0.15s, transform 0.1s;
   }
-  .sys-btn:hover { background: rgba(51, 65, 85, 0.95); border-color: #fff; }
-  .sys-btn.danger:hover { background: rgba(185, 28, 28, 0.9); border-color: #fca5a5; }
+  .sys-btn:hover {
+    background: rgba(51, 65, 85, 0.95);
+    border-color: #fff;
+  }
+  .sys-btn.danger:hover {
+    background: rgba(185, 28, 28, 0.9);
+    border-color: #fca5a5;
+  }
 
-  /* Crosshair: Authentic '+' Style (NO CIRCLE) */
+  /* Pause / End Overlay */
+  #pause-ov {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(4, 6, 12, 0.85);
+    backdrop-filter: blur(6px);
+    z-index: 25;
+    text-align: center;
+    padding: 20px;
+  }
+  #pause-title {
+    font-size: clamp(36px, 8vw, 68px);
+    color: #f87171;
+    margin: 0 0 8px;
+    text-shadow: 0 0 25px rgba(248, 113, 113, 0.5);
+  }
+  #pause-sub {
+    color: #cbd5e1;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .badge {
+    color: #f87171;
+  }
   #cx {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
     pointer-events: none;
     transition: transform 0.08s ease-out;
   }
   #cx::before, #cx::after {
     content: '';
     position: absolute;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.85);
     box-shadow: 0 0 4px #000;
   }
-  #cx::before { left: 9px; top: 0; width: 2px; height: 20px; }
-  #cx::after { top: 9px; left: 0; width: 20px; height: 2px; }
-  #cx.hit::before, #cx.hit::after { background: #ef4444; transform: scale(1.35); }
+  #cx::before { left: 8px; top: 0; width: 2px; height: 18px; }
+  #cx::after { top: 8px; left: 0; width: 18px; height: 2px; }
+  #cx.hit::before, #cx.hit::after { background: #ef4444; transform: scale(1.3); }
 
   #msg {
     position: absolute;
@@ -410,20 +269,18 @@
     width: 100%;
     text-align: center;
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: clamp(28px, 6vw, 50px);
+    font-size: clamp(28px, 6vw, 52px);
     color: #f87171;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     text-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
     padding: 0 16px;
-    pointer-events: none;
   }
   #sub-msg {
-    font-family: Impact, 'Arial Black', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     font-size: clamp(14px, 2.5vw, 20px);
-    color: var(--gold);
-    letter-spacing: 2px;
-    margin-top: 6px;
-    text-shadow: 0 2px 10px #000;
+    color: #e2e8f0;
+    letter-spacing: 1px;
+    margin-top: 8px;
   }
 
   /* Bottom Status */
@@ -431,28 +288,27 @@
     position: absolute;
     left: max(16px, env(safe-area-inset-left));
     bottom: max(16px, env(safe-area-inset-bottom));
-    width: clamp(150px, 26vw, 230px);
+    width: clamp(150px, 28vw, 240px);
     background: var(--panel);
     padding: 10px 14px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .stat-lbl {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    color: #cbd5e1;
-    margin-bottom: 5px;
+    color: #94a3b8;
+    margin-bottom: 4px;
     display: flex;
     justify-content: space-between;
   }
   #hpb {
-    height: 14px;
-    background: #1e293b;
-    border-radius: 4px;
+    height: 12px;
+    background: #2a0808;
+    border-radius: 6px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   #hpf {
     height: 100%;
@@ -469,8 +325,7 @@
     background: var(--panel);
     padding: 10px 16px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   #w-name {
     font-size: 12px;
@@ -480,29 +335,9 @@
   }
   #ammo-txt {
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: clamp(22px, 4vw, 32px);
+    font-size: clamp(22px, 4vw, 34px);
     letter-spacing: 1px;
     color: #fff;
-    line-height: 1.05;
-  }
-
-  /* Realistic Player Bloodshed Canvas Overlay */
-  #player-blood-canvas {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 6;
-  }
-  #blood-vignette {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 5;
-    opacity: 0;
-    transition: opacity 0.2s ease-out;
-    background: radial-gradient(circle at center, transparent 35%, rgba(130, 0, 0, 0.5) 85%, rgba(60, 0, 0, 0.9) 100%);
   }
 
   /* Mobile Touch Controls */
@@ -564,8 +399,12 @@
     background: rgba(220, 38, 38, 0.55);
     border: 3px solid rgba(248, 113, 113, 0.85);
     font-size: 16px;
+    letter-spacing: 1px;
   }
-  #btn-fire:active, #btn-fire.pressed { background: rgba(220, 38, 38, 0.9); transform: scale(0.93); }
+  #btn-fire:active, #btn-fire.pressed {
+    background: rgba(220, 38, 38, 0.9);
+    transform: scale(0.93);
+  }
   #btn-reload {
     right: 122px;
     bottom: 85px;
@@ -574,6 +413,16 @@
     background: rgba(30, 41, 59, 0.7);
     border: 2px solid rgba(148, 163, 184, 0.6);
     font-size: 12px;
+  }
+  #btn-swap {
+    right: 28px;
+    bottom: 192px;
+    width: 54px;
+    height: 54px;
+    background: rgba(30, 41, 59, 0.7);
+    border: 2px solid rgba(245, 158, 11, 0.7);
+    font-size: 11px;
+    color: #fcd34d;
   }
   #btn-sprint {
     left: 162px;
@@ -585,90 +434,212 @@
     font-size: 11px;
     color: #7dd3fc;
   }
-  #btn-sprint.active { background: rgba(2, 132, 199, 0.7); border-color: #fff; }
-
-  /* Modals */
-  #pause-ov {
-    position: fixed;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(4, 6, 12, 0.88);
-    backdrop-filter: blur(8px);
-    z-index: 25;
-    text-align: center;
-    padding: 20px;
+  #btn-sprint.active {
+    background: rgba(2, 132, 199, 0.7);
+    border-color: #fff;
   }
-  .modal-card {
-    background: rgba(15, 23, 42, 0.95);
-    border: 2px solid #334155;
-    border-radius: 16px;
-    padding: 26px;
-    max-width: 460px;
-    width: 100%;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.8);
-  }
-  #pause-title {
-    font-size: clamp(34px, 7vw, 60px);
-    color: #f87171;
-    margin: 0;
-    text-shadow: 0 0 25px rgba(248, 113, 113, 0.5);
-  }
-  #pause-title.victory { color: var(--gold); text-shadow: 0 0 25px rgba(250, 204, 21, 0.6); }
-  #pause-sub {
-    color: #cbd5e1;
-    font-size: 15px;
-    font-weight: 700;
-    margin: 10px 0 20px;
-    line-height: 1.6;
-    white-space: pre-line;
-  }
-  .modal-btn-col { display: flex; flex-direction: column; gap: 10px; }
-  .modal-btn-col .play-btn { width: 100%; padding: 12px; font-size: 17px; }
 
   #vig {
     position: fixed;
     inset: 0;
     pointer-events: none;
     box-shadow: inset 0 0 130px 30px rgba(0, 0, 0, 0.88);
-    z-index: 4;
+    z-index: 5;
   }
-  body.is-mobile #status-left, body.is-mobile #status-right { bottom: 14px; padding: 6px 12px; }
-  body.is-mobile #joy-zone { bottom: 75px; }
+  /* Adjust HUD bottom padding when mobile controls are active */
+  body.is-mobile #status-left,
+  body.is-mobile #status-right {
+    bottom: 14px;
+    padding: 6px 12px;
+  }
+  body.is-mobile #joy-zone {
+    bottom: 75px;
+  }
+
+  /* Auto Device Detection Badge */
+  #device-detect-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+  }
+  #device-detect-badge.vr-mode { background: rgba(147, 51, 234, 0.25); border-color: #c084fc; color: #e9d5ff; }
+  #device-detect-badge.mobile-mode { background: rgba(34, 197, 94, 0.22); border-color: #4ade80; color: #bbf7d0; }
+  #device-detect-badge.pc-mode { background: rgba(56, 189, 248, 0.22); border-color: #38bdf8; color: #bae6fd; }
+
+  /* Gun Selection UI (Pick One Weapon for Game) */
+  .gun-select-card {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    max-width: 680px;
+    width: 100%;
+  }
+  .gun-select-header {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .gun-select-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  @media (max-width: 640px) {
+    .gun-select-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .gun-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 2px solid #334155;
+    border-radius: 8px;
+    padding: 8px 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .gun-card:hover { border-color: #64748b; }
+  .gun-card.active {
+    background: rgba(217, 30, 24, 0.25);
+    border-color: #f87171;
+    box-shadow: 0 0 14px var(--primary-glow);
+    transform: scale(1.02);
+  }
+  .gun-card-name {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .gun-card-desc {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-top: 3px;
+  }
+
+  /* Mission Session Limit Card */
+  .time-select-card {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    max-width: 680px;
+    width: 100%;
+  }
+  .time-select-header {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    margin-bottom: 6px;
+  }
+  .time-select-grid {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .time-btn {
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    background: rgba(30, 41, 59, 0.85);
+    color: #cbd5e1;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .time-btn:hover { border-color: #94a3b8; }
+  .time-btn.active {
+    background: rgba(56, 189, 248, 0.28);
+    border-color: #38bdf8;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  }
+
+  /* Top-Left Mission HUD Timer Badge */
+  #hud-timer-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 17px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-shadow: 0 0 8px rgba(250, 204, 21, 0.4);
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Realistic Player Bloodshed Canvas Overlay & Low-HP Vignette */
+  #player-blood-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 6;
+  }
+  #blood-vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(circle at center, transparent 38%, rgba(139, 0, 0, 0.4) 75%, rgba(60, 0, 0, 0.95) 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease-out;
+  }
+
 </style>
 </head>
 <body>
 
-<!-- Startup & Main Menu Overlay -->
 <div id="ov">
   <h1 class="title-font">DEAD ZONE</h1>
   <h2>SURVIVAL APOCALYPSE</h2>
-  <div class="campaign-tag">CONTINUOUS CAMPAIGN &bull; 3 LOCATIONS &bull; 9 INTENSE WAVES</div>
-
-  <!-- Automatic Device Detection Badge -->
-  <div id="device-detect-badge" class="pc-mode">
-    <span id="device-icon">&#128421;&#65039;</span>
-    <span id="device-text">DETECTED: DESKTOP PC (MOUSE &amp; KEYBOARD)</span>
+  <div class="desc">
+    Survive <b>3 Distinct Realistic Locations</b> across <b>9 Intense Waves</b>. Shoot red fuel barrels to detonate hordes, grab glowing supply drops, and aim for the head!<br><br>
+    <b>PC:</b> WASD Move · Shift Sprint · Mouse Aim · Click Fire · R Reload · P Pause<br>
+    <b>Mobile:</b> Left Stick Move · Right Screen Drag Aim · On-Screen Buttons
   </div>
 
-  <!-- 3 Distinct Campaign Locations -->
+    <!-- Auto Device Detection Badge -->
+  <div id="device-detect-badge" class="pc-mode">&#128421; PC CONTROLS DETECTED</div>
+
+  <!-- 3 Distinct Locations -->
   <div class="level-select" id="lvl-select">
     <button class="lvl-btn active" data-lvl="0">1. DOWNTOWN CITY</button>
     <button class="lvl-btn" data-lvl="1">2. DARK PINE FOREST</button>
     <button class="lvl-btn" data-lvl="2">3. BIO-LAB COMPOUND</button>
   </div>
 
-  <!-- Mode Toggle (Zombies vs Mutant Animals) -->
+  <!-- 2 Main Mode Options: Zombies vs Animals -->
   <div class="mode-select" id="mode-select">
     <button class="mode-btn active" data-mode="zombies">A. ZOMBIES</button>
-    <button class="mode-btn" data-mode="animals">B. MUTANT ANIMALS</button>
+    <button class="mode-btn" data-mode="animals">B. ANIMALS</button>
   </div>
 
-  <!-- Gun Selection UI: Choose Single Weapon Before Playing -->
+    <!-- Gun Selection UI: Pick One Survival Gun Before Starting -->
   <div class="gun-select-card">
-    <div class="gun-select-header">&#128299; CHOOSE SURVIVAL WEAPON (EQUIPPED FOR RUN)</div>
+    <div class="gun-select-header">&#128299; SURVIVAL WEAPON (EQUIPPED FOR RUN)</div>
     <div class="gun-select-grid" id="gun-select-grid">
       <div class="gun-card active" data-gun="pistol">
         <div class="gun-card-name">GLOCK 17</div>
@@ -689,10 +660,10 @@
     </div>
   </div>
 
-  <!-- Session Time Limit Setter -->
-  <div class="session-card">
-    <div class="session-title">&#9201; SESSION TIME LIMIT (AUTO-EVACUATION)</div>
-    <div class="time-btn-group" id="time-limit-select">
+  <!-- Session Time Limit Selector -->
+  <div class="time-select-card">
+    <div class="time-select-header">&#9201; MISSION TIME LIMIT</div>
+    <div class="time-select-grid">
       <button class="time-btn active" data-sec="0">UNLIMITED</button>
       <button class="time-btn" data-sec="120">2 MIN</button>
       <button class="time-btn" data-sec="300">5 MIN</button>
@@ -701,85 +672,67 @@
     </div>
   </div>
 
-  <!-- Play Buttons -->
+  <!-- PLAY Options Below -->
   <div class="btn-group">
-    <button class="play-btn featured" id="pc">PLAY (PC)</button>
+    <button class="play-btn" id="pc">PLAY (PC)</button>
     <button class="play-btn" id="mob">PLAY (MOBILE)</button>
     <button class="play-btn secondary" id="vr">PLAY (VR)</button>
   </div>
-
-  <div class="controls-hint" id="controls-hint-box">
-    <b>PC Controls:</b> WASD Move &bull; Shift Sprint &bull; Mouse Aim &bull; Left Click Fire &bull; R Reload &bull; P Pause
-  </div>
-  <p id="note"></p>
+  <p id="note" style="font-size:12px;color:#94a3b8;margin-top:12px;max-width:500px;"></p>
 </div>
 
-<!-- Pause / Results / Death / Session Over Modal -->
+<!-- Pause / Retry / Quit Modal -->
 <div id="pause-ov">
-  <div class="modal-card">
-    <h2 id="pause-title" class="title-font">GAME PAUSED</h2>
-    <div id="pause-sub">Take a breather or choose an action below</div>
-    <div class="modal-btn-col">
-      <button class="play-btn" id="btn-resume">RESUME</button>
-      <button class="play-btn secondary" id="btn-modal-retry">RETRY</button>
-      <button class="play-btn secondary" id="btn-modal-quit">QUIT TO MENU</button>
-    </div>
+  <h2 id="pause-title" class="title-font">GAME PAUSED</h2>
+  <div id="pause-sub">Take a breather or choose an action below</div>
+  <div class="btn-group">
+    <button class="play-btn" id="btn-resume">RESUME</button>
+    <button class="play-btn secondary" id="btn-modal-retry">RETRY</button>
+    <button class="play-btn secondary" id="btn-modal-quit">QUIT TO MENU</button>
   </div>
 </div>
 
-<!-- Gameplay HUD -->
 <div id="hud">
-  <!-- Top Left Mission / Session Timer -->
-  <div id="hud-timer-badge">
-    <div class="timer-content">
-      <span id="hud-timer-title" class="timer-title">SURVIVAL TIME</span>
-      <span id="hud-timer-val" class="timer-digits">00:00</span>
-    </div>
-  </div>
+  <!-- Top-Left Session / Mission Timer -->
+  <div id="hud-timer-badge">&#9201; 00:00</div>
 
   <div id="top-bar">
-    <span id="hud-lvl" style="color:#f87171;">CITY</span>
+    <span id="hud-lvl" class="badge">CITY</span>
     <span>|</span>
-    <span id="hud-wave">WAVE 1 OF 9</span>
+    <span id="hud-wave">WAVE 1/3</span>
     <span>|</span>
     <span id="hud-score">SCORE 0</span>
   </div>
-
   <div id="sys-controls">
     <button class="sys-btn" id="hud-pause">PAUSE</button>
     <button class="sys-btn" id="hud-retry">RETRY</button>
     <button class="sys-btn danger" id="hud-quit">QUIT</button>
   </div>
-
-  <!-- Precise '+' Crosshair -->
   <div id="cx"></div>
-
   <div id="msg"><div id="main-msg"></div><div id="sub-msg"></div></div>
-
   <div id="status-left">
     <div class="stat-lbl"><span>ARMOR &amp; HEALTH</span><span id="hp-num">100%</span></div>
     <div id="hpb"><div id="hpf"></div></div>
   </div>
-
   <div id="status-right">
     <div id="w-name">GLOCK 17</div>
-    <div id="ammo-txt">15 / 60</div>
+    <div id="ammo-txt">12 / 60</div>
   </div>
 </div>
 
-<!-- Mobile Touch UI -->
 <div id="mobile-ui">
   <div id="look-zone"></div>
   <div id="joy-zone"><div id="joy-knob"></div></div>
   <div class="touch-btn" id="btn-sprint">RUN</div>
   <div class="touch-btn" id="btn-fire">FIRE</div>
   <div class="touch-btn" id="btn-reload">REL</div>
+  <div class="touch-btn" id="btn-swap" style="display:none;">GUN</div>
 </div>
 
+<div id="vig"></div>
 <!-- Realistic Player Bloodshed Visor & Drip Canvas -->
 <canvas id="player-blood-canvas"></canvas>
 <div id="blood-vignette"></div>
-<div id="vig"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -787,7 +740,7 @@ const $ = id => document.getElementById(id);
 const R = (a, b) => a + Math.random() * (b - a);
 const V = THREE.Vector3;
 
-// ---------- CAMPAIGN LEVELS & 9-WAVE CONFIGURATION ----------
+// ---------- LEVEL LOCATIONS & CONFIGURATION ----------
 const LEVELS = [
   {
     id: 'city',
@@ -847,62 +800,7 @@ const LEVELS = [
 
 let selectedLevel = 0;
 let enemyCategory = 'zombies'; // 'zombies' | 'animals'
-let chosenWeapon = 'pistol';   // Only one gun equipped for run
-let sessionDurationLimit = 0;  // 0 = unlimited, or seconds
-let sessionTimeElapsed = 0;
-let cityTransitionT = 0;
 
-// ---------- DEVICE AUTO-DETECTION ----------
-function detectDevice() {
-  const ua = navigator.userAgent || '';
-  const isQuestOrVR = /OculusBrowser|Quest|Pico|Vive|VR/i.test(ua) || (window.location.search.includes('mode=vr'));
-  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-  const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-  if (isQuestOrVR) return 'vr';
-  if (isMobileUA || (isTouch && window.innerWidth <= 1024)) return 'mobile';
-  return 'pc';
-}
-
-const detectedDevice = detectDevice();
-let mobileMode = (detectedDevice === 'mobile');
-
-function applyDeviceUI(dev) {
-  const badge = $('device-detect-badge');
-  const icon = $('device-icon');
-  const text = $('device-text');
-  const pcBtn = $('pc');
-  const mobBtn = $('mob');
-  const vrBtn = $('vr');
-  const hintBox = $('controls-hint-box');
-
-  badge.className = dev + '-mode';
-  pcBtn.classList.remove('featured');
-  mobBtn.classList.remove('featured');
-  vrBtn.classList.remove('featured');
-
-  if (dev === 'vr') {
-    icon.innerHTML = '&#129505;';
-    text.textContent = 'DETECTED: OCULUS / META QUEST 2 (WEBXR)';
-    vrBtn.classList.add('featured');
-    hintBox.innerHTML = '<b>Quest 2 Touch Controls:</b> Left Stick Move &bull; Right Stick Snap-Turn &bull; Right Trigger Fire &bull; Right Grip Reload &bull; Left Menu Pause';
-    $('note').textContent = 'Meta Quest Browser detected &bull; Tap PLAY (VR) to enter WebXR!';
-  } else if (dev === 'mobile') {
-    icon.innerHTML = '&#128241;';
-    text.textContent = 'DETECTED: MOBILE / TOUCHSCREEN DEVICE';
-    mobBtn.classList.add('featured');
-    hintBox.innerHTML = '<b>Mobile Touch Controls:</b> Left Stick Move &bull; Right Half Drag Aim &bull; Red Button Fire &bull; REL Reload &bull; RUN Sprint';
-    $('note').textContent = 'Touchscreen detected &bull; On-screen dual analog controls active.';
-  } else {
-    icon.innerHTML = '&#128421;&#65039;';
-    text.textContent = 'DETECTED: DESKTOP PC (KEYBOARD & MOUSE)';
-    pcBtn.classList.add('featured');
-    hintBox.innerHTML = '<b>PC Controls:</b> WASD Move &bull; Shift Sprint &bull; Mouse Aim &bull; Left Click Fire &bull; R Reload &bull; P Pause';
-    $('note').textContent = 'Pointer lock active &bull; Left Click locks mouse aim.';
-  }
-}
-applyDeviceUI(detectedDevice);
-
-// Level Buttons
 document.querySelectorAll('.lvl-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     SND.uiClick();
@@ -912,7 +810,6 @@ document.querySelectorAll('.lvl-btn').forEach(btn => {
   });
 });
 
-// Mode Buttons
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     SND.uiClick();
@@ -922,7 +819,39 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
   });
 });
 
-// Gun Selection UI: Pick One Gun for Entire Run
+// Global Campaign & Session Settings
+let chosenWeapon = 'pistol';   // Only one gun equipped for run
+let sessionDurationLimit = 0;  // 0 = unlimited, or seconds (120, 300, 600, 900)
+let sessionTimeElapsed = 0;
+
+// Device Auto-Detection
+function detectDevice() {
+  const ua = navigator.userAgent || '';
+  const isQuestOrVR = /OculusBrowser|Quest|Pico|Vive|VR/i.test(ua) || (window.location.search.includes('mode=vr'));
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+
+  if (isQuestOrVR) return 'vr';
+  if (isMobileUA || (isTouch && window.innerWidth <= 1024)) return 'mobile';
+  return 'pc';
+}
+
+const detectedDevice = detectDevice();
+const devBadge = $('device-detect-badge');
+if (devBadge) {
+  if (detectedDevice === 'vr') {
+    devBadge.className = 'vr-mode';
+    devBadge.innerHTML = '&#129523; QUEST 2 VR DETECTED &bull; TRIGGER TO FIRE &bull; THUMBSTICK TO MOVE';
+  } else if (detectedDevice === 'mobile') {
+    devBadge.className = 'mobile-mode';
+    devBadge.innerHTML = '&#128241; MOBILE TOUCH CONTROLS ACTIVE &bull; DUAL VIRTUAL STICKS';
+  } else {
+    devBadge.className = 'pc-mode';
+    devBadge.innerHTML = '&#128421; PC FPS CONTROLS &bull; WASD MOVE &bull; MOUSE AIM & SHOOT';
+  }
+}
+
+// Gun Selection Listener
 document.querySelectorAll('.gun-card').forEach(card => {
   card.addEventListener('click', () => {
     SND.uiClick();
@@ -932,7 +861,7 @@ document.querySelectorAll('.gun-card').forEach(card => {
   });
 });
 
-// Session Time Limit Selector
+// Session Time Limit Listener
 document.querySelectorAll('.time-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     SND.uiClick();
@@ -942,9 +871,257 @@ document.querySelectorAll('.time-btn').forEach(btn => {
   });
 });
 
-// ---------- THREE.JS WEBGL SCENE SETUP ----------
+// ---------- REALISTIC PLAYER BLOODSHED ENGINE ----------
+const bloodCanvas = $('player-blood-canvas');
+const bloodCtx = bloodCanvas ? bloodCanvas.getContext('2d') : null;
+const bloodVignette = $('blood-vignette');
+const screenSplats = [];
+const screenDrips = [];
+
+function resizeBloodCanvas() {
+  if (!bloodCanvas) return;
+  bloodCanvas.width = window.innerWidth;
+  bloodCanvas.height = window.innerHeight;
+}
+resizeBloodCanvas();
+window.addEventListener('resize', resizeBloodCanvas);
+
+function triggerPlayerBloodShed(dmg) {
+  if (!bloodCanvas || !bloodCtx) return;
+  // 1. Organic arterial blood splatters across screen/visor
+  const splatCount = Math.min(24, Math.max(8, Math.floor(dmg / 2.2)));
+  const cx = R(bloodCanvas.width * 0.15, bloodCanvas.width * 0.85);
+  const cy = R(bloodCanvas.height * 0.15, bloodCanvas.height * 0.85);
+
+  for (let i = 0; i < splatCount; i++) {
+    screenSplats.push({
+      x: cx + R(-95, 95),
+      y: cy + R(-95, 95),
+      r: R(5, 26),
+      alpha: R(0.72, 0.98),
+      color: Math.random() < 0.35 ? '#450202' : Math.random() < 0.65 ? '#680505' : '#880707',
+      fadeRate: R(0.08, 0.16)
+    });
+  }
+
+  // 2. Realistic dripping blood streams running downward with gravity
+  const dripCount = Math.floor(R(2, 5));
+  for (let d = 0; d < dripCount; d++) {
+    screenDrips.push({
+      x: cx + R(-70, 70),
+      y: cy + R(-35, 35),
+      length: 0,
+      maxLength: R(65, 240),
+      speed: R(45, 140),
+      width: R(2.5, 6.5),
+      alpha: R(0.8, 0.98),
+      fadeRate: R(0.07, 0.14)
+    });
+  }
+
+  // 3. Low Health throbbing red vignette
+  if (bloodVignette) {
+    bloodVignette.style.opacity = Math.min(0.9, Math.max(0.4, (100 - hp) / 100)).toFixed(2);
+  }
+}
+
+function updateBloodScreen(dt) {
+  if (!bloodCanvas || !bloodCtx) return;
+  bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
+
+  // Render & Fade Blood Splats
+  for (let i = screenSplats.length - 1; i >= 0; i--) {
+    const s = screenSplats[i];
+    s.alpha -= s.fadeRate * dt;
+    if (s.alpha <= 0) {
+      screenSplats.splice(i, 1);
+      continue;
+    }
+    bloodCtx.save();
+    bloodCtx.globalAlpha = Math.max(0, s.alpha);
+    bloodCtx.fillStyle = s.color;
+    bloodCtx.beginPath();
+    bloodCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    bloodCtx.fill();
+
+    // Satellite micro-droplets
+    for (let k = 0; k < 3; k++) {
+      bloodCtx.beginPath();
+      bloodCtx.arc(s.x + Math.sin(k * 2) * (s.r + 4), s.y + Math.cos(k * 2) * (s.r + 4), s.r * 0.28, 0, Math.PI * 2);
+      bloodCtx.fill();
+    }
+    bloodCtx.restore();
+  }
+
+  // Render & Animate Flowing Blood Drips Down Screen
+  for (let i = screenDrips.length - 1; i >= 0; i--) {
+    const d = screenDrips[i];
+    if (d.length < d.maxLength) {
+      d.length += d.speed * dt;
+    } else {
+      d.alpha -= d.fadeRate * dt;
+    }
+    if (d.alpha <= 0) {
+      screenDrips.splice(i, 1);
+      continue;
+    }
+    bloodCtx.save();
+    bloodCtx.globalAlpha = Math.max(0, d.alpha);
+    bloodCtx.strokeStyle = '#4a0404';
+    bloodCtx.lineWidth = d.width;
+    bloodCtx.lineCap = 'round';
+    bloodCtx.beginPath();
+    bloodCtx.moveTo(d.x, d.y);
+    bloodCtx.lineTo(d.x, d.y + d.length);
+    bloodCtx.stroke();
+
+    // Drip bulb at bottom tip
+    bloodCtx.fillStyle = '#680505';
+    bloodCtx.beginPath();
+    bloodCtx.arc(d.x, d.y + d.length, d.width * 1.15, 0, Math.PI * 2);
+    bloodCtx.fill();
+    bloodCtx.restore();
+  }
+
+  // Reset vignette if player is healthy
+  if (bloodVignette && hp > 75 && screenSplats.length === 0) {
+    bloodVignette.style.opacity = '0';
+  }
+}
+
+// ---------- REAL AUDIO FILES INTEGRATION (ZombieHorrorPackageFree) ----------
+const AUDIO_MANIFEST = {
+  bite: [
+    'sounds/Bite/Zombie_Attack_Bite_001.mp3',
+    'sounds/Bite/Zombie_Attack_Bite_002.mp3'
+  ],
+  blood: [
+    'sounds/Blood/Blood_Splash_A_001.mp3',
+    'sounds/Blood/Blood_Splash_A_002.mp3',
+    'sounds/Blood/Blood_Splash_A_003.mp3'
+  ],
+  bodyFall: [
+    'sounds/BodyFall/Foley_BodyFall_001.mp3',
+    'sounds/BodyFall/Foley_BodyFall_002.mp3',
+    'sounds/BodyFall/Foley_BodyFall_003.mp3'
+  ],
+  eat: [
+    'sounds/Eat/Zombie_Eat_001.mp3',
+    'sounds/Eat/Zombie_Eat_002.mp3',
+    'sounds/Eat/Zombie_Eat_003.mp3'
+  ],
+  foley: [
+    'sounds/Foley/Foley_Movement_Clothes_A_001.mp3',
+    'sounds/Foley/Foley_Movement_Clothes_A_002.mp3',
+    'sounds/Foley/Foley_Movement_Clothes_A_003.mp3'
+  ],
+  footstep: [
+    'sounds/Footsteps/Footsteps_Zombie_concret_001.mp3',
+    'sounds/Footsteps/Footsteps_Zombie_concret_002.mp3',
+    'sounds/Footsteps/Footsteps_Zombie_concret_003.mp3',
+    'sounds/Footsteps/Footsteps_Zombie_concret_004.mp3'
+  ],
+  fleshImpact: [
+    'sounds/Impact/Impact_Flesh_001.mp3',
+    'sounds/Impact/Impact_Flesh_002.mp3',
+    'sounds/Impact/Impact_Flesh_003.mp3',
+    'sounds/Impact/Impact_Flesh_Gory_Light_001.mp3',
+    'sounds/Impact/Impact_Flesh_Gory_Light_002.mp3'
+  ],
+  zombieAttack: [
+    'sounds/VO/Zombie01/Zombie001_Attack_A_001.mp3',
+    'sounds/VO/Zombie01/Zombie001_Attack_A_002.mp3',
+    'sounds/VO/Zombie01/Zombie001_Attack_A_003.mp3',
+    'sounds/VO/Zombie03/Zombie003_Attack_A_001.mp3',
+    'sounds/VO/Zombie03/Zombie003_Attack_A_002.mp3',
+    'sounds/VO/Zombie03/Zombie003_Attack_A_003.mp3'
+  ],
+  zombieHurt: [
+    'sounds/VO/Zombie01/Zombie001_Hurt_A_001.mp3',
+    'sounds/VO/Zombie01/Zombie001_Hurt_A_002.mp3',
+    'sounds/VO/Zombie01/Zombie001_Hurt_A_003.mp3',
+    'sounds/VO/Zombie03/Zombie003_Hurt_A_001.mp3',
+    'sounds/VO/Zombie03/Zombie003_Hurt_A_002.mp3',
+    'sounds/VO/Zombie03/Zombie003_Hurt_A_003.mp3'
+  ],
+  zombieIdle: [
+    'sounds/VO/Zombie01/Zombie001_Idle_A_001.mp3',
+    'sounds/VO/Zombie01/Zombie001_Idle_A_002.mp3',
+    'sounds/VO/Zombie01/Zombie001_Idle_A_003.mp3',
+    'sounds/VO/Zombie03/Zombie003_Idle_A_001.mp3',
+    'sounds/VO/Zombie03/Zombie003_Idle_A_002.mp3',
+    'sounds/VO/Zombie03/Zombie003_Idle_A_003.mp3'
+  ]
+};
+
+const AUDIO_BUFFERS = {};
+
+function preloadAudioSample(url) {
+  if (!AC || AUDIO_BUFFERS[url]) return;
+  fetch(url)
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.arrayBuffer();
+    })
+    .then(buf => AC.decodeAudioData(buf))
+    .then(decoded => { AUDIO_BUFFERS[url] = decoded; })
+    .catch(() => {});
+}
+
+function preloadAllSounds() {
+  if (!AC) return;
+  Object.values(AUDIO_MANIFEST).forEach(urls => {
+    urls.forEach(u => preloadAudioSample(u));
+  });
+}
+
+function playSample(category, pos = null, vol = 1.0, pitchVariation = 0.05) {
+  if (!AC || state === 'paused') return false;
+  const list = AUDIO_MANIFEST[category];
+  if (!list || !list.length) return false;
+  const url = list[Math.floor(Math.random() * list.length)];
+  const buffer = AUDIO_BUFFERS[url];
+  if (!buffer) {
+    preloadAudioSample(url);
+    return false;
+  }
+
+  const src = AC.createBufferSource();
+  src.buffer = buffer;
+  src.playbackRate.value = 1.0 + (Math.random() * 2 - 1) * pitchVariation;
+
+  const gain = AC.createGain();
+  gain.gain.value = vol;
+
+  if (pos && typeof pos.x === 'number') {
+    const pn = AC.createPanner();
+    pn.panningModel = 'HRTF';
+    pn.refDistance = 3.5;
+    pn.maxDistance = 65;
+    pn.rolloffFactor = 1.2;
+    pn.positionX.value = pos.x;
+    pn.positionY.value = (pos.y || 0) + 1.2;
+    pn.positionZ.value = pos.z;
+    src.connect(gain);
+    gain.connect(pn);
+    pn.connect(compressor);
+  } else {
+    src.connect(gain);
+    gain.connect(compressor);
+  }
+
+  src.start();
+  return true;
+}
+
+
+// Auto-detect mobile device
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+let mobileMode = false;
+
+// ---------- THREE.JS SCENE SETUP ----------
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.xr.enabled = true;
 renderer.xr.setReferenceSpaceType('local-floor');
@@ -965,7 +1142,6 @@ addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-  resizeBloodCanvas();
 });
 
 const xr = () => renderer.xr.isPresenting;
@@ -976,7 +1152,7 @@ const box = (w, h, d, x, y, z, m) => {
   return b;
 };
 
-// Lighting & Moon
+// ---------- LIGHTING & ATMOSPHERE ----------
 const hemiLight = new THREE.HemisphereLight(0x5c7cfa, 0x1e1b24, 0.8);
 scene.add(hemiLight);
 const moon = new THREE.DirectionalLight(0x8bb4ff, 0.8);
@@ -990,7 +1166,7 @@ const moonMesh = new THREE.Mesh(
 moonMesh.position.set(-70, 95, -80);
 scene.add(moonMesh);
 
-// ---------- PROCEDURAL GROUND TEXTURES ----------
+// ---------- PROCEDURAL GROUND & ENVIRONMENT TEXTURES ----------
 function createGroundTexture(type) {
   const c = document.createElement('canvas');
   c.width = c.height = 512;
@@ -1021,6 +1197,7 @@ function createGroundTexture(type) {
       g.fillStyle = `rgb(${r},${gr},${b})`;
       g.fillRect(R(0, 512), R(0, 512), R(2, 5), R(2, 5));
     }
+    // Dirt & moss patches
     for (let i = 0; i < 18; i++) {
       g.fillStyle = 'rgba(42, 32, 22, 0.35)';
       g.beginPath();
@@ -1028,6 +1205,7 @@ function createGroundTexture(type) {
       g.fill();
     }
   } else {
+    // Industrial Bio-Lab Concrete Tiles
     g.fillStyle = '#27292e';
     g.fillRect(0, 0, 512, 512);
     g.strokeStyle = '#141518';
@@ -1059,7 +1237,7 @@ const ground = new THREE.Mesh(
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-// ---------- 100% ORIGINAL DETAILED BUILDING FACADE GENERATOR ----------
+// Facade generator for city buildings
 function makeFacade(style) {
   const c = document.createElement('canvas');
   c.width = c.height = 512;
@@ -1107,9 +1285,10 @@ function makeFacade(style) {
 
 const FT = ['brick', 'conc', 'glass', 'tan'].map(makeFacade);
 const concMat = L(0x52555a);
+const darkMetal = L(0x181a1f);
 const neonColors = [0xff2a55, 0x00e5ff, 0xffaa00, 0x39ff14];
 
-// ---------- 100% ORIGINAL RICH 3D ENVIRONMENTS ----------
+// Dynamic Environment Group (Rebuilt per Location)
 const envGroup = new THREE.Group();
 scene.add(envGroup);
 let lamps = [], lampBulbs = [];
@@ -1138,7 +1317,7 @@ function buildEnvironment(locId) {
       envGroup.add(box(2.2, 0.02, 0.6, -7.5, 0.012, s, whiteLineMat));
     }
 
-    // Skyscrapers & Sidewalks with Facades
+    // Skyscrapers & Sidewalks
     for (let i = -3; i < 3; i++) {
       for (let j = -3; j < 3; j++) {
         const h = R(18, 52);
@@ -1195,13 +1374,13 @@ function buildEnvironment(locId) {
     });
 
   } else if (locId === 'forest') {
-    // Dirt Crossroads Path
+    // Dirt Forest Crossroads Path
     envGroup.add(
       box(11, 0.03, 190, 0, 0.015, 0, L(0x2e2318)),
       box(190, 0.03, 11, 0, 0.015, 0, L(0x2e2318))
     );
 
-    // 160 Layered Pine Trees & Boulders
+    // Dense Realistic Pine Trees & Boulders outside corridors
     const trunkMat = L(0x3b2618);
     const pineMat1 = L(0x143822);
     const pineMat2 = L(0x1b472b);
@@ -1209,7 +1388,7 @@ function buildEnvironment(locId) {
 
     for (let i = 0; i < 160; i++) {
       let tx = R(-85, 85), tz = R(-85, 85);
-      if (Math.abs(tx) < 8 || Math.abs(tz) < 8) continue;
+      if (Math.abs(tx) < 8 || Math.abs(tz) < 8) continue; // Keep paths clear
 
       const tree = new THREE.Group();
       const scale = R(0.85, 1.65);
@@ -1217,6 +1396,7 @@ function buildEnvironment(locId) {
       trunk.position.y = 1.6;
       tree.add(trunk);
 
+      // Layered pine cones
       for (let tier = 0; tier < 3; tier++) {
         const cone = new THREE.Mesh(
           new THREE.ConeGeometry(2.3 - tier * 0.48, 3.8 - tier * 0.4, 8),
@@ -1229,6 +1409,7 @@ function buildEnvironment(locId) {
       tree.position.set(tx, 0, tz);
       envGroup.add(tree);
 
+      // Occasional mossy boulders & fallen logs
       if (i % 4 === 0) {
         const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(R(0.8, 1.8), 0), rockMat);
         rock.position.set(tx + R(-2, 2), 0.5, tz + R(-2, 2));
@@ -1236,7 +1417,7 @@ function buildEnvironment(locId) {
       }
     }
 
-    // Cabins
+    // Ranger Outpost Cabins at corners
     [[-16, -16], [16, -16], [-16, 16], [16, 16]].forEach(([cx, cz]) => {
       const cabin = new THREE.Group();
       cabin.add(
@@ -1249,7 +1430,7 @@ function buildEnvironment(locId) {
       envGroup.add(cabin);
     });
 
-    // Lanterns
+    // Campfire Lantern Posts along trail
     [[6, -12], [-6, 12], [12, 6], [-12, -6]].forEach(([x, z]) => {
       envGroup.add(box(0.2, 3.2, 0.2, x, 1.6, z, trunkMat));
       const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshBasicMaterial({ color: 0xfbbf24 }));
@@ -1263,11 +1444,12 @@ function buildEnvironment(locId) {
     });
 
   } else if (locId === 'lab') {
-    // Hazard Stripes & Containment Silos
+    // Industrial Bio-Lab Perimeter Walls, Hazard Stripes & Chemical Silos
     const hazardMat = L(0xd97706);
     const steelMat = L(0x334155);
     const glassVatMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.55 });
 
+    // Hazard corridor borders
     for (let d = -80; d <= 80; d += 8) {
       if (Math.abs(d) > 8) {
         envGroup.add(box(0.4, 0.04, 3.5, 6.5, 0.02, d, hazardMat));
@@ -1277,6 +1459,7 @@ function buildEnvironment(locId) {
       }
     }
 
+    // Containment Warehouses & Bio-Reactors
     for (let i = -2; i <= 2; i++) {
       for (let j = -2; j <= 2; j++) {
         if (i === 0 || j === 0) continue;
@@ -1285,6 +1468,7 @@ function buildEnvironment(locId) {
           box(16, 12, 16, cx, 6, cz, steelMat),
           box(16.6, 0.8, 16.6, cx, 12.2, cz, L(0x0f172a))
         );
+        // Glowing Bio-Containment Silos outside buildings
         const silo = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 7, 14), glassVatMat);
         silo.position.set(cx - Math.sign(cx) * 9.5, 3.5, cz);
         envGroup.add(
@@ -1295,6 +1479,7 @@ function buildEnvironment(locId) {
       }
     }
 
+    // Overhead Gantry Arches & Emergency Red Beacons
     [[-16, 0], [16, 0], [0, -16], [0, 16]].forEach(([gx, gz]) => {
       const arch = new THREE.Group();
       arch.add(
@@ -1317,9 +1502,11 @@ function buildEnvironment(locId) {
     });
   }
 }
+
+// Build initial city environment
 buildEnvironment('city');
 
-// Explosive Fuel Barrels
+// Explosive Red Fuel Barrels
 const barrels = [];
 [[3.2, -14], [-4.2, -20], [2.5, 18], [-3.2, 26], [14, 3.2], [-18, -2.5], [24, -4.0], [-30, 3.2], [35, 2.5], [-2.5, 36]].forEach(([x, z]) => {
   const m = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.95, 14), L(0xb91c1c, 0x3f0000));
@@ -1332,7 +1519,7 @@ const barrels = [];
   barrels.push(b);
 });
 
-// Supply Drops
+// Supply Drops (Health & Ammo Crates)
 const drops = [];
 function spawnDrop(pos) {
   const isHealth = Math.random() < 0.45;
@@ -1346,7 +1533,7 @@ function spawnDrop(pos) {
   drops.push({ g, isHealth, life: 25, t: 0 });
 }
 
-// Atmospheric Ash Particles
+// Floating Atmospheric Particles
 const ashGeo = new THREE.BufferGeometry();
 const ashCount = 500;
 const ashPos = new Float32Array(ashCount * 3);
@@ -1361,233 +1548,8 @@ scene.add(new THREE.Points(ashGeo, ashMat));
 
 const inCorr = (x, z) => (Math.abs(x) < 6.2 || Math.abs(z) < 6.2) && Math.abs(x) < 92 && Math.abs(z) < 92;
 
-// ---------- REALISTIC PLAYER BLOODSHED & VISOR DRIP ENGINE ----------
-const bloodCanvas = $('player-blood-canvas');
-const bloodCtx = bloodCanvas.getContext('2d');
-const bloodVignette = $('blood-vignette');
-const screenSplats = [];
-const screenDrips = [];
-
-function resizeBloodCanvas() {
-  bloodCanvas.width = window.innerWidth;
-  bloodCanvas.height = window.innerHeight;
-}
-resizeBloodCanvas();
-
-function triggerPlayerBloodShed(dmg) {
-  // 1. Organic arterial blood splatters across the screen/visor
-  const splatCount = Math.min(22, Math.max(8, Math.floor(dmg / 2.5)));
-  const cx = R(bloodCanvas.width * 0.15, bloodCanvas.width * 0.85);
-  const cy = R(bloodCanvas.height * 0.15, bloodCanvas.height * 0.85);
-
-  for (let i = 0; i < splatCount; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const dist = R(8, 140);
-    const rad = R(4, 20);
-    screenSplats.push({
-      x: cx + Math.cos(angle) * dist,
-      y: cy + Math.sin(angle) * dist,
-      r: rad,
-      color: Math.random() < 0.4 ? '#4a0404' : '#880808',
-      alpha: R(0.75, 0.95),
-      decay: R(0.12, 0.28)
-    });
-  }
-
-  // 2. Realistic dripping blood streams running downward with gravity
-  const dripCount = Math.floor(R(2, 5));
-  for (let d = 0; d < dripCount; d++) {
-    screenDrips.push({
-      x: cx + R(-60, 60),
-      y: cy + R(-30, 30),
-      length: 0,
-      targetLength: R(40, 160),
-      speed: R(65, 140),
-      width: R(2.5, 6),
-      alpha: R(0.8, 1.0),
-      decay: R(0.08, 0.18)
-    });
-  }
-
-  // 3. Low Health throbbing red vignette
-  bloodVignette.style.opacity = Math.min(0.9, Math.max(0.4, (100 - hp) / 100)).toFixed(2);
-}
-
-function updateBloodScreen(dt) {
-  bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
-
-  // Render & Fade Blood Splats
-  for (let i = screenSplats.length - 1; i >= 0; i--) {
-    const s = screenSplats[i];
-    s.alpha -= s.decay * dt;
-    if (s.alpha <= 0) {
-      screenSplats.splice(i, 1);
-      continue;
-    }
-    bloodCtx.save();
-    bloodCtx.globalAlpha = Math.max(0, s.alpha);
-    bloodCtx.fillStyle = s.color;
-    bloodCtx.beginPath();
-    bloodCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    bloodCtx.fill();
-
-    // Satellite micro-droplets
-    for (let k = 0; k < 3; k++) {
-      bloodCtx.beginPath();
-      bloodCtx.arc(s.x + Math.sin(k * 2) * (s.r + 4), s.y + Math.cos(k * 2) * (s.r + 4), s.r * 0.28, 0, Math.PI * 2);
-      bloodCtx.fill();
-    }
-    bloodCtx.restore();
-  }
-
-  // Render & Animate Flowing Blood Drips Down Screen
-  for (let i = screenDrips.length - 1; i >= 0; i--) {
-    const d = screenDrips[i];
-    if (d.length < d.targetLength) {
-      d.length += d.speed * dt;
-    } else {
-      d.alpha -= d.decay * dt;
-    }
-    if (d.alpha <= 0) {
-      screenDrips.splice(i, 1);
-      continue;
-    }
-    bloodCtx.save();
-    bloodCtx.globalAlpha = Math.max(0, d.alpha);
-    bloodCtx.strokeStyle = '#4a0404';
-    bloodCtx.lineWidth = d.width;
-    bloodCtx.lineCap = 'round';
-    bloodCtx.beginPath();
-    bloodCtx.moveTo(d.x, d.y);
-    bloodCtx.lineTo(d.x, d.y + d.length);
-    bloodCtx.stroke();
-
-    // Drip bulb at bottom tip
-    bloodCtx.fillStyle = '#680505';
-    bloodCtx.beginPath();
-    bloodCtx.arc(d.x, d.y + d.length, d.width * 1.15, 0, Math.PI * 2);
-    bloodCtx.fill();
-    bloodCtx.restore();
-  }
-
-  // Reset vignette if player is healthy
-  if (hp > 75 && screenSplats.length === 0) {
-    bloodVignette.style.opacity = '0';
-  }
-}
-
-// ---------- REAL AUDIO ENGINE (Zombie Horror Pack) ----------
-let AC, master, compressor, reverbNode, nb;
-const AUDIO_MANIFEST = {
-  bite: [
-    'sounds/Bite/Zombie_Attack_Bite_001.mp3',
-    'sounds/Bite/Zombie_Attack_Bite_002.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/Bite/Zombie_Attack_Bite_001.mp3'
-  ],
-  blood: [
-    'sounds/Blood/Blood_Splash_A_001.mp3',
-    'sounds/Blood/Blood_Splash_A_002.mp3',
-    'sounds/Blood/Blood_Splash_A_003.mp3'
-  ],
-  bodyFall: [
-    'sounds/BodyFall/Foley_BodyFall_001.mp3',
-    'sounds/BodyFall/Foley_BodyFall_002.mp3',
-    'sounds/BodyFall/Foley_BodyFall_003.mp3'
-  ],
-  fleshImpact: [
-    'sounds/Impact/Impact_Flesh_001.mp3',
-    'sounds/Impact/Impact_Flesh_002.mp3',
-    'sounds/Impact/Impact_Flesh_003.mp3',
-    'sounds/Impact/Impact_Flesh_Gory_Light_001.mp3',
-    'sounds/Impact/Impact_Flesh_Gory_Light_002.mp3'
-  ],
-  footsteps: [
-    'sounds/Footsteps/Footsteps_Zombie_concret_001.mp3',
-    'sounds/Footsteps/Footsteps_Zombie_concret_002.mp3',
-    'sounds/Footsteps/Footsteps_Zombie_concret_003.mp3',
-    'sounds/Footsteps/Footsteps_Zombie_concret_004.mp3'
-  ],
-  zombieAttack: [
-    'sounds/VO/Zombie01/Zombie001_Attack_A_001.mp3',
-    'sounds/VO/Zombie01/Zombie001_Attack_A_002.mp3',
-    'sounds/VO/Zombie01/Zombie001_Attack_A_003.mp3',
-    'sounds/VO/Zombie03/Zombie003_Attack_A_001.mp3',
-    'sounds/VO/Zombie03/Zombie003_Attack_A_002.mp3'
-  ],
-  zombieHurt: [
-    'sounds/VO/Zombie01/Zombie001_Hurt_A_001.mp3',
-    'sounds/VO/Zombie01/Zombie001_Hurt_A_002.mp3',
-    'sounds/VO/Zombie03/Zombie003_Hurt_A_001.mp3',
-    'sounds/VO/Zombie03/Zombie003_Hurt_A_002.mp3'
-  ],
-  zombieIdle: [
-    'sounds/VO/Zombie01/Zombie001_Idle_A_001.mp3',
-    'sounds/VO/Zombie01/Zombie001_Idle_A_002.mp3',
-    'sounds/VO/Zombie03/Zombie003_Idle_A_001.mp3',
-    'sounds/VO/Zombie03/Zombie003_Idle_A_002.mp3'
-  ]
-};
-
-const audioBufferCache = {};
-
-async function loadSampleBuffer(url) {
-  if (audioBufferCache[url]) return audioBufferCache[url];
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error();
-    const buf = await res.arrayBuffer();
-    const decoded = await AC.decodeAudioData(buf);
-    audioBufferCache[url] = decoded;
-    return decoded;
-  } catch (e) {
-    return null;
-  }
-}
-
-function preloadAllSounds() {
-  if (!AC) return;
-  Object.values(AUDIO_MANIFEST).forEach(list => list.forEach(url => loadSampleBuffer(url)));
-}
-
-function playSample(category, pos = null, vol = 1.0, pitchVar = 0.08) {
-  if (!AC) return false;
-  const list = AUDIO_MANIFEST[category];
-  if (!list || !list.length) return false;
-  const validLoaded = list.filter(u => audioBufferCache[u]);
-  if (!validLoaded.length) return false;
-
-  const chosenUrl = validLoaded[Math.floor(Math.random() * validLoaded.length)];
-  const buffer = audioBufferCache[chosenUrl];
-  if (!buffer) return false;
-
-  const src = AC.createBufferSource();
-  src.buffer = buffer;
-  src.playbackRate.value = 1.0 + (Math.random() - 0.5) * pitchVar;
-
-  const gain = AC.createGain();
-  gain.gain.value = vol;
-
-  if (pos && AC.listener && AC.listener.positionX) {
-    const pn = AC.createPanner();
-    pn.panningModel = 'HRTF';
-    pn.distanceModel = 'inverse';
-    pn.refDistance = 3.5;
-    pn.maxDistance = 60;
-    pn.rolloffFactor = 1.25;
-    pn.positionX.value = pos.x;
-    pn.positionY.value = pos.y || 1.2;
-    pn.positionZ.value = pos.z;
-    src.connect(gain);
-    gain.connect(pn);
-    pn.connect(compressor);
-    if (reverbNode) pn.connect(reverbNode);
-  } else {
-    src.connect(gain);
-    gain.connect(compressor);
-  }
-  src.start(AC.currentTime);
-  return true;
-}
+// ---------- REALISTIC ACOUSTIC AUDIO ENGINE ----------
+let AC, master, compressor, nb, reverbNode;
 
 function createReverbImpulse(ctx, duration = 1.4, decay = 3.2) {
   const len = ctx.sampleRate * duration;
@@ -1595,6 +1557,7 @@ function createReverbImpulse(ctx, duration = 1.4, decay = 3.2) {
   for (let ch = 0; ch < 2; ch++) {
     const data = imp.getChannelData(ch);
     for (let i = 0; i < len; i++) {
+      // Early reflections + smooth exponential acoustic tail
       const env = Math.pow(1 - i / len, decay);
       data[i] = (Math.random() * 2 - 1) * env;
     }
@@ -1631,8 +1594,6 @@ function initAudio() {
   nb = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate);
   const d = nb.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-
-  preloadAllSounds();
 }
 
 function noise(dur, f, g0, type = 'lowpass', out, q = 1.0, sendReverb = false) {
@@ -1664,20 +1625,54 @@ function tone(type, f1, f2, dur, g0, out) {
 }
 
 const SND = {
-  uiClick() { if (AC) tone('sine', 480, 240, 0.04, 0.2); },
+  uiClick() { /* Clean silent UI */ },
   shot(w) {
     if (!AC) return;
+    const t = AC.currentTime;
+
+    // 1. Sharp 9mm / Caliber Supersonic Muzzle Crack (2ms transient burst)
     const crackDur = w === 'shotgun' ? 0.045 : w === 'deagle' ? 0.038 : 0.024;
     noise(crackDur, w === 'shotgun' ? 4200 : 7500, w === 'deagle' ? 1.5 : 1.25, 'highpass', compressor, 0.7, true);
+
+    // 2. Chamber Gas Expansion & Concussion Body (with outdoor echo tail)
     const bodyFreq = { pistol: 1450, deagle: 1100, rifle: 1650, shotgun: 880 }[w] || 1450;
     const bodyDur  = { pistol: 0.16, deagle: 0.28, rifle: 0.14, shotgun: 0.36 }[w] || 0.16;
     const bodyGain = { pistol: 1.15, deagle: 1.45, rifle: 1.05, shotgun: 1.55 }[w] || 1.15;
     noise(bodyDur, bodyFreq, bodyGain, 'bandpass', compressor, 0.85, true);
+
+    // 3. Chest-thumping Low-End Recoil Impulse
     const subStart = { pistol: 210, deagle: 155, rifle: 185, shotgun: 115 }[w] || 210;
     tone('sine', subStart, 28, bodyDur * 0.85, bodyGain * 1.1, compressor);
+
+    // 4. Crisp Metallic Slide / Action Cycle
+    const mechDelay = w === 'shotgun' ? 0.22 : 0.035;
+    setTimeout(() => {
+      if (AC && state === 'play') {
+        noise(0.03, 3800, 0.28, 'bandpass', compressor, 3.5, false);
+      }
+    }, mechDelay * 1000);
   },
-  fleshImpact(pos) {
-    const p = playSample('fleshImpact', pos, 1.2, 0.12);
+  headshot() {
+    if (!AC) return;
+    // Realistic fleshy impact thud
+    noise(0.08, 950, 0.45, 'lowpass');
+    tone('sine', 160, 45, 0.09, 0.4);
+  },
+  pickup() {
+    if (!AC) return;
+    noise(0.08, 2200, 0.25, 'bandpass');
+  },
+  step(pos) {
+    playSample('footstep', pos, 0.45, 0.08);
+  },
+  bite(pos) {
+    playSample('bite', pos, 1.3, 0.1);
+  },
+  eat(pos) {
+    playSample('eat', pos, 1.2, 0.1);
+  },
+  bodyFall(pos) {
+    const p = playSample('bodyFall', pos, 1.2, 0.12);
     if (!p && AC) noise(0.06, 850, 0.45, 'lowpass');
   },
   bloodSplash(pos) {
@@ -1688,33 +1683,21 @@ const SND = {
     playSample('blood', pos, 1.5, 0.1);
     playSample('fleshImpact', pos, 1.4, 0.08);
     if (AC) {
-      noise(0.09, 1400, 0.65, 'bandpass', compressor, 1.5, true);
-      tone('sine', 220, 60, 0.12, 0.5);
+      tone('sine', 480, 180, 0.14, 0.85);
+      noise(0.06, 2800, 0.7, 'bandpass');
     }
   },
-  zombieHurt(pos) {
-    const p = playSample('zombieHurt', pos, 1.1, 0.15);
-    if (!p) playSample('zombieAttack', pos, 1.0);
+  fleshImpact(pos, isHead = false) {
+    const p = playSample('fleshImpact', pos, isHead ? 1.4 : 1.1, 0.1);
+    if (!p && AC) noise(0.05, 1100, 0.4, 'bandpass');
   },
-  zombieDeath(pos) {
-    playSample('zombieHurt', pos, 1.3, 0.2);
-    playSample('bodyFall', pos, 1.2, 0.15);
-  },
-  zombieAttack(pos) {
-    playSample('zombieAttack', pos, 1.2, 0.1);
-    playSample('bite', pos, 1.3, 0.08);
-  },
-  zombieIdle(pos) {
-    playSample('zombieIdle', pos, 0.9, 0.15);
-  },
-  pickup() {
+  click() {
     if (!AC) return;
-    noise(0.08, 2200, 0.25, 'bandpass');
-    tone('sine', 440, 880, 0.12, 0.35);
+    noise(0.025, 4200, 0.35, 'bandpass', compressor, 4.0);
   },
-  click() { if (AC) noise(0.025, 4200, 0.35, 'bandpass', compressor, 4.0); },
   reload(d) {
     if (!AC) return;
+    // Realistic magazine release, mag insert, and slide rack
     noise(0.04, 3200, 0.25, 'bandpass', compressor, 3.0);
     setTimeout(() => AC && state === 'play' && noise(0.06, 2400, 0.32, 'bandpass', compressor, 2.5), d * 450);
     setTimeout(() => AC && state === 'play' && noise(0.07, 3600, 0.38, 'bandpass', compressor, 3.2), d * 820);
@@ -1726,33 +1709,136 @@ const SND = {
     noise(0.85, 1200, 0.75, 'bandpass', compressor, 1.0, true);
   },
   hurt() {
-    playSample('bite', null, 1.3);
-    playSample('fleshImpact', null, 1.2);
-    if (AC) {
-      tone('sine', 110, 32, 0.26, 0.85);
-      noise(0.18, 520, 0.5, 'lowpass');
+    playSample('fleshImpact', null, 1.4, 0.08);
+    if (!AC) return;
+    tone('sine', 110, 32, 0.26, 0.85);
+    noise(0.18, 520, 0.5, 'lowpass');
+  },
+  vocal(p, big, isAnimal) {
+    if (!AC || state !== 'play') return;
+    const t = AC.currentTime;
+    const pn = AC.createPanner();
+    pn.panningModel = 'HRTF';
+    pn.refDistance = 4;
+    pn.rolloffFactor = 1.3;
+    pn.positionX.value = p.x;
+    pn.positionY.value = p.y + 1.4;
+    pn.positionZ.value = p.z;
+    pn.connect(compressor);
+    if (reverbNode) pn.connect(reverbNode);
+
+    if (!isAnimal) {
+      const p = playSample(big ? 'zombieAttack' : 'zombieIdle', pos, big ? 1.6 : 1.1, 0.15);
+      if (p) return;
     }
-  },
-  step() {
-    const p = playSample('footsteps', null, 0.45, 0.15);
-    if (!p && AC) noise(0.035, 320, 0.2, 'lowpass');
-  },
-  sessionOver() {
-    if (!AC) return;
-    tone('sine', 440, 220, 0.8, 0.85);
-    setTimeout(() => tone('sawtooth', 220, 110, 1.2, 0.9), 300);
-  },
-  victorySector() {
-    if (!AC) return;
-    tone('triangle', 330, 660, 0.3, 0.5);
-    setTimeout(() => tone('triangle', 440, 880, 0.45, 0.6), 250);
-    setTimeout(() => tone('triangle', 550, 1100, 0.6, 0.7), 550);
+    if (isAnimal) {
+      // Snarling predator beast growl
+      const dur = big ? 1.1 : 0.55;
+      const osc = AC.createOscillator();
+      const grit = AC.createOscillator();
+      const gritGain = AC.createGain();
+      const flt = AC.createBiquadFilter();
+      const env = AC.createGain();
+
+      osc.type = 'sawtooth';
+      const f0 = big ? 75 : R(115, 165);
+      osc.frequency.setValueAtTime(f0 * 1.25, t);
+      osc.frequency.exponentialRampToValueAtTime(f0 * 0.65, t + dur);
+
+      grit.type = 'triangle';
+      grit.frequency.value = 34; // Throat rattle
+      gritGain.gain.value = 28;
+      grit.connect(gritGain);
+      gritGain.connect(osc.frequency);
+
+      flt.type = 'bandpass';
+      flt.frequency.value = big ? 320 : 580;
+      flt.Q.value = 2.2;
+
+      env.gain.setValueAtTime(0.001, t);
+      env.gain.linearRampToValueAtTime(0.42, t + 0.06);
+      env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+      osc.connect(flt); flt.connect(env); env.connect(pn);
+      osc.start(t); grit.start(t);
+      osc.stop(t + dur + 0.05); grit.stop(t + dur + 0.05);
+    } else {
+      // REALISTIC ZOMBIE SCREECHING (Raspy dual-formant vocal shriek + breathy rasp)
+      const dur = big ? R(1.25, 1.65) : R(0.75, 1.15);
+      const basePitch = big ? R(145, 195) : R(260, 390);
+
+      // Vocal cord carrier + harsh rasp FM modulation
+      const cord1 = AC.createOscillator();
+      const cord2 = AC.createOscillator();
+      const raspMod = AC.createOscillator();
+      const raspDepth = AC.createGain();
+
+      cord1.type = 'sawtooth';
+      cord2.type = 'sawtooth';
+      cord1.frequency.setValueAtTime(basePitch * 0.85, t);
+      cord1.frequency.linearRampToValueAtTime(basePitch * 1.32, t + dur * 0.22); // Piercing shriek rise
+      cord1.frequency.exponentialRampToValueAtTime(basePitch * 0.62, t + dur);  // Raspy fall-off
+
+      cord2.frequency.setValueAtTime(basePitch * 0.865, t);
+      cord2.frequency.linearRampToValueAtTime(basePitch * 1.345, t + dur * 0.22);
+      cord2.frequency.exponentialRampToValueAtTime(basePitch * 0.635, t + dur);
+
+      // Vocal cord distortion / throat rattle
+      raspMod.type = 'sawtooth';
+      raspMod.frequency.value = R(42, 68);
+      raspDepth.gain.value = big ? 45 : 65;
+      raspMod.connect(raspDepth);
+      raspDepth.connect(cord1.frequency);
+      raspDepth.connect(cord2.frequency);
+
+      // Dual Throat Formant Filters (simulates open-mouth screech resonance)
+      const formant1 = AC.createBiquadFilter();
+      formant1.type = 'bandpass';
+      formant1.frequency.setValueAtTime(big ? 620 : 980, t);
+      formant1.frequency.linearRampToValueAtTime(big ? 780 : 1280, t + dur * 0.25);
+      formant1.Q.value = 3.8;
+
+      const formant2 = AC.createBiquadFilter();
+      formant2.type = 'bandpass';
+      formant2.frequency.setValueAtTime(big ? 1450 : 2250, t);
+      formant2.frequency.linearRampToValueAtTime(big ? 1750 : 2650, t + dur * 0.25);
+      formant2.Q.value = 4.5;
+
+      // Breathy air-hiss layer for realism
+      const hissSrc = AC.createBufferSource();
+      hissSrc.buffer = nb;
+      const hissFlt = AC.createBiquadFilter();
+      hissFlt.type = 'bandpass';
+      hissFlt.frequency.value = big ? 1600 : 2800;
+      hissFlt.Q.value = 1.8;
+      const hissGain = AC.createGain();
+      hissGain.gain.value = 0.28;
+
+      const env = AC.createGain();
+      env.gain.setValueAtTime(0.001, t);
+      env.gain.linearRampToValueAtTime(big ? 0.52 : 0.44, t + 0.07);
+      env.gain.setValueAtTime(big ? 0.48 : 0.40, t + dur * 0.45);
+      env.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+
+      cord1.connect(formant1); cord2.connect(formant1);
+      cord1.connect(formant2); cord2.connect(formant2);
+      hissSrc.connect(hissFlt); hissFlt.connect(hissGain);
+
+      formant1.connect(env);
+      formant2.connect(env);
+      hissGain.connect(env);
+      env.connect(pn);
+
+      cord1.start(t); cord2.start(t); raspMod.start(t); hissSrc.start(t);
+      cord1.stop(t + dur + 0.05); cord2.stop(t + dur + 0.05);
+      raspMod.stop(t + dur + 0.05); hissSrc.stop(t + dur + 0.05);
+    }
   }
 };
 
 const P1 = new V(), P2 = new V(), Q = new THREE.Quaternion();
 function updateAudioListener() {
-  if (!AC || !AC.listener || !AC.listener.positionX) return;
+  if (!AC || !AC.listener.positionX) return;
   const l = AC.listener;
   camera.getWorldPosition(P1);
   camera.getWorldDirection(P2);
@@ -1768,11 +1854,12 @@ const W = {
   rifle:   { n: 'M4A1 CARBINE', mag: 30, dmg: 25, rate: 0.088, auto: 1, pel: 1, spr: 0.011, rel: 1.75 },
   shotgun: { n: 'M870 BREACHER', mag: 8, dmg: 20, rate: 0.8, auto: 0, pel: 8, spr: 0.068, rel: 2.2 }
 };
+const NAMES = Object.keys(W);
 let cur = 'pistol', ammo, cd = 0, reloading = 0, kick = 0, flash = 0;
 let hp = 100, score = 0, kills = 0, wave = 0, state = 'menu';
 let queue = [], spawnT = 0, breakT = 0, bossT = 0, msgT = 0, hurtA = 0, hudT = 0, stepT = 0;
 
-// VR Wrist / Gun HUD
+// VR Wrist HUD
 const hc = document.createElement('canvas');
 hc.width = 256; hc.height = 128;
 const hx = hc.getContext('2d'), htex = new THREE.CanvasTexture(hc);
@@ -1869,15 +1956,16 @@ function attachGun(parent, base) {
   gunBase.copy(base);
   hudP.visible = xr();
 }
-
-function equipChosenGun(n) {
+function setW(n) {
   cur = n;
   reloading = 0;
   buildGun(n);
+  SND.click();
   updateHUD();
 }
+const cyc = d => setW(NAMES[(NAMES.indexOf(cur) + d + NAMES.length) % NAMES.length]);
 
-buildGun(chosenWeapon);
+buildGun(cur);
 attachGun(camera, gunBase);
 
 // VR Controllers
@@ -1894,7 +1982,7 @@ const ctrls = [0, 1].map(i => {
   return c;
 });
 
-// Particles, Tracers & Explosions
+// ---------- PARTICLES, TRACERS & EXPLOSIONS ----------
 const parts = [], pg = new THREE.BoxGeometry(0.075, 0.075, 0.075);
 const pm = {
   blood: new THREE.MeshBasicMaterial({ color: 0x990a0a }),
@@ -1951,7 +2039,7 @@ function boom(b) {
   });
 }
 
-// ---------- 100% ORIGINAL RICH ZOMBIES & MUTANT ANIMAL SPAWNER ----------
+// ---------- ENEMY SPAWNER: ZOMBIE MODE & MUTANT ANIMAL MODE ----------
 const zombies = [];
 const TY = {
   walker:  { hp: 65,   sp: 1.45, dm: 10, s: 1.0,  c: 0x5c7a52, pts: 100 },
@@ -1964,7 +2052,7 @@ const TY = {
 function spawn(type) {
   const isAnimal = enemyCategory === 'animals';
   const T = { ...TY[type] };
-  if (isAnimal) T.sp *= 1.18;
+  if (isAnimal) T.sp *= 1.18; // Wild beasts are slightly faster
 
   const g = new THREE.Group();
   g.rotation.order = 'YXZ';
@@ -1985,13 +2073,13 @@ function spawn(type) {
   };
 
   if (isAnimal) {
-    // Wild Mutant Animals (Wolves, Panthers, Swamp Hounds, Grizzly, Behemoth)
+    // --- WILD MUTANT ANIMAL MODELS (Wolves, Panthers, Venom Vipers/Stags, Alpha Grizzly) ---
     const furColors = {
-      walker:  0x475569,
-      runner:  0x18181b,
-      spitter: 0x3f6212,
-      giant:   0x451a03,
-      boss:    0x7f1d1d
+      walker:  0x475569, // Dire Wolf
+      runner:  0x18181b, // Shadow Panther
+      spitter: 0x3f6212, // Toxic Swamp Hound
+      giant:   0x451a03, // Feral Grizzly Bear
+      boss:    0x7f1d1d  // Blood Alpha Behemoth
     };
     const fur = L(furColors[type]);
     const darkFur = L(0x0f172a);
@@ -1999,24 +2087,28 @@ function spawn(type) {
     const fat = (type === 'giant' || type === 'boss') ? 1.45 : 1.0;
 
     up.position.y = 0.72 * fat;
+    // Quadruped Torso
     const torso = box(0.46 * fat, 0.44 * fat, 1.15 * fat, 0, 0, 0, fur);
     up.add(torso);
 
+    // Tail
     const tail = box(0.08 * fat, 0.08 * fat, 0.45 * fat, 0, 0.12 * fat, -0.72 * fat, darkFur);
     tail.rotation.x = 0.5;
     up.add(tail);
 
+    // Animal Head & Snout (Headshot hitbox)
     const headGrp = new THREE.Group();
     headGrp.position.set(0, 0.18 * fat, 0.68 * fat);
     const skull = box(0.36 * fat, 0.34 * fat, 0.38 * fat, 0, 0, 0, fur);
     skull.userData.head = true;
     const snout = box(0.22 * fat, 0.18 * fat, 0.28 * fat, 0, -0.06 * fat, 0.28 * fat, darkFur);
     snout.userData.head = true;
+    // Pointed Ears
     const earL = new THREE.Mesh(new THREE.ConeGeometry(0.07 * fat, 0.2 * fat, 4), darkFur);
     earL.position.set(-0.12 * fat, 0.24 * fat, -0.05 * fat);
     const earR = new THREE.Mesh(new THREE.ConeGeometry(0.07 * fat, 0.2 * fat, 4), darkFur);
     earR.position.set(0.12 * fat, 0.24 * fat, -0.05 * fat);
-
+    // Glowing Predator Eyes & Fangs
     headGrp.add(
       skull, snout, earL, earR,
       sp(0.035 * fat, -0.1 * fat, 0.06 * fat, 0.19 * fat, ey),
@@ -2037,11 +2129,12 @@ function spawn(type) {
       }
     }
 
+    // 4 Quadruped Legs
     const legCoords = [
-      [-0.2 * fat, 0.65 * fat, 0.42 * fat, arms],
-      [0.2 * fat,  0.65 * fat, 0.42 * fat, arms],
-      [-0.2 * fat, 0.65 * fat, -0.42 * fat, legs],
-      [0.2 * fat,  0.65 * fat, -0.42 * fat, legs]
+      [-0.2 * fat, 0.65 * fat, 0.42 * fat, arms],  // Front Left
+      [0.2 * fat,  0.65 * fat, 0.42 * fat, arms],  // Front Right
+      [-0.2 * fat, 0.65 * fat, -0.42 * fat, legs], // Back Left
+      [0.2 * fat,  0.65 * fat, -0.42 * fat, legs]  // Back Right
     ];
     legCoords.forEach(([lx, ly, lz, arr]) => {
       const p = new THREE.Group();
@@ -2057,7 +2150,7 @@ function spawn(type) {
     g.scale.setScalar(type === 'boss' ? 2.4 : type === 'giant' ? 1.75 : 1.05);
 
   } else {
-    // Detailed Humanoid Zombies (Torn Fringes, Exposed Ribs, Rotting Mouth, Teeth, Blood)
+    // --- ZOMBIE HUMANOID MODELS ---
     const sc = new THREE.Color(T.c).offsetHSL(R(-0.03, 0.03), R(-0.12, 0.06), R(-0.04, 0.08));
     const sk = L(sc.getHex());
     const cl = L(type === 'runner' ? 0x451a22 : type === 'spitter' ? 0x134e4a : [0x2a3a55, 0x4a4a3a, 0x5a2a2a, 0x3a3f45, 0x6b6b60][Math.random() * 5 | 0]);
@@ -2143,12 +2236,12 @@ function spawn(type) {
   zombies.push(z);
 
   if (type === 'boss') {
-    const bName = LEVELS[selectedLevel].waves[wave - 1].bossName || 'THE APEX';
+    const bName = LEVELS[selectedLevel].waves[wave - 1].bossName || 'THE ABOMINATION';
     say(bName + ' APPROACHES', 'Aim for the head for 2.5x critical damage!', 4);
   }
 }
 
-// Acid Spits
+// Acid Spitter Projectiles
 const spits = [];
 const spitGeo = new THREE.SphereGeometry(0.18, 8, 8);
 const spitMat = new THREE.MeshBasicMaterial({ color: 0x4ade80 });
@@ -2165,12 +2258,10 @@ function dmgZ(z, d, pt, head) {
   if (z.dead) return;
   if (head) {
     d *= 2.5;
-    SND.headshot(pt);
-  } else {
-    SND.fleshImpact(pt);
+    SND.headshot();
   }
   z.hp -= d;
-  burst(pt, z.type === 'spitter' ? 'acid' : 'blood', head ? 18 : 8, 2.5, 1.2);
+  burst(pt, z.type === 'spitter' ? 'acid' : 'blood', head ? 12 : 6, 2.2, 1.1);
 
   const cx = $('cx');
   cx.classList.add('hit');
@@ -2181,12 +2272,10 @@ function dmgZ(z, d, pt, head) {
     z.dt = 0;
     score += z.T.pts + (head ? 75 : 0);
     kills++;
-    SND.zombieDeath(z.g.position);
-    if (Math.random() < (z.type === 'giant' || z.type === 'boss' ? 0.9 : 0.22)) {
+    SND.vocal(z.g.position, z.type === 'giant' || z.type === 'boss', z.isAnimal);
+    if (Math.random() < (z.type === 'giant' || z.type === 'boss' ? 0.9 : 0.18)) {
       spawnDrop(z.g.position);
     }
-  } else {
-    if (Math.random() < 0.6) SND.zombieHurt(z.g.position);
   }
 }
 
@@ -2195,18 +2284,16 @@ function hurt(d) {
   hp -= d;
   hurtA = 0.65;
   SND.hurt();
-  triggerPlayerBloodShed(d);
-
   if (hp <= 0) {
     hp = 0;
     state = 'dead';
     if (document.pointerLockElement === dom) document.exitPointerLock();
-    showPauseModal('YOU DIED', `SURVIVAL FAILED\nFINAL SCORE: ${score} &bull; KILLS: ${kills}`, false);
+    showPauseModal('YOU DIED', `Final Score: ${score} · Kills: ${kills}`, false);
   }
   updateHUD();
 }
 
-// ---------- FLOW, MODALS, CONTINUOUS CAMPAIGN ----------
+// ---------- GAME FLOW, PAUSE, RETRY & QUIT CONTROLS ----------
 function applyLevelTheme(idx) {
   const lv = LEVELS[idx];
   scene.background.setHex(lv.sky);
@@ -2226,22 +2313,11 @@ function say(main, sub = '', sec = 3) {
   $('sub-msg').textContent = sub;
 }
 
-function showPauseModal(title, sub, canResume = true, isVictory = false) {
-  const tEl = $('pause-title');
-  tEl.textContent = title;
-  tEl.className = isVictory ? 'title-font victory' : 'title-font';
+function showPauseModal(title, sub, canResume = true) {
+  $('pause-title').textContent = title;
   $('pause-sub').textContent = sub;
   $('btn-resume').style.display = canResume ? 'inline-block' : 'none';
-  $('btn-modal-retry').textContent = title === 'YOU DIED' ? 'RETRY' : 'RESTART';
   $('pause-ov').style.display = 'flex';
-}
-
-function lockPointerSafe() {
-  if (mobileMode || xr() || document.pointerLockElement === dom) return;
-  try {
-    const p = dom.requestPointerLock();
-    if (p && typeof p.catch === 'function') p.catch(() => {});
-  } catch (e) {}
 }
 
 function togglePause() {
@@ -2250,13 +2326,13 @@ function togglePause() {
     mouseDown = false;
     touchState.firing = false;
     if (document.pointerLockElement === dom) document.exitPointerLock();
-    showPauseModal('GAME PAUSED', `${LEVELS[selectedLevel].shortName} &bull; ${enemyCategory.toUpperCase()}`, true);
+    showPauseModal('GAME PAUSED', `${LEVELS[selectedLevel].shortName} · ${enemyCategory.toUpperCase()} MODE`, true);
     SND.uiClick();
   } else if (state === 'paused') {
     state = 'play';
     $('pause-ov').style.display = 'none';
     SND.uiClick();
-    lockPointerSafe();
+    if (!mobileMode && !xr()) dom.requestPointerLock();
   }
 }
 
@@ -2270,185 +2346,270 @@ function quitToMenu() {
   $('hud').style.display = 'none';
   $('mobile-ui').style.display = 'none';
   $('ov').style.display = 'flex';
-  bloodVignette.style.opacity = '0';
-  bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
 }
 
 function retryGame() {
   SND.uiClick();
   $('pause-ov').style.display = 'none';
-  startGame(true);
+  startGame();
+  if (!mobileMode && !xr()) dom.requestPointerLock();
 }
 
-function startWave() {
-  const lv = LEVELS[selectedLevel];
-  const curWave = lv.waves[wave - 1];
-  const totalWaveNum = selectedLevel * 3 + wave;
-  queue = [];
-  for (let i = 0; i < curWave.w; i++) queue.push('walker');
-  for (let i = 0; i < curWave.r; i++) queue.push('runner');
-  for (let i = 0; i < curWave.sp; i++) queue.push('spitter');
-  for (let i = 0; i < curWave.g; i++) queue.push('giant');
-  if (curWave.b) queue.push('boss');
-  queue.sort(() => Math.random() - 0.5);
+// Bind HUD & Modal System Buttons
+$('hud-pause').onclick = e => { e.stopPropagation(); togglePause(); };
+$('hud-retry').onclick = e => { e.stopPropagation(); retryGame(); };
+$('hud-quit').onclick  = e => { e.stopPropagation(); quitToMenu(); };
 
-  spawnT = 0.5;
-  say(`WAVE ${totalWaveNum} / 9`, `${lv.shortName} &bull; ${queue.length} HOSTILES DETECTED`, 3.5);
+$('btn-resume').onclick      = () => togglePause();
+$('btn-modal-retry').onclick = () => retryGame();
+$('btn-modal-quit').onclick  = () => quitToMenu();
+
+function startWave() {
+  wave++;
+  const lv = LEVELS[selectedLevel];
+  const wCfg = lv.waves[wave - 1];
+  const q = [];
+  const add = (t, n) => { for (let i = 0; i < n; i++) q.push(t); };
+
+  add('walker', wCfg.w);
+  add('runner', wCfg.r);
+  add('spitter', wCfg.sp);
+  add('giant', wCfg.g);
+  q.sort(() => Math.random() - 0.5);
+  if (wCfg.b) {
+    q.unshift('boss');
+    bossT = 11;
+  }
+  queue = q;
+  spawnT = 1.2;
+  breakT = 0;
+  say(wave === 3 ? 'FINAL WAVE' : `WAVE ${wave} OF 3`, `${lv.name} (${enemyCategory.toUpperCase()})`, 3);
   updateHUD();
 }
 
-function startGame(fromBeginning = true) {
-  if (fromBeginning) {
-    selectedLevel = 0;
-    score = 0;
-    kills = 0;
-    sessionTimeElapsed = 0;
-  }
-  hp = 100;
-  wave = 1;
-  cityTransitionT = 0;
-  breakT = 0;
-
-  // Single chosen gun equipped for the run
-  const defaultMags = { pistol: 15, deagle: 7, rifle: 30, shotgun: 8 };
-  const defaultReserves = { pistol: 60, deagle: 28, rifle: 120, shotgun: 32 };
-  ammo = {
-    [chosenWeapon]: { mag: defaultMags[chosenWeapon], res: defaultReserves[chosenWeapon] }
-  };
-  equipChosenGun(chosenWeapon);
-
-  // Clear entities
+function startGame() {
+  applyLevelTheme(selectedLevel);
   zombies.forEach(z => scene.remove(z.g));
   zombies.length = 0;
-  drops.forEach(d => scene.remove(d.g));
-  drops.length = 0;
-  spits.forEach(s => scene.remove(s.m));
-  spits.length = 0;
   parts.forEach(p => scene.remove(p.m));
   parts.length = 0;
-  screenSplats.length = 0;
-  screenDrips.length = 0;
+  spits.forEach(s => scene.remove(s.m));
+  spits.length = 0;
+  drops.forEach(d => scene.remove(d.g));
+  drops.length = 0;
 
-  applyLevelTheme(selectedLevel);
+  barrels.forEach(b => {
+    if (b.dead) {
+      b.dead = false;
+      b.m.position.y = 0.475;
+      scene.add(b.m);
+    }
+  });
+
+  hp = 100;
+  score = 0;
+  kills = 0;
+  wave = 0;
   rig.position.set(0, 0, 0);
   rig.rotation.y = 0;
+  pitch = 0;
+  camera.rotation.x = 0;
+
+  ammo = {
+    pistol:  { mag: 15, res: 75 },
+    deagle:  { mag: 7,  res: 35 },
+    rifle:   { mag: 30, res: 150 },
+    shotgun: { mag: 8,  res: 40 }
+  };
+  cur = 'pistol';
+  buildGun(cur);
+  reloading = 0;
+  state = 'play';
 
   $('ov').style.display = 'none';
   $('pause-ov').style.display = 'none';
   $('hud').style.display = 'block';
-  $('mobile-ui').style.display = mobileMode ? 'block' : 'none';
-  bloodVignette.style.opacity = '0';
-  document.body.classList.toggle('is-mobile', mobileMode);
+  $('vig').style.display = xr() ? 'none' : 'block';
 
-  state = 'play';
+  if (mobileMode) {
+    document.body.classList.add('is-mobile');
+    $('mobile-ui').style.display = 'block';
+  } else {
+    document.body.classList.remove('is-mobile');
+    $('mobile-ui').style.display = 'none';
+  }
+
   startWave();
-  lockPointerSafe();
 }
 
-$('btn-resume').onclick = togglePause;
-$('btn-modal-retry').onclick = retryGame;
-$('btn-modal-quit').onclick = quitToMenu;
-$('hud-pause').onclick = togglePause;
-$('hud-retry').onclick = retryGame;
-$('hud-quit').onclick = quitToMenu;
-
-// ---------- CONTROLS (NO IN-GAME GUN SWAPPING) ----------
-let mouseDown = false, trig = false, c0 = false;
+// ---------- PC, MOBILE TOUCH & VR CONTROLS ----------
 const keys = {};
+let mouseDown = false, pitch = 0, trig = false, c0 = false;
 
-window.addEventListener('keydown', e => {
-  keys[e.code] = true;
+addEventListener('keydown', e => {
+  keys[e.code] = 1;
   if (e.code === 'KeyP' || e.code === 'Escape') {
     if (state === 'play' || state === 'paused') togglePause();
+    return;
   }
-  if (state === 'play' && e.code === 'KeyR') reload();
+  if (state !== 'play') return;
+  if (e.code === 'KeyR') reload();
+  // In-game weapon hot-swapping disabled: single gun locked for run
 });
-window.addEventListener('keyup', e => keys[e.code] = false);
+addEventListener('keyup', e => keys[e.code] = 0);
 
-window.addEventListener('mousemove', e => {
+dom.addEventListener('mousedown', () => {
+  if (mobileMode || state !== 'play') return;
+  if (document.pointerLockElement !== dom) {
+    dom.requestPointerLock();
+  } else {
+    mouseDown = true;
+  }
+});
+addEventListener('mouseup', () => mouseDown = false);
+
+addEventListener('mousemove', e => {
   if (document.pointerLockElement === dom && !xr() && !mobileMode && state === 'play') {
     rig.rotation.y -= e.movementX * 0.0022;
-    camera.rotation.x = Math.max(-1.45, Math.min(1.45, camera.rotation.x - e.movementY * 0.0022));
+    pitch = Math.max(-1.4, Math.min(1.4, pitch - e.movementY * 0.0022));
+    camera.rotation.x = pitch;
   }
 });
+// Wheel weapon swapping disabled: single gun locked for run
 
-dom.addEventListener('mousedown', e => {
-  if (e.button === 0 && !mobileMode && !xr()) {
-    if (document.pointerLockElement !== dom && state === 'play') {
-      lockPointerSafe();
-    } else if (state === 'play') {
-      mouseDown = true;
+// Mobile Touch Joystick & Look State
+const touchState = {
+  joyId: null, joyX: 0, joyY: 0,
+  lookId: null, lastX: 0, lastY: 0,
+  firing: false, sprinting: false
+};
+
+const joyZone = $('joy-zone');
+const joyKnob = $('joy-knob');
+joyZone.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  touchState.joyId = t.identifier;
+  updateJoystick(t);
+}, { passive: false });
+
+joyZone.addEventListener('touchmove', e => {
+  e.preventDefault();
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    if (e.changedTouches[i].identifier === touchState.joyId) {
+      updateJoystick(e.changedTouches[i]);
     }
   }
-});
-window.addEventListener('mouseup', e => { if (e.button === 0) mouseDown = false; });
+}, { passive: false });
 
-// Mobile Touch
-const touchState = { joyX: 0, joyY: 0, firing: false, sprint: false, lookId: null, lookX: 0, lookY: 0 };
-const joyZone = $('joy-zone'), joyKnob = $('joy-knob'), lookZone = $('look-zone');
+const endJoystick = e => {
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    if (e.changedTouches[i].identifier === touchState.joyId) {
+      touchState.joyId = null;
+      touchState.joyX = 0;
+      touchState.joyY = 0;
+      joyKnob.style.transform = 'translate(0px, 0px)';
+    }
+  }
+};
+joyZone.addEventListener('touchend', endJoystick);
+joyZone.addEventListener('touchcancel', endJoystick);
 
-joyZone.addEventListener('touchstart', e => { e.preventDefault(); updateJoy(e.targetTouches[0]); });
-joyZone.addEventListener('touchmove', e => { e.preventDefault(); updateJoy(e.targetTouches[0]); });
-const resetJoy = () => { touchState.joyX = 0; touchState.joyY = 0; joyKnob.style.transform = 'translate(0px, 0px)'; };
-joyZone.addEventListener('touchend', resetJoy);
-joyZone.addEventListener('touchcancel', resetJoy);
-
-function updateJoy(touch) {
+function updateJoystick(t) {
   const rect = joyZone.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-  let dx = touch.clientX - cx, dy = touch.clientY - cy;
-  const dist = Math.hypot(dx, dy), maxR = rect.width / 2 - 16;
-  if (dist > maxR) { dx = (dx / dist) * maxR; dy = (dy / dist) * maxR; }
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const maxR = rect.width / 2 - 16;
+  let dx = t.clientX - cx;
+  let dy = t.clientY - cy;
+  const dist = Math.hypot(dx, dy);
+  if (dist > maxR) {
+    dx = (dx / dist) * maxR;
+    dy = (dy / dist) * maxR;
+  }
   joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
   touchState.joyX = dx / maxR;
-  touchState.joyY = -dy / maxR;
+  touchState.joyY = dy / maxR;
 }
 
+const lookZone = $('look-zone');
 lookZone.addEventListener('touchstart', e => {
   e.preventDefault();
   const t = e.changedTouches[0];
   touchState.lookId = t.identifier;
-  touchState.lookX = t.clientX;
-  touchState.lookY = t.clientY;
-});
+  touchState.lastX = t.clientX;
+  touchState.lastY = t.clientY;
+}, { passive: false });
+
 lookZone.addEventListener('touchmove', e => {
   e.preventDefault();
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
-    if (t.identifier === touchState.lookId) {
-      const dx = t.clientX - touchState.lookX;
-      const dy = t.clientY - touchState.lookY;
-      rig.rotation.y -= dx * 0.005;
-      camera.rotation.x = Math.max(-1.4, Math.min(1.4, camera.rotation.x - dy * 0.005));
-      touchState.lookX = t.clientX;
-      touchState.lookY = t.clientY;
-      break;
+    if (t.identifier === touchState.lookId && state === 'play') {
+      const dx = t.clientX - touchState.lastX;
+      const dy = t.clientY - touchState.lastY;
+      touchState.lastX = t.clientX;
+      touchState.lastY = t.clientY;
+      rig.rotation.y -= dx * 0.0045;
+      pitch = Math.max(-1.35, Math.min(1.35, pitch - dy * 0.004));
+      camera.rotation.x = pitch;
     }
   }
-});
-const clearLook = e => {
+}, { passive: false });
+
+const endLook = e => {
   for (let i = 0; i < e.changedTouches.length; i++) {
-    if (e.changedTouches[i].identifier === touchState.lookId) touchState.lookId = null;
+    if (e.changedTouches[i].identifier === touchState.lookId) {
+      touchState.lookId = null;
+    }
   }
 };
-lookZone.addEventListener('touchend', clearLook);
-lookZone.addEventListener('touchcancel', clearLook);
+lookZone.addEventListener('touchend', endLook);
+lookZone.addEventListener('touchcancel', endLook);
 
-$('btn-fire').addEventListener('touchstart', e => { e.preventDefault(); touchState.firing = true; $('btn-fire').classList.add('pressed'); });
-const endFire = () => { touchState.firing = false; $('btn-fire').classList.remove('pressed'); };
-$('btn-fire').addEventListener('touchend', endFire);
-$('btn-fire').addEventListener('touchcancel', endFire);
-
-$('btn-reload').addEventListener('touchstart', e => { e.preventDefault(); reload(); });
-$('btn-sprint').addEventListener('touchstart', e => {
+const btnFire = $('btn-fire');
+btnFire.addEventListener('touchstart', e => {
   e.preventDefault();
-  touchState.sprint = !touchState.sprint;
-  $('btn-sprint').classList.toggle('active', touchState.sprint);
+  if (state !== 'play') return;
+  touchState.firing = true;
+  btnFire.classList.add('pressed');
+}, { passive: false });
+btnFire.addEventListener('touchend', () => {
+  touchState.firing = false;
+  btnFire.classList.remove('pressed');
+});
+btnFire.addEventListener('touchcancel', () => {
+  touchState.firing = false;
+  btnFire.classList.remove('pressed');
 });
 
-// Launch Actions
-$('pc').onclick = () => { mobileMode = false; initAudio(); SND.uiClick(); startGame(true); };
-$('mob').onclick = () => { mobileMode = true; initAudio(); SND.uiClick(); startGame(true); };
+$('btn-reload').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'play') reload(); }, { passive: false });
+$('btn-swap').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'play') cyc(1); }, { passive: false });
+$('btn-sprint').addEventListener('touchstart', e => {
+  e.preventDefault();
+  touchState.sprinting = !touchState.sprinting;
+  $('btn-sprint').classList.toggle('active', touchState.sprinting);
+}, { passive: false });
+
+// Start Mode Buttons
+$('pc').onclick = () => {
+  mobileMode = false;
+  initAudio();
+  SND.uiClick();
+  startGame();
+  dom.requestPointerLock();
+};
+$('mob').onclick = () => {
+  mobileMode = true;
+  initAudio();
+  SND.uiClick();
+  startGame();
+};
+if (isTouchDevice) {
+  $('mob').style.borderColor = '#4ade80';
+  $('mob').style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.5)';
+}
+
 $('vr').onclick = async () => {
   try {
     mobileMode = false;
@@ -2460,28 +2621,33 @@ $('vr').onclick = async () => {
       rig.rotation.y = 0;
       hudP.visible = false;
       attachGun(camera, new V(0.22, -0.22, -0.4));
-      quitToMenu();
+      $('ov').style.display = 'flex';
+      $('hud').style.display = 'none';
+      state = 'menu';
     });
     await renderer.xr.setSession(s);
     camera.position.y = 0;
-    startGame(true);
+    startGame();
   } catch (e) {
-    $('note').textContent = 'WebXR unavailable in this 2D browser &bull; Open in Meta Quest Browser for VR!';
+    $('note').textContent = 'VR unavailable in this browser. Select PC or Mobile above.';
   }
 };
+if (!navigator.xr) {
+  $('note').textContent = 'Select a location, choose Zombies or Animals, then tap PLAY.';
+}
 
 function reload() {
   const w = W[cur], a = ammo[cur];
   if (reloading || a.mag === w.mag || a.res <= 0) return;
   reloading = w.rel;
   SND.reload(w.rel);
-  say('RELOADING', w.n, w.rel);
+  say('RELOADING', '', w.rel);
 }
 
 function haptic() {
   ctrls.forEach(c => {
     if (c === gun.parent && c.userData.src && c.userData.src.gamepad) {
-      try { c.userData.src.gamepad.hapticActuators[0].pulse(0.75, 65); } catch (e) {}
+      try { c.userData.src.gamepad.hapticActuators[0].pulse(0.7, 60); } catch (e) {}
     }
   });
 }
@@ -2496,17 +2662,16 @@ function pollVR(dt) {
     const dn = i => b[i] && b[i].pressed && !pv[i];
     const x = ax[2] || ax[0] || 0, y = ax[3] || ax[1] || 0;
 
-    if (dn(4) && (state === 'play' || state === 'paused')) togglePause();
-
     if (left && state === 'play') {
       if (Math.hypot(x, y) > 0.15) {
         camera.getWorldDirection(P2);
         P2.y = 0;
         P2.normalize();
-        const nx = rig.position.x + (P2.x * -y - P2.z * x) * 2.6 * dt;
-        const nz = rig.position.z + (P2.z * -y + P2.x * x) * 2.6 * dt;
+        const nx = rig.position.x + (P2.x * -y - P2.z * x) * 2.5 * dt;
+        const nz = rig.position.z + (P2.z * -y + P2.x * x) * 2.5 * dt;
         if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
       }
+      if (dn(3)) cyc(1);
     }
     if (!left) {
       if (Math.abs(x) > 0.7 && !c.userData.snap) {
@@ -2514,10 +2679,11 @@ function pollVR(dt) {
         c.userData.snap = 1;
       }
       if (Math.abs(x) < 0.3) c.userData.snap = 0;
+      if (dn(4) || dn(5)) cyc(1);
     }
     if (dn(1)) reload();
     if (c === gun.parent && b[0] && b[0].pressed) trig = true;
-    if (dn(0) && state !== 'play' && state !== 'menu' && state !== 'paused') startGame(true);
+    if (dn(0) && state !== 'play' && state !== 'menu') startGame();
     b.forEach((q, i) => pv[i] = q.pressed);
   });
 }
@@ -2554,7 +2720,7 @@ function fire() {
   flash = 0.05;
   flashL.intensity = 3.5;
   flashM.visible = true;
-  flashM.scale.setScalar(R(0.7, 1.4));
+  flashM.scale.setScalar(R(0.7, 1.5));
   haptic();
 
   const [o, d] = aim();
@@ -2587,80 +2753,52 @@ function fire() {
   updateHUD();
 }
 
-function formatTime(totalSec) {
-  const m = Math.floor(Math.max(0, totalSec) / 60);
-  const s = Math.floor(Math.max(0, totalSec) % 60);
-  return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-}
-
 function updateHUD() {
   const w = W[cur];
   const a = ammo ? ammo[cur] : { mag: 0, res: 0 };
-  const totalWaveNum = selectedLevel * 3 + wave;
   const at = `${a.mag} / ${a.res}`;
-
   $('hud-lvl').textContent = LEVELS[selectedLevel].shortName;
-  $('hud-wave').textContent = `WAVE ${totalWaveNum} OF 9`;
+  $('hud-wave').textContent = `WAVE ${wave}/3`;
   $('hud-score').textContent = `SCORE ${score}`;
+  const m = Math.floor(sessionTimeElapsed / 60);
+  const s = Math.floor(sessionTimeElapsed % 60);
+  if ($('hud-timer-badge')) {
+    $('hud-timer-badge').textContent = `⏱ ${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+  }
   $('hp-num').textContent = `${Math.ceil(hp)}%`;
   $('hpf').style.width = `${hp}%`;
   $('hpf').style.background = hp > 35 ? 'linear-gradient(90deg, #16a34a, #4ade80)' : 'linear-gradient(90deg, #991b1b, #ef4444)';
   $('w-name').textContent = w.n;
   $('ammo-txt').textContent = at;
 
-  const timerDigits = $('hud-timer-val');
-  const timerTitle = $('hud-timer-title');
-  if (sessionDurationLimit > 0) {
-    const rem = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
-    timerDigits.textContent = formatTime(rem);
-    timerTitle.textContent = 'SESSION REMAINING';
-    timerDigits.classList.toggle('warning', rem <= 30);
-  } else {
-    timerDigits.textContent = formatTime(sessionTimeElapsed);
-    timerTitle.textContent = 'SURVIVAL TIME';
-    timerDigits.classList.remove('warning');
-  }
-
   if (xr()) {
-    hx.fillStyle = 'rgba(5, 12, 20, 0.88)';
+    hx.fillStyle = 'rgba(5, 12, 20, 0.85)';
     hx.fillRect(0, 0, 256, 128);
-    hx.font = 'bold 20px monospace';
+    hx.font = 'bold 22px monospace';
     hx.fillStyle = '#fbbf24';
-    hx.fillText(`${w.n} ${at}`, 8, 28);
+    hx.fillText(`${w.n} ${at}`, 8, 30);
     hx.fillStyle = hp > 35 ? '#4ade80' : '#f87171';
-    hx.fillText(`HP ${Math.ceil(hp)}%`, 8, 56);
-    hx.font = '16px monospace';
-    hx.fillStyle = '#38bdf8';
-    hx.fillText(`W${totalWaveNum}/9 &bull; ${timerDigits.textContent}`, 8, 84);
+    hx.fillText(`HP ${Math.ceil(hp)}%`, 8, 60);
+    hx.font = '18px monospace';
+    hx.fillStyle = '#e2e8f0';
+    hx.fillText(`${LEVELS[selectedLevel].shortName} W${wave}/3`, 8, 90);
     hx.fillStyle = '#f87171';
-    hx.fillText($('main-msg').textContent.slice(0, 22), 8, 114);
+    hx.fillText($('main-msg').textContent.slice(0, 22), 8, 118);
     htex.needsUpdate = true;
   }
 }
 
 // ---------- MAIN GAME LOOP ----------
 const clock = new THREE.Clock();
+let hbTimer = 0;
 
 function update(dt) {
+  // Freeze simulation while paused
   if (state === 'paused') return;
 
-  if (state === 'play') {
-    sessionTimeElapsed += dt;
-    if (sessionDurationLimit > 0 && sessionTimeElapsed >= sessionDurationLimit) {
-      state = 'session_over';
-      if (document.pointerLockElement === dom) document.exitPointerLock();
-      SND.sessionOver();
-      showPauseModal(
-        'SESSION IS OVER',
-        `TIME LIMIT EXPIRED!\nFINAL SCORE: ${score} &bull; KILLS: ${kills}\nLOCATIONS CLEARED: ${selectedLevel + 1}/3`,
-        false,
-        true
-      );
-      return;
-    }
-  }
+  const w = W[cur], a = ammo ? ammo[cur] : { mag: 0, res: 0 };
 
-  // Drift atmospheric ash
+  // Animate floating ash particles
   const posAttr = ashGeo.attributes.position;
   for (let i = 0; i < ashCount * 3; i += 3) {
     posAttr.array[i + 1] -= dt * 1.4;
@@ -2669,9 +2807,6 @@ function update(dt) {
   }
   posAttr.needsUpdate = true;
 
-  const w = W[cur];
-  const a = ammo ? ammo[cur] : { mag: 0, res: 0 };
-
   if (xr()) {
     pollVR(dt);
   } else {
@@ -2679,9 +2814,9 @@ function update(dt) {
     if (state === 'play') {
       let f = 0, r = 0, sprinting = false;
       if (mobileMode) {
-        f = touchState.joyY;
+        f = -touchState.joyY;
         r = touchState.joyX;
-        sprinting = touchState.sprint;
+        sprinting = touchState.sprinting;
       } else {
         f = (keys.KeyW ? 1 : 0) - (keys.KeyS ? 1 : 0);
         r = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0);
@@ -2747,48 +2882,39 @@ function update(dt) {
       }
     }
 
-    // Continuous 9-Wave Campaign Progression Across All 3 Cities
+    // Wave / Sector Progression: Continuous 9-Wave Campaign (City 1 -> City 2 -> City 3 -> Victory)
     if (!queue.length && !alive) {
       if (wave === 3) {
         if (selectedLevel < LEVELS.length - 1) {
-          if (!cityTransitionT) {
-            cityTransitionT = 4.5;
-            score += 1500;
-            hp = Math.min(100, hp + 45);
-            ammo[cur].res += cur === 'shotgun' ? 24 : cur === 'rifle' ? 90 : 45;
-            updateHUD();
-            SND.victorySector();
-            const nextLoc = LEVELS[selectedLevel + 1];
-            say('LOCATION CLEARED!', `Advancing to ${nextLoc.shortName} in 4 seconds...`, 4.0);
-          }
-          cityTransitionT -= dt;
-          if (cityTransitionT <= 0) {
-            cityTransitionT = 0;
-            selectedLevel++;
-            wave = 1;
-            applyLevelTheme(selectedLevel);
-            rig.position.set(0, 0, 0);
-            startWave();
-          }
+          // Advance to next city automatically!
+          selectedLevel++;
+          wave = 0;
+          breakT = 4.5;
+          say('CITY SECTOR CLEARED!', `CONVOY ADVANCING TO ${LEVELS[selectedLevel].name}...`, 4.2);
+          hp = Math.min(100, hp + 50);
+          ammo[cur].res += W[cur].mag * 3;
+          updateHUD();
+          applyLevelTheme(selectedLevel);
         } else {
+          // City 3 Wave 3 cleared: Full Campaign Victory!
           state = 'win';
           if (document.pointerLockElement === dom) document.exitPointerLock();
-          showPauseModal('APOCALYPSE SURVIVED!', `ALL 3 CITIES CONQUERED!\nFINAL SCORE: ${score} &bull; KILLS: ${kills}`, false, true);
+          showPauseModal(
+            'CAMPAIGN COMPLETE! VICTORY!',
+            `All 3 Cities Cleared! 9 Waves Survived! Final Score: ${score} · Total Kills: ${kills}`,
+            false
+          );
         }
       } else {
         if (!breakT) {
-          breakT = 5.0;
-          say('WAVE CLEARED', 'Resupplying Armor & Ammunition...', 4.0);
+          breakT = 5.5;
+          say('WAVE CLEARED', 'Resupplying Armor & Ammunition...', 4.5);
           hp = Math.min(100, hp + 35);
-          ammo[cur].res += cur === 'shotgun' ? 16 : cur === 'rifle' ? 60 : 30;
+          ammo[cur].res += W[cur].mag * 2;
           updateHUD();
         }
         breakT -= dt;
-        if (breakT <= 0) {
-          breakT = 0;
-          wave++;
-          startWave();
-        }
+        if (breakT <= 0) startWave();
       }
     }
 
@@ -2802,10 +2928,13 @@ function update(dt) {
       if (dr.g.position.distanceTo(rig.position) < 1.6) {
         SND.pickup();
         if (dr.isHealth) {
-          hp = Math.min(100, hp + 35);
-          say('+35 HEALTH', '', 1.5);
+          hp = Math.min(100, hp + 30);
+          say('+30 HEALTH', '', 1.5);
         } else {
-          ammo[cur].res += cur === 'shotgun' ? 16 : cur === 'rifle' ? 60 : 30;
+          ammo.pistol.res += 30;
+          ammo.deagle.res += 14;
+          ammo.rifle.res += 60;
+          ammo.shotgun.res += 16;
           say('AMMO RESUPPLIED', '', 1.5);
         }
         updateHUD();
@@ -2817,7 +2946,7 @@ function update(dt) {
       }
     }
 
-    // Acid Spits
+    // Acid Spitter Projectiles
     for (let i = spits.length - 1; i >= 0; i--) {
       const sp = spits[i];
       sp.v.y -= 4.5 * dt;
@@ -2835,7 +2964,7 @@ function update(dt) {
       }
     }
 
-    // Enemy AI & Pathing
+    // Enemy AI & Movement (Zombies & Mutant Animals)
     zombies.forEach(z => {
       if (z.dead) return;
       const g = z.g;
@@ -2859,12 +2988,14 @@ function update(dt) {
         g.position.z += (dz / d) * z.T.sp * dt;
         const sw = Math.sin(z.t * z.T.sp * (z.isAnimal ? 4.5 : 3.2));
         if (z.isAnimal) {
+          // Quadruped galloping animation
           z.up.position.y = (0.72 + Math.abs(sw) * 0.08) * ((z.type === 'giant' || z.type === 'boss') ? 1.45 : 1);
           z.arms[0].rotation.x = sw * 0.75;
           z.arms[1].rotation.x = sw * 0.75;
           z.legs[0].rotation.x = -sw * 0.75;
           z.legs[1].rotation.x = -sw * 0.75;
         } else {
+          // Bipedal zombie shamble animation
           z.up.rotation.z = sw * 0.08;
           z.legs[0].rotation.x = sw * 0.65;
           z.legs[1].rotation.x = -sw * 0.65;
@@ -2879,7 +3010,6 @@ function update(dt) {
         z.cd -= dt;
         if (z.cd <= 0) {
           z.cd = 1.05;
-          SND.zombieAttack(g.position);
           hurt(z.T.dm);
         }
       }
@@ -2887,11 +3017,11 @@ function update(dt) {
       z.gt -= dt;
       if (z.gt <= 0) {
         z.gt = R(4.5, 11);
-        SND.zombieIdle(g.position);
+        SND.vocal(g.position, z.type === 'giant' || z.type === 'boss', z.isAnimal);
       }
     });
 
-    // Separation
+    // Zombie Soft Collision Separation
     for (let i = 0; i < zombies.length; i++) {
       for (let j = i + 1; j < zombies.length; j++) {
         const A = zombies[i], B = zombies[j];
@@ -2911,7 +3041,7 @@ function update(dt) {
     }
   }
 
-  // Dead Zombie Cleanups
+  // Dead Zombie Sink & Cleanup
   for (let i = zombies.length - 1; i >= 0; i--) {
     const z = zombies[i];
     if (!z.dead) continue;
@@ -2924,46 +3054,62 @@ function update(dt) {
     }
   }
 
-  // Gun Recoil & Muzzle Flash
+  // Weapon Recoil & Muzzle Flash
   kick = Math.max(0, kick - dt * 8);
   gun.position.set(gunBase.x, gunBase.y, gunBase.z + kick * 0.05);
   gun.rotation.x = kick * 0.13 + (reloading ? 0.72 : 0);
-  if (slide) slide.position.z = (ammo && ammo[cur] && ammo[cur].mag === 0 ? 0.04 : kick * 0.04);
+  if (slide) slide.position.z = (ammo && ammo[cur].mag === 0 ? 0.04 : kick * 0.04);
   if (pump) pump.position.z = -0.35 + (cd > 0 ? Math.sin(Math.max(0, Math.min(1, 1 - cd / W[cur].rate)) * Math.PI) * 0.12 : 0);
 
   if (flash > 0) {
     flash -= dt;
-    if (flash <= 0) { flashL.intensity = 0; flashM.visible = false; }
+    if (flash <= 0) {
+      flashL.intensity = 0;
+      flashM.visible = false;
+    }
   }
   if (boomT > 0) {
     boomT -= dt;
     boomL.intensity = Math.max(0, boomT * 30);
   }
 
-  // Flickering Lamps
+  // Flickering Street Lamps
   lamps.forEach((l, i) => {
     l.intensity = Math.random() < 0.035 ? R(0.15, 0.55) : 1.3 + Math.sin(performance.now() / 300 + i) * 0.15;
   });
 
-  // Particles & Tracers
+  // Particles & Bullet Tracers
   for (let i = parts.length - 1; i >= 0; i--) {
     const p = parts[i];
     p.v.y -= 9.5 * dt;
     p.m.position.addScaledVector(p.v, dt);
-    if (p.m.position.y < 0.03) { p.m.position.y = 0.03; p.v.set(0, 0, 0); }
-    if ((p.l -= dt) < 0) { scene.remove(p.m); parts.splice(i, 1); }
+    if (p.m.position.y < 0.03) {
+      p.m.position.y = 0.03;
+      p.v.set(0, 0, 0);
+    }
+    if ((p.l -= dt) < 0) {
+      scene.remove(p.m);
+      parts.splice(i, 1);
+    }
   }
   for (let i = tracers.length - 1; i >= 0; i--) {
-    if ((tracers[i].t -= dt) < 0) { scene.remove(tracers[i].l); tracers.splice(i, 1); }
+    if ((tracers[i].t -= dt) < 0) {
+      scene.remove(tracers[i].l);
+      tracers.splice(i, 1);
+    }
   }
+
+  // Screen Damage Tint
+  hurtA = Math.max(0, hurtA - dt * 1.5);
+  hurtP.material.opacity = Math.max(hurtA, state === 'dead' ? 0.55 : hp < 30 && state === 'play' ? 0.2 : 0);
 
   if (msgT > 0 && state === 'play') {
     msgT -= dt;
-    if (msgT <= 0) { $('main-msg').textContent = ''; $('sub-msg').textContent = ''; }
+    if (msgT <= 0) {
+      $('main-msg').textContent = '';
+      $('sub-msg').textContent = '';
+    }
   }
-
-  // Update Realistic Player Bloodshed (Splats & Running Drips)
-  updateBloodScreen(dt);
 
   updateAudioListener();
   hudT -= dt;
@@ -2972,6 +3118,15 @@ function update(dt) {
     updateHUD();
   }
 }
+
+const hurtP = new THREE.Mesh(
+  new THREE.PlaneGeometry(2, 2),
+  new THREE.MeshBasicMaterial({ color: 0xaa0000, transparent: true, opacity: 0, depthTest: false })
+);
+hurtP.position.z = -0.3;
+hurtP.renderOrder = 999;
+hurtP.frustumCulled = false;
+camera.add(hurtP);
 
 renderer.setAnimationLoop(() => {
   update(Math.min(clock.getDelta(), 0.05));
