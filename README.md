@@ -133,12 +133,12 @@ Configure your playtime in the main menu before deployment:
 6. Click **Allow** on the WebXR immersive permission prompt.
 7. You are now inside the 3D apocalyptic world with full 6DOF Touch controller tracking!
 
-### Method 2: Install as a Standalone Quest PWA
-Because the project includes a `manifest.json` configured for WebXR:
-1. In Meta Quest Browser, open the game URL.
-2. Click the **three dots menu (...)** on the browser address bar.
-3. Select **Install App** / **Add to Apps Library**.
-4. The game will appear as an independent icon in your Quest App Library and launch in dedicated full-screen VR!
+### Method 2: Install as a Standalone Quest PWA (1-Click App Library)
+The game includes a dedicated **PWA Service Worker** (`sw.js`) and **Install Banner**:
+1. In Meta Quest Browser, open `https://pdvrgaming.github.io/zombie-shooting/`.
+2. Tap the **⚡ INSTALL APP** button on the top PWA banner (or the **📱 INSTALL PWA** button in the menu).
+3. Confirm installation: **Dead Zone VR** will appear directly in your **Meta Quest Apps Library** as a standalone immersive WebXR app!
+4. Launches in full-screen VR with zero browser address bars or distractions.
 
 ---
 

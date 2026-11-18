@@ -1174,9 +1174,126 @@
     box-shadow: 0 0 30px rgba(239, 68, 68, 0.9);
   }
 
+  /* Progressive Web App (PWA) Install Banner */
+  .pwa-install-banner {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 94%;
+    max-width: 660px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.96) 100%);
+    border: 2px solid #ef4444;
+    border-radius: 12px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 99999;
+    box-shadow: 0 0 24px rgba(239, 68, 68, 0.5), 0 8px 32px #000;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: slideDownBanner 0.4s ease-out;
+  }
+  @keyframes slideDownBanner {
+    0% { transform: translate(-50%, -100%); opacity: 0; }
+    100% { transform: translate(-50%, 0); opacity: 1; }
+  }
+  .pwa-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+  .pwa-banner-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    border: 1px solid #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    flex-shrink: 0;
+  }
+  .pwa-banner-heading {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: #f87171;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pwa-banner-sub {
+    font-size: 11px;
+    color: #cbd5e1;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pwa-banner-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .pwa-install-action {
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+    color: #fff;
+    border: 1px solid #f87171;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(220, 38, 38, 0.6);
+    transition: all 0.2s;
+  }
+  .pwa-install-action:hover {
+    background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+  }
+  .pwa-dismiss-action {
+    background: rgba(51, 65, 85, 0.6);
+    color: #94a3b8;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pwa-dismiss-action:hover {
+    background: #475569;
+    color: #fff;
+  }
+
 </style>
 </head>
 <body>
+
+<!-- Progressive Web App (PWA) Install Banner -->
+<div id="pwa-install-banner" class="pwa-install-banner" style="display: none;">
+  <div class="pwa-banner-left">
+    <img src="icon-192.png" alt="Dead Zone Icon" class="pwa-banner-img">
+    <div class="pwa-banner-info">
+      <div class="pwa-banner-heading">&#129523; INSTALL DEAD ZONE VR (PWA)</div>
+      <div class="pwa-banner-sub">Add to Meta Quest Library &bull; Full-screen standalone WebXR launcher</div>
+    </div>
+  </div>
+  <div class="pwa-banner-right">
+    <button id="pwa-install-btn" class="pwa-install-action">&#9889; INSTALL APP</button>
+    <button id="pwa-dismiss-btn" class="pwa-dismiss-action" title="Dismiss">&times;</button>
+  </div>
+</div>
 
 <div id="ov">
   <div class="storyboard-header">
@@ -1235,6 +1352,7 @@
     <button class="platform-btn vr-btn" id="vr">&#129523; ENTER VR (QUEST 2)</button>
     <button class="platform-btn" id="pc">&#128421; PLAY (PC)</button>
     <button class="platform-btn" id="mob">&#128241; PLAY (MOBILE)</button>
+    <button class="platform-btn" id="btn-pwa-install-manual">&#128242; INSTALL PWA</button>
     <button class="platform-btn" id="btn-show-controls">&#127918; CONTROLS GUIDE</button>
   </div>
 </div>
@@ -1532,6 +1650,64 @@ $('btn-start-main').onclick = () => {
     $('pc').click();
   }
 };
+
+// ---------- PROGRESSIVE WEB APP (PWA) INSTALL & SERVICE WORKER ----------
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('PWA ServiceWorker registered with scope:', reg.scope);
+    }).catch(err => {
+      console.warn('PWA ServiceWorker registration error:', err);
+    });
+  });
+}
+
+let deferredInstallPrompt = null;
+const pwaBanner = $('pwa-install-banner');
+const pwaInstallBtn = $('pwa-install-btn');
+const pwaDismissBtn = $('pwa-dismiss-btn');
+const pwaManualBtn = $('btn-pwa-install-manual');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!sessionStorage.getItem('pwa_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
+    if (pwaBanner) pwaBanner.style.display = 'flex';
+  }
+});
+
+async function triggerPwaInstall() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    console.log('PWA install choice:', outcome);
+    deferredInstallPrompt = null;
+    if (pwaBanner) pwaBanner.style.display = 'none';
+  } else {
+    alert("INSTALL INSTRUCTIONS:\n\n• On Meta Quest Browser: Click the 3 dots (···) on the URL bar and select 'Install app' or 'Add to Apps'.\n• On Chrome/Edge: Click the Install icon in the address bar.\n• On Mobile: Tap Share / Options -> 'Add to Home Screen'.");
+  }
+}
+
+if (pwaInstallBtn) pwaInstallBtn.onclick = triggerPwaInstall;
+if (pwaManualBtn) pwaManualBtn.onclick = triggerPwaInstall;
+if (pwaDismissBtn) {
+  pwaDismissBtn.onclick = () => {
+    if (pwaBanner) pwaBanner.style.display = 'none';
+    sessionStorage.setItem('pwa_dismissed', '1');
+  };
+}
+
+// Show banner on page load if not in standalone and not dismissed
+window.addEventListener('DOMContentLoaded', () => {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if (!isStandalone && !sessionStorage.getItem('pwa_dismissed')) {
+    setTimeout(() => {
+      if (pwaBanner && !isStandalone && !sessionStorage.getItem('pwa_dismissed')) {
+        pwaBanner.style.display = 'flex';
+      }
+    }, 1200);
+  }
+});
 
 // ---------- REALISTIC PLAYER BLOODSHED ENGINE ----------
 const bloodCanvas = $('player-blood-canvas');
