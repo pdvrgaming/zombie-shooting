@@ -22,7 +22,17 @@
     box-sizing: border-box;
     user-select: none;
     -webkit-user-select: none;
+  }
+  #c, #player-blood-canvas, #touch-zone-move, #touch-zone-look {
     touch-action: none;
+  }
+  button, .location-card, .mode-pill-btn, .gun-card, .time-btn, .platform-btn,
+  .quest2-hero-btn, .btn-start-survival, .compact-loadout-bar, .modal-close-btn,
+  .pwa-install-action, .pwa-dismiss-action, .hud-btn, .modal-btn, .lvl-btn, .mode-btn, .play-btn {
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
   }
   html, body {
     margin: 0;
@@ -51,11 +61,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y !important;
     background: radial-gradient(circle at center, rgba(35, 10, 12, 0.92) 0%, rgba(4, 6, 10, 0.98) 100%);
     text-align: center;
     z-index: 20;
-    padding: 20px;
+    padding: 24px 16px 90px 16px;
     backdrop-filter: blur(6px);
   }
   h1 {
@@ -1177,7 +1191,8 @@
   /* Progressive Web App (PWA) Install Banner */
   .pwa-install-banner {
     position: fixed;
-    top: 10px;
+    bottom: 14px;
+    top: auto;
     left: 50%;
     transform: translateX(-50%);
     width: 94%;
@@ -1190,14 +1205,14 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    z-index: 99999;
+    z-index: 100;
     box-shadow: 0 0 24px rgba(239, 68, 68, 0.5), 0 8px 32px #000;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    animation: slideDownBanner 0.4s ease-out;
+    animation: slideUpBanner 0.4s ease-out;
   }
-  @keyframes slideDownBanner {
-    0% { transform: translate(-50%, -100%); opacity: 0; }
+  @keyframes slideUpBanner {
+    0% { transform: translate(-50%, 100%); opacity: 0; }
     100% { transform: translate(-50%, 0); opacity: 1; }
   }
   .pwa-banner-left {
@@ -1499,6 +1514,119 @@ const $ = id => document.getElementById(id);
 const R = (a, b) => a + Math.random() * (b - a);
 const V = THREE.Vector3;
 
+// Universal high-responsiveness click binder (Oculus Touch laser jitter, touch, and mouse)
+function bindUniversalClick(target, callback) {
+  const el = typeof target === 'string' ? $(target) : target;
+  if (!el) return;
+
+  let lastFired = 0;
+  let downX = 0, downY = 0, isDown = false;
+
+  const trigger = (e) => {
+    const now = Date.now();
+    if (now - lastFired < 280) return; // Debounce across pointerup + click
+    lastFired = now;
+    callback(e);
+  };
+
+  el.addEventListener('pointerdown', (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    downX = e.clientX;
+    downY = e.clientY;
+    isDown = true;
+  });
+
+  el.addEventListener('pointerup', (e) => {
+    if (!isDown) return;
+    isDown = false;
+    // Allow up to 32px pointer movement for natural VR controller micro-tremor
+    const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
+    if (dist < 32) {
+      trigger(e);
+    }
+  });
+
+  el.addEventListener('click', (e) => {
+    trigger(e);
+  });
+
+  el.addEventListener('touchend', (e) => {
+    trigger(e);
+  }, { passive: true });
+}
+
+// Global alias for compatibility
+const bindClick = bindUniversalClick;
+
+// Direct Mode Launchers
+async function launchVRMode() {
+  try {
+    mobileMode = false;
+    initAudio();
+    SND.uiClick();
+
+    if (!navigator.xr) {
+      alert("WebXR is not supported in this browser. Please open Dead Zone in Meta Quest Browser.");
+      return;
+    }
+    const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+    if (!isSupported) {
+      alert("Immersive VR ('immersive-vr') is not supported on this display or mode.");
+      return;
+    }
+    const s = await navigator.xr.requestSession('immersive-vr', {
+      optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']
+    });
+    s.addEventListener('end', () => {
+      camera.position.y = 1.7;
+      rig.rotation.y = 0;
+      hudP.visible = false;
+      vrUI.hide();
+      attachGun(camera, new V(0.22, -0.22, -0.4));
+      $('ov').style.display = 'flex';
+      $('hud').style.display = 'none';
+      state = 'menu';
+    });
+    await renderer.xr.setSession(s);
+
+    // Meta Quest 2 Snapdragon XR2 Optimizations
+    if (renderer.xr.setFoveation) renderer.xr.setFoveation(1.0);
+    if (s.supportedFrameRates) {
+      const rates = Array.from(s.supportedFrameRates);
+      if (rates.includes(90)) s.updateTargetFrameRate(90);
+      else if (rates.includes(72)) s.updateTargetFrameRate(72);
+    }
+    renderer.setPixelRatio(1.0);
+
+    camera.position.y = 0;
+    $('ov').style.display = 'none';
+    $('hud').style.display = 'none';
+    $('mobile-ui').style.display = 'none';
+
+    state = 'menu';
+    vrUI.show('menu');
+  } catch (e) {
+    console.error('VR Session Error:', e);
+    const msg = (e && e.message) ? e.message : String(e);
+    if ($('device-detect-badge')) $('device-detect-badge').textContent = 'VR Note: ' + msg;
+  }
+}
+
+function launchPCMode() {
+  mobileMode = false;
+  initAudio();
+  SND.uiClick();
+  startGame();
+  dom.requestPointerLock();
+}
+
+function launchMobileMode() {
+  mobileMode = true;
+  initAudio();
+  SND.uiClick();
+  startGame();
+}
+
 // ---------- CAMPAIGN LEVELS & 9-WAVE CONFIGURATION ----------
 const LEVELS = [
   {
@@ -1567,12 +1695,12 @@ let sessionTimeElapsed = 0;
 // Device Auto-Detection
 function detectDevice() {
   const ua = navigator.userAgent || '';
-  const isQuestOrVR = /OculusBrowser|Quest|Pico|Vive|VR/i.test(ua) || (window.location.search.includes('mode=vr'));
+  const isQuestOrVR = /OculusBrowser|Quest|Pico|Vive|VR|WebXR/i.test(ua) || (window.location.search.includes('mode=vr'));
+  if (isQuestOrVR) return 'vr';
+  if (window.location.search.includes('mode=pc')) return 'pc';
+  if (window.location.search.includes('mode=mob')) return 'mobile';
   const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
   const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-
-  // Dedicated Meta Quest 2 VR edition: prioritize VR by default
-  if (isQuestOrVR || (!window.location.search.includes('mode=pc') && !window.location.search.includes('mode=mob'))) return 'vr';
   if (isMobileUA || (isTouch && window.innerWidth <= 1024)) return 'mobile';
   return 'pc';
 }
@@ -1592,14 +1720,14 @@ if (devBadge) {
   }
 }
 
-// Bind Primary Quest 2 Hero Button
+// Bind Primary Quest 2 Hero Button (Direct WebXR Launch)
 if ($('btn-quest-hero')) {
-  $('btn-quest-hero').onclick = () => $('vr').click();
+  bindUniversalClick('btn-quest-hero', () => launchVRMode());
 }
 
 // Location Cards Listeners
 document.querySelectorAll('.location-card').forEach(card => {
-  card.addEventListener('click', () => {
+  bindUniversalClick(card, () => {
     SND.uiClick();
     document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
@@ -1610,7 +1738,7 @@ document.querySelectorAll('.location-card').forEach(card => {
 
 // Mode Pill Listeners
 document.querySelectorAll('.mode-pill-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+  bindUniversalClick(btn, () => {
     SND.uiClick();
     document.querySelectorAll('.mode-pill-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -1620,7 +1748,7 @@ document.querySelectorAll('.mode-pill-btn').forEach(btn => {
 
 // Gun Selection Listener
 document.querySelectorAll('.gun-card').forEach(card => {
-  card.addEventListener('click', () => {
+  bindUniversalClick(card, () => {
     SND.uiClick();
     document.querySelectorAll('.gun-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
@@ -1631,7 +1759,7 @@ document.querySelectorAll('.gun-card').forEach(card => {
 
 // Session Time Limit Listener
 document.querySelectorAll('.time-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+  bindUniversalClick(btn, () => {
     SND.uiClick();
     document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -1641,15 +1769,17 @@ document.querySelectorAll('.time-btn').forEach(btn => {
 });
 
 // Big Start Button Handler
-$('btn-start-main').onclick = () => {
-  if (detectedDevice === 'vr') {
-    $('vr').click();
-  } else if (detectedDevice === 'mobile') {
-    $('mob').click();
-  } else {
-    $('pc').click();
-  }
-};
+if ($('btn-start-main')) {
+  bindUniversalClick('btn-start-main', () => {
+    if (detectedDevice === 'vr') {
+      launchVRMode();
+    } else if (detectedDevice === 'mobile') {
+      launchMobileMode();
+    } else {
+      launchPCMode();
+    }
+  });
+}
 
 // ---------- PROGRESSIVE WEB APP (PWA) INSTALL & SERVICE WORKER ----------
 if ('serviceWorker' in navigator) {
@@ -1688,13 +1818,13 @@ async function triggerPwaInstall() {
   }
 }
 
-if (pwaInstallBtn) pwaInstallBtn.onclick = triggerPwaInstall;
-if (pwaManualBtn) pwaManualBtn.onclick = triggerPwaInstall;
+if (pwaInstallBtn) bindUniversalClick(pwaInstallBtn, triggerPwaInstall);
+if (pwaManualBtn) bindUniversalClick(pwaManualBtn, triggerPwaInstall);
 if (pwaDismissBtn) {
-  pwaDismissBtn.onclick = () => {
+  bindUniversalClick(pwaDismissBtn, () => {
     if (pwaBanner) pwaBanner.style.display = 'none';
     sessionStorage.setItem('pwa_dismissed', '1');
-  };
+  });
 }
 
 // Show banner on page load if not in standalone and not dismissed
@@ -3081,6 +3211,7 @@ const vrTex = new THREE.CanvasTexture(vrCanvas);
 const vrMat = new THREE.MeshBasicMaterial({ map: vrTex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
 const vrMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.35, 1.47), vrMat);
 vrMesh.visible = false;
+vrMesh.renderOrder = 999;
 scene.add(vrMesh);
 
 const vrFrame = new THREE.Group();
@@ -3100,14 +3231,13 @@ const vrUI = {
   mode: 'menu',
   show(mode = 'menu') {
     this.mode = mode;
+    camera.getWorldPosition(P1);
     camera.getWorldDirection(P2);
     P2.y = 0;
     P2.normalize();
-    vrMesh.position.copy(rig.position).addScaledVector(P2, 2.15);
-    vrMesh.position.y = Math.max(1.2, (camera.position.y || 1.6));
-    vrMesh.quaternion.copy(camera.quaternion);
-    vrMesh.rotation.x = 0;
-    vrMesh.rotation.z = 0;
+    vrMesh.position.copy(P1).addScaledVector(P2, 2.0);
+    vrMesh.position.y = Math.max(1.2, P1.y);
+    vrMesh.lookAt(P1.x, vrMesh.position.y, P1.z);
     vrMesh.visible = true;
     this.draw(null);
   },
@@ -3115,6 +3245,7 @@ const vrUI = {
     vrMesh.visible = false;
     lastHoveredBtn = null;
     ctrls.forEach(c => {
+      c.userData.hoveredBtn = null;
       if (c.userData.laser) c.userData.laser.visible = false;
       if (c.userData.dot) c.userData.dot.visible = false;
     });
@@ -3494,12 +3625,22 @@ const vrUI = {
 };
 
 // 5. In-VR 3D Controller Raycast Interaction
+function triggerVRButtonClick(ctrl, btn) {
+  if (!btn || !btn.onClick) return;
+  if (ctrl && ctrl.userData && ctrl.userData.src && ctrl.userData.src.gamepad) {
+    const gp = ctrl.userData.src.gamepad;
+    if (gp.hapticActuators && gp.hapticActuators[0]) {
+      try { gp.hapticActuators[0].pulse(0.85, 40); } catch (e) {}
+    }
+  }
+  SND.uiClick();
+  btn.onClick();
+}
+
 function pollVRUIInteraction(ctrl) {
-  if (!ctrl || !ctrl.userData.src) return;
+  if (!ctrl) return;
   const s = ctrl.userData.src;
-  const b = s.gamepad.buttons;
-  const pv = ctrl.userData.prev;
-  const dn = i => b[i] && b[i].pressed && !pv[i];
+  const gp = s ? s.gamepad : null;
 
   ctrl.getWorldPosition(P1);
   ctrl.getWorldQuaternion(Q);
@@ -3532,30 +3673,56 @@ function pollVRUIInteraction(ctrl) {
       }
     }
 
+    ctrl.userData.hoveredBtn = hovered;
+
+    // Visual feedback on laser & reticle dot
+    if (ctrl.userData.laser && ctrl.userData.laser.material) {
+      ctrl.userData.laser.material.color.setHex(hovered ? 0x22d3ee : 0xef4444);
+    }
+    if (ctrl.userData.dot && ctrl.userData.dot.material) {
+      ctrl.userData.dot.material.color.setHex(hovered ? 0x38bdf8 : 0xff2222);
+    }
+
     if (hovered !== lastHoveredBtn) {
       lastHoveredBtn = hovered;
-      if (hovered && s.gamepad && s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
-        try { s.gamepad.hapticActuators[0].pulse(0.12, 10); } catch (e) {}
+      if (hovered && gp && gp.hapticActuators && gp.hapticActuators[0]) {
+        try { gp.hapticActuators[0].pulse(0.18, 15); } catch (e) {}
       }
       vrUI.draw(hovered ? hovered.id : null);
     }
 
-    if ((dn(0) || dn(4)) && hovered) {
-      if (s.gamepad && s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
-        try { s.gamepad.hapticActuators[0].pulse(0.75, 35); } catch (e) {}
+    // Trigger (0) and Primary Action A/X (4) click detection with controller-local state
+    if (gp && gp.buttons) {
+      const b = gp.buttons;
+      const trigPressed = !!(b[0] && (b[0].pressed || b[0].value > 0.45));
+      const aPressed = !!(b[4] && b[4].pressed);
+
+      const trigDown = trigPressed && !ctrl.userData.lastTrigDown;
+      const aDown = aPressed && !ctrl.userData.lastADown;
+
+      ctrl.userData.lastTrigDown = trigPressed;
+      ctrl.userData.lastADown = aPressed;
+
+      if ((trigDown || aDown) && hovered) {
+        triggerVRButtonClick(ctrl, hovered);
       }
-      SND.uiClick();
-      hovered.onClick();
     }
   } else {
+    ctrl.userData.hoveredBtn = null;
     if (ctrl.userData.laser) {
-      ctrl.userData.laser.visible = true;
+      ctrl.userData.laser.visible = (state !== 'play');
       ctrl.userData.laser.scale.z = 3.5;
+      if (ctrl.userData.laser.material) ctrl.userData.laser.material.color.setHex(0xef4444);
     }
     if (ctrl.userData.dot) ctrl.userData.dot.visible = false;
     if (lastHoveredBtn) {
       lastHoveredBtn = null;
       vrUI.draw(null);
+    }
+    if (gp && gp.buttons) {
+      const b = gp.buttons;
+      ctrl.userData.lastTrigDown = !!(b[0] && (b[0].pressed || b[0].value > 0.45));
+      ctrl.userData.lastADown = !!(b[4] && b[4].pressed);
     }
   }
 }
@@ -3563,7 +3730,7 @@ function pollVRUIInteraction(ctrl) {
 // 6. Meta Quest 2 6DOF Touch Controllers Initialization
 const ctrls = [0, 1].map(i => {
   const c = renderer.xr.getController(i);
-  c.userData = { prev: [], snap: 0, sprinting: false };
+  c.userData = { prev: [], snap: 0, sprinting: false, lastTrigDown: false, lastADown: false, hoveredBtn: null };
 
   const laserGeo = new THREE.CylinderGeometry(0.0012, 0.0012, 1, 8);
   laserGeo.rotateX(Math.PI / 2);
@@ -3575,8 +3742,16 @@ const ctrls = [0, 1].map(i => {
 
   const dotMesh = new THREE.Mesh(new THREE.SphereGeometry(0.014, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
   dotMesh.visible = false;
+  dotMesh.renderOrder = 1000;
   scene.add(dotMesh);
   c.userData.dot = dotMesh;
+
+  // Native WebXR Select event on Quest 2 (Standard VR Primary Trigger Pull)
+  c.addEventListener('select', () => {
+    if (state !== 'play' && vrMesh && vrMesh.visible && c.userData.hoveredBtn) {
+      triggerVRButtonClick(c, c.userData.hoveredBtn);
+    }
+  });
 
   c.addEventListener('connected', e => {
     c.userData.src = e.data;
@@ -4077,16 +4252,10 @@ function retryGame() {
   if (!mobileMode && !xr()) dom.requestPointerLock();
 }
 
-// Safe DOM Event Binding Helper
-const bindClick = (id, fn) => {
-  const el = $(id);
-  if (el) el.onclick = fn;
-};
-
-// Bind HUD Buttons
-bindClick('hud-pause', e => { e.stopPropagation(); togglePause(); });
-bindClick('hud-retry', e => { e.stopPropagation(); retryGame(); });
-bindClick('hud-quit',  e => { e.stopPropagation(); quitToMenu(); });
+// Bind HUD Buttons with safe universal pointer handler
+bindClick('hud-pause', e => { if (e && e.stopPropagation) e.stopPropagation(); togglePause(); });
+bindClick('hud-retry', e => { if (e && e.stopPropagation) e.stopPropagation(); retryGame(); });
+bindClick('hud-quit',  e => { if (e && e.stopPropagation) e.stopPropagation(); quitToMenu(); });
 
 // Bind Modal Handlers
 bindClick('modal-btn-primary', () => {
@@ -4227,7 +4396,7 @@ function startGame(isRetry = false) {
 
   $('ov').style.display = 'none';
   $('modal-ov').style.display = 'none';
-  $('hud').style.display = 'block';
+  $('hud').style.display = xr() ? 'none' : 'block';
   $('vig').style.display = xr() ? 'none' : 'block';
 
   if (mobileMode) {
@@ -4391,69 +4560,25 @@ $('btn-sprint').addEventListener('touchstart', e => {
   $('btn-sprint').classList.toggle('active', touchState.sprinting);
 }, { passive: false });
 
-// Start Mode Buttons
-$('pc').onclick = () => {
-  mobileMode = false;
-  initAudio();
-  SND.uiClick();
-  startGame();
-  dom.requestPointerLock();
-};
-$('mob').onclick = () => {
-  mobileMode = true;
-  initAudio();
-  SND.uiClick();
-  startGame();
-};
+// Start Mode Launchers
+bindUniversalClick('pc', launchPCMode);
+bindUniversalClick('mob', launchMobileMode);
+bindUniversalClick('vr', launchVRMode);
+if ($('btn-quest-hero')) bindUniversalClick('btn-quest-hero', launchVRMode);
+if ($('btn-start-main')) {
+  bindUniversalClick('btn-start-main', () => {
+    if (detectedDevice === 'vr') {
+      launchVRMode();
+    } else if (detectedDevice === 'mobile') {
+      launchMobileMode();
+    } else {
+      launchPCMode();
+    }
+  });
+}
 if (isTouchDevice) {
   $('mob').style.borderColor = '#4ade80';
   $('mob').style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.5)';
-}
-
-$('vr').onclick = async () => {
-  try {
-    mobileMode = false;
-    initAudio();
-    SND.uiClick();
-    const s = await navigator.xr.requestSession('immersive-vr', {
-      optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']
-    });
-    s.addEventListener('end', () => {
-      camera.position.y = 1.7;
-      rig.rotation.y = 0;
-      hudP.visible = false;
-      vrUI.hide();
-      attachGun(camera, new V(0.22, -0.22, -0.4));
-      $('ov').style.display = 'flex';
-      $('hud').style.display = 'none';
-      state = 'menu';
-    });
-    await renderer.xr.setSession(s);
-
-    // Meta Quest 2 Snapdragon XR2 Optimizations
-    if (renderer.xr.setFoveation) renderer.xr.setFoveation(1.0);
-    if (s.supportedFrameRates) {
-      const rates = Array.from(s.supportedFrameRates);
-      if (rates.includes(90)) s.updateTargetFrameRate(90);
-      else if (rates.includes(72)) s.updateTargetFrameRate(72);
-    }
-    renderer.setPixelRatio(1.0);
-
-    camera.position.y = 0;
-    $('ov').style.display = 'none';
-    $('hud').style.display = 'none';
-    $('mobile-ui').style.display = 'none';
-
-    // Present 3D Spatial Hologram Menu inside Quest 2 headset
-    state = 'menu';
-    vrUI.show('menu');
-  } catch (e) {
-    console.error('VR Session Error:', e);
-    if ($('device-detect-badge')) $('device-detect-badge').textContent = 'VR unavailable: ' + (e.message || e);
-  }
-};
-if (!navigator.xr) {
-  // Note element replaced by sleek device badge
 }
 
 function reload() {
@@ -4556,7 +4681,7 @@ function pollVR(dt) {
 
   // Interactive 3D Spatial UI Raycasting (when in Menu / Pause / Win / Over)
   if (state !== 'play' && vrMesh && vrMesh.visible) {
-    pollVRUIInteraction(rightCtrl || ctrls[0]);
+    ctrls.forEach(c => pollVRUIInteraction(c));
   }
 }
 
