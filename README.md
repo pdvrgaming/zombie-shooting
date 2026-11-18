@@ -39,7 +39,24 @@ Copy and paste these directly into your GitHub Repository settings (**About** se
 
 ## 🌟 Key Features
 
-### 1. 🔊 Realistic Acoustic Audio Engine (Catastic Zombie Horror Package)
+### 1. 🥽 Meta Quest 2 Dedicated WebXR Architecture (Branch `vr`)
+Engineered from the ground up for the **Oculus / Meta Quest 2** and Oculus Browser:
+- **3D Spatial Holographic UI Billboard:** Standard 2D HTML/CSS menus cannot render in immersive VR. A full 3D spatial holographic billboard floats in world space at comfortable eye level (2.1m in front of the player).
+- **Interactive Controller Laser Pointers:** Both Touch controllers project active 3D laser pointer rays and targeting dots that raycast against 3D menu cards and buttons, providing tactile haptic ticks on hover and solid haptic recoil on click!
+- **Left Forearm Tactical Wrist PDA:** An authentic military wrist terminal is mounted directly on your left forearm, displaying real-time Health %, Ammo, Wave, Location, Mission Timer, and Score.
+- **Underbarrel Red Tactical Laser Sight:** The weapon mounts a crimson laser sight beam that projects onto targets, rendering an in-world red `+` reticle crosshair (matching Storyboard Panel 3).
+- **Full 6DOF Touch Controls:**
+  - *Left Thumbstick:* Smooth analog locomotion in head gaze direction with sprint toggle on stick click.
+  - *Right Thumbstick:* 30° snap turning with instant deadband reset for nausea-free orientation.
+  - *Right Trigger:* Squeeze to fire with muzzle flash, brass casing ejection, bullet debris, spatial audio, and haptic vibration (`pulse(0.85, 45)`).
+  - *Right Grip / 'B' Button:* Tactical magazine reload with haptic feedback.
+  - *Left 'X' / Menu / 'A' Button:* Toggles the 3D In-VR Pause Menu anytime.
+- **Snapdragon XR2 Hardware Optimizations:**
+  - Fixed Foveated Rendering (`renderer.xr.setFoveation(1.0)`).
+  - High refresh rate target: 90Hz / 72Hz negotiated via WebXR.
+  - Pixel ratio locked to 1.0 in immersive VR to avoid GPU thermal throttling.
+
+### 2. 🔊 Realistic Acoustic Audio Engine (Catastic Zombie Horror Package)
 Replaced synthetic tones with 44 high-fidelity audio samples from the **Zombie Horror Package**:
 - **Bite & Attack:** Real gnashing bites (`Zombie_Attack_Bite`) and zombie attack roars.
 - **Flesh Impacts & Blood:** Visceral flesh bullet hit sounds (`Impact_Flesh`, `Impact_Flesh_Gory_Light`) and dynamic liquid splashes (`Blood_Splash_A`).

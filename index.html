@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>DEAD ZONE: ZOMBIE APOCALYPSE</title>
+  <title>DEAD ZONE: SURVIVAL APOCALYPSE (QUEST 2 VR)</title>
+  <meta name="description" content="Dead Zone: Survival Apocalypse - 3D WebXR Survival Horror FPS engineered for Meta Quest 2.">
+  <meta name="theme-color" content="#d91e18">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon.png">
 <style>
@@ -1120,6 +1124,56 @@
   }
   .modal-btn-secondary:hover { background: #334155; color: #fff; }
 
+  /* Dedicated Meta Quest 2 VR Launch Hero Card */
+  .quest2-hero-card {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.5) 0%, rgba(15, 23, 42, 0.9) 100%);
+    border: 2px solid #38bdf8;
+    border-radius: 12px;
+    padding: 14px 20px;
+    max-width: 580px;
+    width: 92%;
+    margin: 8px auto 12px auto;
+    text-align: center;
+    box-shadow: 0 0 24px rgba(56, 189, 248, 0.4), 0 8px 30px #000;
+    animation: pulseQuestCard 2.4s infinite alternate;
+  }
+  @keyframes pulseQuestCard {
+    0%   { border-color: #38bdf8; box-shadow: 0 0 16px rgba(56, 189, 248, 0.35); }
+    100% { border-color: #ef4444; box-shadow: 0 0 32px rgba(239, 68, 68, 0.6); }
+  }
+  .quest2-hero-badge {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+  }
+  .quest2-hero-sub {
+    font-size: 12px;
+    color: #cbd5e1;
+    margin: 4px 0 10px 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .quest2-hero-btn {
+    padding: 12px 32px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: #fff;
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+    border: 2px solid #f87171;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 22px rgba(220, 38, 38, 0.7);
+    transition: all 0.2s;
+  }
+  .quest2-hero-btn:hover {
+    background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.9);
+  }
+
 </style>
 </head>
 <body>
@@ -1131,7 +1185,14 @@
       DEAD <span class="zone-txt">Z<span class="handprint-icon">&#9995;</span>NE</span>
     </h1>
     <div class="storyboard-subtitle">SURVIVAL APOCALYPSE</div>
-    <div id="device-detect-badge" class="pc-mode">&#128421; PC CONTROLS DETECTED</div>
+    <div id="device-detect-badge" class="vr-mode">&#129523; QUEST 2 VR DETECTED &bull; DEDICATED EDITION</div>
+  </div>
+
+  <!-- Meta Quest 2 Primary VR Launch Banner -->
+  <div class="quest2-hero-card" id="quest2-hero-card">
+    <div class="quest2-hero-badge">&#129523; META QUEST 2 DEDICATED VR EDITION</div>
+    <div class="quest2-hero-sub">Full 6DOF Dual Touch Tracking &bull; In-VR 3D Menus &bull; Wrist PDA &bull; 90Hz XR2 Performance</div>
+    <button class="quest2-hero-btn" id="btn-quest-hero">&#9654; ENTER VR (QUEST 2)</button>
   </div>
 
   <!-- 3 Locations Grid matching Storyboard Panel 1 & 2 -->
@@ -1392,7 +1453,8 @@ function detectDevice() {
   const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
   const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
 
-  if (isQuestOrVR) return 'vr';
+  // Dedicated Meta Quest 2 VR edition: prioritize VR by default
+  if (isQuestOrVR || (!window.location.search.includes('mode=pc') && !window.location.search.includes('mode=mob'))) return 'vr';
   if (isMobileUA || (isTouch && window.innerWidth <= 1024)) return 'mobile';
   return 'pc';
 }
@@ -1402,7 +1464,7 @@ const devBadge = $('device-detect-badge');
 if (devBadge) {
   if (detectedDevice === 'vr') {
     devBadge.className = 'vr-mode';
-    devBadge.innerHTML = '&#129523; QUEST 2 VR DETECTED &bull; TRIGGER TO FIRE &bull; THUMBSTICK TO MOVE';
+    devBadge.innerHTML = '&#129523; QUEST 2 VR ACTIVE &bull; 6DOF TOUCH CONTROLLERS &bull; 3D SPATIAL UI';
   } else if (detectedDevice === 'mobile') {
     devBadge.className = 'mobile-mode';
     devBadge.innerHTML = '&#128241; MOBILE TOUCH CONTROLS ACTIVE &bull; DUAL VIRTUAL STICKS';
@@ -1410,6 +1472,11 @@ if (devBadge) {
     devBadge.className = 'pc-mode';
     devBadge.innerHTML = '&#128421; PC FPS CONTROLS &bull; WASD MOVE &bull; MOUSE AIM & SHOOT';
   }
+}
+
+// Bind Primary Quest 2 Hero Button
+if ($('btn-quest-hero')) {
+  $('btn-quest-hero').onclick = () => $('vr').click();
 }
 
 // Location Cards Listeners
@@ -2573,7 +2640,7 @@ function buildGun(n) {
 function attachGun(parent, base) {
   parent.add(gun);
   gunBase.copy(base);
-  hudP.visible = xr();
+  hudP.visible = false;
 }
 function setW(n) {
   cur = n;
@@ -2587,16 +2654,769 @@ const cyc = d => { /* Single weapon equipped for survival run */ };
 buildGun(cur);
 attachGun(camera, gunBase);
 
-// VR Controllers
+// ============================================================================
+// META QUEST 2 DEDICATED WEBXR SPATIAL 3D UI & INTERACTION SYSTEM
+// ============================================================================
+
+// 1. Realistic Quest 2 Touch Controller 3D Mesh
+function createTouchControllerMesh(handedness) {
+  const g = new THREE.Group();
+  const isL = (handedness === 'left');
+  // Ergonomic grip handle
+  const grip = box(0.036, 0.042, 0.11, 0, -0.024, 0.02, pol);
+  grip.rotation.x = -0.22;
+  // Sensor Tracking Ring
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.044, 0.007, 8, 22), pol);
+  ring.rotation.x = Math.PI / 3;
+  ring.position.set(isL ? -0.012 : 0.012, 0.034, -0.024);
+  // Thumbstick
+  const stick = box(0.015, 0.01, 0.015, isL ? 0.008 : -0.008, 0.027, 0.01, gm);
+  // Face Buttons (X/Y or A/B)
+  const b1 = box(0.007, 0.005, 0.007, isL ? -0.007 : 0.007, 0.025, 0.018, gm);
+  const b2 = box(0.007, 0.005, 0.007, isL ? -0.007 : 0.007, 0.025, 0.028, gm);
+  // Underside Index Trigger
+  const trigMesh = box(0.012, 0.02, 0.016, 0, -0.012, -0.025, gm);
+  trigMesh.rotation.x = -0.3;
+  g.add(grip, ring, stick, b1, b2, trigMesh);
+  return g;
+}
+
+// 2. Left Forearm Tactical Wrist PDA Terminal (Storyboard Panel 3)
+const wristCanvas = document.createElement('canvas');
+wristCanvas.width = 512;
+wristCanvas.height = 320;
+const wx = wristCanvas.getContext('2d');
+const wristTex = new THREE.CanvasTexture(wristCanvas);
+const wristMat = new THREE.MeshBasicMaterial({ map: wristTex, transparent: true });
+const wristMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.11), wristMat);
+
+// Tactical military bezel / casing
+const wristFrame = new THREE.Group();
+wristFrame.add(box(0.194, 0.124, 0.012, 0, 0, -0.007, pol));
+const rivetMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+wristFrame.add(
+  box(0.008, 0.008, 0.014, -0.09,  0.055, -0.004, rivetMat),
+  box(0.008, 0.008, 0.014,  0.09,  0.055, -0.004, rivetMat),
+  box(0.008, 0.008, 0.014, -0.09, -0.055, -0.004, rivetMat),
+  box(0.008, 0.008, 0.014,  0.09, -0.055, -0.004, rivetMat)
+);
+const wristGroup = new THREE.Group();
+wristGroup.add(wristMesh, wristFrame);
+wristGroup.position.set(0, 0.052, 0.09);
+wristGroup.rotation.set(-Math.PI / 3.4, 0, 0); // Angled comfortably toward player's eyes
+
+function updateWristPDA() {
+  if (!xr()) return;
+  const w = W[cur];
+  const a = ammo ? ammo[cur] : { mag: 0, res: 0 };
+  
+  // Background
+  wx.fillStyle = '#06090e';
+  wx.fillRect(0, 0, 512, 320);
+  
+  // Header bar
+  wx.fillStyle = '#0f172a';
+  wx.fillRect(0, 0, 512, 54);
+  wx.strokeStyle = '#ef4444';
+  wx.lineWidth = 3;
+  wx.strokeRect(2, 2, 508, 316);
+  wx.beginPath();
+  wx.moveTo(0, 54); wx.lineTo(512, 54);
+  wx.stroke();
+  
+  // Location & Wave
+  wx.font = 'bold 24px Impact, "Arial Black", sans-serif';
+  wx.fillStyle = '#f59e0b';
+  wx.textAlign = 'left';
+  const lvName = (LEVELS && LEVELS[selectedLevel]) ? LEVELS[selectedLevel].shortName.toUpperCase() : 'SECTOR 1';
+  wx.fillText(`${lvName} · WAVE ${wave}/3`, 16, 38);
+  
+  // Mission / Session Timer
+  wx.textAlign = 'right';
+  let timerText = '';
+  let timerUrgent = false;
+  if (sessionDurationLimit > 0) {
+    const rem = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
+    const m = Math.floor(rem / 60), s = Math.floor(rem % 60);
+    timerText = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    if (rem <= 30) timerUrgent = true;
+  } else {
+    const m = Math.floor(sessionTimeElapsed / 60), s = Math.floor(sessionTimeElapsed % 60);
+    timerText = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+  wx.fillStyle = timerUrgent ? ((Date.now() % 500 < 250) ? '#ff0000' : '#ffffff') : '#38bdf8';
+  wx.fillText(timerText, 496, 38);
+  
+  // Health Section
+  wx.textAlign = 'left';
+  wx.font = 'bold 22px Impact, "Arial Black", sans-serif';
+  wx.fillStyle = hp > 35 ? '#4ade80' : '#ef4444';
+  wx.fillText(`+ HEALTH: ${Math.ceil(hp)}%`, 16, 94);
+  
+  // Health Gauge Bar
+  wx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+  wx.fillRect(16, 106, 480, 24);
+  const hpGrad = wx.createLinearGradient(16, 0, 496, 0);
+  if (hp > 35) {
+    hpGrad.addColorStop(0, '#15803d');
+    hpGrad.addColorStop(1, '#4ade80');
+  } else {
+    hpGrad.addColorStop(0, '#991b1b');
+    hpGrad.addColorStop(1, '#ef4444');
+  }
+  wx.fillStyle = hpGrad;
+  wx.fillRect(16, 106, 480 * Math.max(0, Math.min(1, hp / 100)), 24);
+  wx.strokeStyle = hp > 35 ? '#22c55e' : '#f87171';
+  wx.lineWidth = 2;
+  wx.strokeRect(16, 106, 480, 24);
+  
+  // Weapon & Ammo Section
+  wx.fillStyle = '#f59e0b';
+  wx.font = 'bold 22px Impact, "Arial Black", sans-serif';
+  wx.fillText(`WEAPON: ${w ? w.n.toUpperCase() : 'PISTOL'}`, 16, 172);
+  
+  wx.fillStyle = a.mag <= 3 ? '#ef4444' : '#ffffff';
+  wx.font = 'bold 36px Impact, "Arial Black", sans-serif';
+  wx.fillText(`${a.mag} / ${a.res}`, 16, 218);
+  
+  // Score & Kills
+  wx.textAlign = 'right';
+  wx.fillStyle = '#e2e8f0';
+  wx.font = 'bold 22px Impact, "Arial Black", sans-serif';
+  wx.fillText(`SCORE: ${score}`, 496, 172);
+  wx.fillStyle = '#cbd5e1';
+  wx.fillText(`KILLS: ${kills}`, 496, 218);
+  
+  // Bottom status or Boss Warning
+  const activeBoss = (typeof zombies !== 'undefined') ? zombies.find(z => z.type === 'boss' && !z.dead) : null;
+  if (activeBoss) {
+    const bossPct = Math.max(0, Math.min(100, Math.ceil((activeBoss.hp / activeBoss.T.hp) * 100)));
+    wx.fillStyle = (Date.now() % 600 < 300) ? '#dc2626' : '#991b1b';
+    wx.fillRect(16, 244, 480, 48);
+    wx.strokeStyle = '#fca5a5';
+    wx.strokeRect(16, 244, 480, 48);
+    wx.textAlign = 'center';
+    wx.fillStyle = '#ffffff';
+    wx.font = 'bold 20px Impact, "Arial Black", sans-serif';
+    const bName = (LEVELS && LEVELS[selectedLevel] && LEVELS[selectedLevel].waves[wave-1]) ? LEVELS[selectedLevel].waves[wave-1].bossName : 'BOSS';
+    wx.fillText(`⚠ BOSS: ${bName} [${bossPct}%]`, 256, 276);
+  } else {
+    wx.fillStyle = '#1e293b';
+    wx.fillRect(16, 244, 480, 48);
+    wx.strokeStyle = '#334155';
+    wx.strokeRect(16, 244, 480, 48);
+    wx.textAlign = 'center';
+    wx.fillStyle = '#94a3b8';
+    wx.font = 'bold 18px sans-serif';
+    wx.fillText(`TRIGGER: FIRE  ·  GRIP: RELOAD  ·  A/X: PAUSE`, 256, 275);
+  }
+  
+  wristTex.needsUpdate = true;
+}
+
+// 3. Tactical Red Laser Sight & In-VR Reticle (Storyboard Panel 3)
+const gunLaserMat = new THREE.MeshBasicMaterial({ color: 0xff1e27, transparent: true, opacity: 0.65 });
+const gunLaserGeo = new THREE.CylinderGeometry(0.0012, 0.0012, 1, 8);
+gunLaserGeo.rotateX(Math.PI / 2);
+gunLaserGeo.translate(0, 0, -0.5);
+const gunLaserBeam = new THREE.Mesh(gunLaserGeo, gunLaserMat);
+gunLaserBeam.visible = false;
+scene.add(gunLaserBeam);
+
+const reticleCanvas = document.createElement('canvas');
+reticleCanvas.width = 128; reticleCanvas.height = 128;
+const rx = reticleCanvas.getContext('2d');
+rx.strokeStyle = '#ef4444';
+rx.lineWidth = 6;
+rx.beginPath();
+rx.arc(64, 64, 44, 0, Math.PI * 2);
+rx.stroke();
+rx.lineWidth = 5;
+rx.beginPath();
+rx.moveTo(64, 10); rx.lineTo(64, 38);
+rx.moveTo(64, 90); rx.lineTo(64, 118);
+rx.moveTo(10, 64); rx.lineTo(38, 64);
+rx.moveTo(90, 64); rx.lineTo(118, 64);
+rx.stroke();
+rx.fillStyle = '#ff2222';
+rx.beginPath();
+rx.arc(64, 64, 7, 0, Math.PI * 2);
+rx.fill();
+
+const reticleTex = new THREE.CanvasTexture(reticleCanvas);
+const vrReticleMat = new THREE.MeshBasicMaterial({ map: reticleTex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+const vrReticleMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.24), vrReticleMat);
+vrReticleMesh.visible = false;
+scene.add(vrReticleMesh);
+
+function updateVRLaserSight() {
+  if (xr() && state === 'play') {
+    muzzle.getWorldPosition(P1);
+    muzzle.getWorldQuaternion(Q);
+    P2.set(0, 0, -1).applyQuaternion(Q);
+
+    gunLaserBeam.position.copy(P1);
+    gunLaserBeam.quaternion.copy(Q);
+    gunLaserBeam.visible = true;
+
+    ray.set(P1, P2);
+    const zList = (typeof zombies !== 'undefined') ? zombies.filter(z => !z.dead).map(z => z.g) : [];
+    const bList = (typeof barrels !== 'undefined') ? barrels.filter(b => !b.dead).map(b => b.m) : [];
+    const targets = zList.concat(bList);
+    const hits = ray.intersectObjects(targets, true);
+
+    if (hits.length > 0) {
+      const hit = hits[0];
+      const dist = P1.distanceTo(hit.point);
+      gunLaserBeam.scale.z = dist;
+      vrReticleMesh.position.copy(hit.point).addScaledVector(P2, -0.02);
+      vrReticleMesh.quaternion.copy(camera.quaternion);
+      vrReticleMesh.visible = true;
+    } else {
+      if (P2.y < -0.01) {
+        const gDist = -P1.y / P2.y;
+        if (gDist > 0 && gDist < 45) {
+          gunLaserBeam.scale.z = gDist;
+          vrReticleMesh.position.copy(P1).addScaledVector(P2, gDist);
+          vrReticleMesh.position.y = 0.04;
+          vrReticleMesh.rotation.set(-Math.PI / 2, 0, 0);
+          vrReticleMesh.visible = true;
+        } else {
+          gunLaserBeam.scale.z = 40;
+          vrReticleMesh.visible = false;
+        }
+      } else {
+        gunLaserBeam.scale.z = 40;
+        vrReticleMesh.visible = false;
+      }
+    }
+  } else {
+    gunLaserBeam.visible = false;
+    vrReticleMesh.visible = false;
+  }
+}
+
+// 4. In-VR 3D Spatial Holographic Menu Canvas Billboard (Storyboard Panels 1, 2, 5, 6)
+const vrCanvas = document.createElement('canvas');
+vrCanvas.width = 1024;
+vrCanvas.height = 640;
+const vrx = vrCanvas.getContext('2d');
+const vrTex = new THREE.CanvasTexture(vrCanvas);
+const vrMat = new THREE.MeshBasicMaterial({ map: vrTex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+const vrMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.35, 1.47), vrMat);
+vrMesh.visible = false;
+scene.add(vrMesh);
+
+const vrFrame = new THREE.Group();
+const vrFrameMat = new THREE.MeshLambertMaterial({ color: 0x111622 });
+vrFrame.add(
+  box(2.38, 0.02, 0.03, 0,  0.74, -0.01, vrFrameMat),
+  box(2.38, 0.02, 0.03, 0, -0.74, -0.01, vrFrameMat),
+  box(0.02, 1.48, 0.03, -1.18, 0, -0.01, vrFrameMat),
+  box(0.02, 1.48, 0.03,  1.18, 0, -0.01, vrFrameMat)
+);
+vrMesh.add(vrFrame);
+
+let vrButtons = [];
+let lastHoveredBtn = null;
+
+const vrUI = {
+  mode: 'menu',
+  show(mode = 'menu') {
+    this.mode = mode;
+    camera.getWorldDirection(P2);
+    P2.y = 0;
+    P2.normalize();
+    vrMesh.position.copy(rig.position).addScaledVector(P2, 2.15);
+    vrMesh.position.y = Math.max(1.2, (camera.position.y || 1.6));
+    vrMesh.quaternion.copy(camera.quaternion);
+    vrMesh.rotation.x = 0;
+    vrMesh.rotation.z = 0;
+    vrMesh.visible = true;
+    this.draw(null);
+  },
+  hide() {
+    vrMesh.visible = false;
+    lastHoveredBtn = null;
+    ctrls.forEach(c => {
+      if (c.userData.laser) c.userData.laser.visible = false;
+      if (c.userData.dot) c.userData.dot.visible = false;
+    });
+  },
+  draw(hoveredId = null) {
+    vrButtons = [];
+    vrx.clearRect(0, 0, 1024, 640);
+    
+    // Background Dark Slate & Sci-Fi Border
+    vrx.fillStyle = 'rgba(7, 11, 18, 0.96)';
+    vrx.fillRect(0, 0, 1024, 640);
+    
+    vrx.strokeStyle = this.mode === 'win' ? '#f59e0b' : this.mode === 'over' ? '#ef4444' : '#38bdf8';
+    vrx.lineWidth = 4;
+    vrx.strokeRect(4, 4, 1016, 632);
+    
+    const barGrad = vrx.createLinearGradient(0, 0, 1024, 0);
+    barGrad.addColorStop(0, '#0f172a');
+    barGrad.addColorStop(0.5, '#1e293b');
+    barGrad.addColorStop(1, '#0f172a');
+    vrx.fillStyle = barGrad;
+    vrx.fillRect(4, 4, 1016, 42);
+    
+    if (this.mode === 'menu') {
+      this.drawMainMenu(hoveredId);
+    } else if (this.mode === 'paused') {
+      this.drawPauseMenu(hoveredId);
+    } else if (this.mode === 'win') {
+      this.drawWinMenu(hoveredId);
+    } else if (this.mode === 'over') {
+      this.drawGameOverMenu(hoveredId);
+    } else if (this.mode === 'session_over') {
+      this.drawSessionOverMenu(hoveredId);
+    }
+    vrTex.needsUpdate = true;
+  },
+  drawMainMenu(hoveredId) {
+    vrx.font = 'bold 15px sans-serif';
+    vrx.fillStyle = '#38bdf8';
+    vrx.textAlign = 'center';
+    vrx.fillText('SURVIVE  •  FIGHT  •  COMPLETE', 512, 32);
+    
+    vrx.font = 'bold 46px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#ef4444';
+    vrx.shadowColor = 'rgba(239, 68, 68, 0.7)';
+    vrx.shadowBlur = 16;
+    vrx.fillText('DEAD ZONE: SURVIVAL APOCALYPSE', 512, 95);
+    vrx.shadowBlur = 0;
+    
+    vrx.font = 'bold 17px sans-serif';
+    vrx.fillStyle = '#f59e0b';
+    vrx.fillText('9 WAVES  •  3 LOCATIONS  •  META QUEST 2 DEDICATED VR', 512, 126);
+    
+    LEVELS.forEach((lv, i) => {
+      const bx = 45 + i * 322;
+      const by = 146;
+      const bw = 290;
+      const bh = 88;
+      const isActive = (selectedLevel === i);
+      const isHov = (hoveredId === `lvl-${i}`);
+      
+      vrButtons.push({
+        id: `lvl-${i}`,
+        x: bx, y: by, w: bw, h: bh,
+        onClick: () => {
+          selectedLevel = initialSelectedLevel = i;
+          applyLevelTheme(i);
+          vrUI.draw(`lvl-${i}`);
+          document.querySelectorAll('.location-card').forEach((c, idx) => {
+            if (idx === i) c.classList.add('active'); else c.classList.remove('active');
+          });
+        }
+      });
+      
+      vrx.fillStyle = isActive ? 'rgba(30, 58, 138, 0.75)' : isHov ? 'rgba(51, 65, 85, 0.7)' : 'rgba(15, 23, 42, 0.65)';
+      vrx.fillRect(bx, by, bw, bh);
+      vrx.strokeStyle = isActive ? '#fbbf24' : isHov ? '#38bdf8' : '#334155';
+      vrx.lineWidth = isActive ? 3 : 1.5;
+      vrx.strokeRect(bx, by, bw, bh);
+      
+      vrx.font = 'bold 19px Impact, "Arial Black", sans-serif';
+      vrx.fillStyle = isActive ? '#fbbf24' : '#e2e8f0';
+      vrx.textAlign = 'left';
+      vrx.fillText(`${i + 1}. ${lv.name.toUpperCase()}`, bx + 12, by + 34);
+      
+      vrx.font = 'bold 13px sans-serif';
+      vrx.fillStyle = isActive ? '#fef08a' : '#94a3b8';
+      vrx.fillText(`WAVES: ${i*3+1}-${i*3+3}  •  ${lv.waves[2].bossName || 'BOSS'}`, bx + 12, by + 64);
+    });
+    
+    const modes = [
+      { id: 'zombies', label: '💀 ZOMBIES', x: 260, y: 248, w: 240, h: 48 },
+      { id: 'animals', label: '🐾 MUTANT ANIMALS', x: 524, y: 248, w: 240, h: 48 }
+    ];
+    modes.forEach(m => {
+      const isActive = (enemyCategory === m.id);
+      const isHov = (hoveredId === `mode-${m.id}`);
+      vrButtons.push({
+        id: `mode-${m.id}`,
+        x: m.x, y: m.y, w: m.w, h: m.h,
+        onClick: () => {
+          enemyCategory = m.id;
+          vrUI.draw(`mode-${m.id}`);
+          document.querySelectorAll('.mode-pill-btn').forEach(b => {
+            if (b.dataset.mode === m.id) b.classList.add('active'); else b.classList.remove('active');
+          });
+        }
+      });
+      if (isActive) {
+        const mg = vrx.createLinearGradient(m.x, m.y, m.x, m.y + m.h);
+        mg.addColorStop(0, '#dc2626'); mg.addColorStop(1, '#991b1b');
+        vrx.fillStyle = mg;
+      } else {
+        vrx.fillStyle = isHov ? '#334155' : 'rgba(30, 41, 59, 0.7)';
+      }
+      vrx.fillRect(m.x, m.y, m.w, m.h);
+      vrx.strokeStyle = isActive ? '#f87171' : isHov ? '#38bdf8' : '#475569';
+      vrx.lineWidth = isActive ? 2.5 : 1;
+      vrx.strokeRect(m.x, m.y, m.w, m.h);
+      
+      vrx.font = 'bold 18px Impact, "Arial Black", sans-serif';
+      vrx.fillStyle = isActive ? '#ffffff' : '#cbd5e1';
+      vrx.textAlign = 'center';
+      vrx.fillText(m.label, m.x + m.w / 2, m.y + 31);
+    });
+    
+    vrx.textAlign = 'left';
+    vrx.font = 'bold 14px sans-serif';
+    vrx.fillStyle = '#f59e0b';
+    vrx.fillText('SURVIVAL WEAPON:', 45, 332);
+    
+    const weapons = [
+      { id: 'pistol', label: 'GLOCK 17', x: 200, y: 310, w: 180, h: 36 },
+      { id: 'deagle', label: 'DESERT EAGLE', x: 395, y: 310, w: 180, h: 36 },
+      { id: 'rifle', label: 'M4A1 CARBINE', x: 590, y: 310, w: 180, h: 36 },
+      { id: 'shotgun', label: 'M870 BREACHER', x: 785, y: 310, w: 180, h: 36 }
+    ];
+    weapons.forEach(w => {
+      const isActive = (cur === w.id);
+      const isHov = (hoveredId === `gun-${w.id}`);
+      vrButtons.push({
+        id: `gun-${w.id}`,
+        x: w.x, y: w.y, w: w.w, h: w.h,
+        onClick: () => {
+          chosenWeapon = w.id;
+          setW(w.id);
+          vrUI.draw(`gun-${w.id}`);
+          document.querySelectorAll('.gun-card').forEach(c => {
+            if (c.dataset.gun === w.id) c.classList.add('active'); else c.classList.remove('active');
+          });
+        }
+      });
+      vrx.fillStyle = isActive ? 'rgba(245, 158, 11, 0.4)' : isHov ? 'rgba(51, 65, 85, 0.7)' : 'rgba(15, 23, 42, 0.6)';
+      vrx.fillRect(w.x, w.y, w.w, w.h);
+      vrx.strokeStyle = isActive ? '#fbbf24' : isHov ? '#38bdf8' : '#334155';
+      vrx.lineWidth = isActive ? 2 : 1;
+      vrx.strokeRect(w.x, w.y, w.w, w.h);
+      vrx.font = 'bold 15px Impact, "Arial Black", sans-serif';
+      vrx.fillStyle = isActive ? '#fbbf24' : '#cbd5e1';
+      vrx.textAlign = 'center';
+      vrx.fillText(w.label, w.x + w.w / 2, w.y + 24);
+    });
+    
+    vrx.textAlign = 'left';
+    vrx.font = 'bold 14px sans-serif';
+    vrx.fillStyle = '#38bdf8';
+    vrx.fillText('TIME LIMIT:', 45, 382);
+    
+    const times = [
+      { sec: 0, label: 'UNLIMITED', x: 200, y: 360, w: 140, h: 34 },
+      { sec: 120, label: '2 MIN', x: 355, y: 360, w: 140, h: 34 },
+      { sec: 300, label: '5 MIN', x: 510, y: 360, w: 140, h: 34 },
+      { sec: 600, label: '10 MIN', x: 665, y: 360, w: 140, h: 34 },
+      { sec: 900, label: '15 MIN', x: 820, y: 360, w: 140, h: 34 }
+    ];
+    times.forEach(t => {
+      const isActive = (sessionDurationLimit === t.sec);
+      const isHov = (hoveredId === `time-${t.sec}`);
+      vrButtons.push({
+        id: `time-${t.sec}`,
+        x: t.x, y: t.y, w: t.w, h: t.h,
+        onClick: () => {
+          sessionDurationLimit = t.sec;
+          vrUI.draw(`time-${t.sec}`);
+          document.querySelectorAll('.time-btn').forEach(b => {
+            if (parseInt(b.dataset.sec, 10) === t.sec) b.classList.add('active'); else b.classList.remove('active');
+          });
+        }
+      });
+      vrx.fillStyle = isActive ? 'rgba(56, 189, 248, 0.4)' : isHov ? 'rgba(51, 65, 85, 0.7)' : 'rgba(15, 23, 42, 0.6)';
+      vrx.fillRect(t.x, t.y, t.w, t.h);
+      vrx.strokeStyle = isActive ? '#38bdf8' : isHov ? '#93c5fd' : '#334155';
+      vrx.lineWidth = isActive ? 2 : 1;
+      vrx.strokeRect(t.x, t.y, t.w, t.h);
+      vrx.font = 'bold 14px Impact, "Arial Black", sans-serif';
+      vrx.fillStyle = isActive ? '#38bdf8' : '#cbd5e1';
+      vrx.textAlign = 'center';
+      vrx.fillText(t.label, t.x + t.w / 2, t.y + 23);
+    });
+    
+    // Big Start Survival Button (Storyboard Panel 1 & 2)
+    const sx = 320, sy = 422, sw = 384, sh = 68;
+    const isStartHov = (hoveredId === 'start-btn');
+    vrButtons.push({
+      id: 'start-btn',
+      x: sx, y: sy, w: sw, h: sh,
+      onClick: () => {
+        vrUI.hide();
+        startGame();
+      }
+    });
+    const sGrad = vrx.createLinearGradient(sx, sy, sx, sy + sh);
+    sGrad.addColorStop(0, isStartHov ? '#ef4444' : '#dc2626');
+    sGrad.addColorStop(1, isStartHov ? '#b91c1c' : '#991b1b');
+    vrx.fillStyle = sGrad;
+    vrx.fillRect(sx, sy, sw, sh);
+    vrx.strokeStyle = isStartHov ? '#fef08a' : '#f87171';
+    vrx.lineWidth = isStartHov ? 4 : 2.5;
+    vrx.strokeRect(sx, sy, sw, sh);
+    
+    vrx.font = 'bold 30px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#ffffff';
+    vrx.textAlign = 'center';
+    vrx.shadowColor = 'rgba(220, 38, 38, 0.8)';
+    vrx.shadowBlur = isStartHov ? 20 : 10;
+    vrx.fillText('▶ START SURVIVAL', sx + sw / 2, sy + 46);
+    vrx.shadowBlur = 0;
+    
+    // Footer Controls Tutorial Bar (Storyboard Panel 8)
+    vrx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+    vrx.fillRect(45, 510, 934, 105);
+    vrx.strokeStyle = '#334155';
+    vrx.lineWidth = 1;
+    vrx.strokeRect(45, 510, 934, 105);
+    
+    vrx.font = 'bold 15px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#38bdf8';
+    vrx.textAlign = 'center';
+    vrx.fillText('🥽 QUEST 2 CONTROLS GUIDE (6DOF TOUCH)', 512, 535);
+    
+    vrx.font = '14px sans-serif';
+    vrx.fillStyle = '#e2e8f0';
+    vrx.fillText('🕹 Left Stick: Move & Strafe   •   🕹 Right Stick: 30° Snap Turn   •   🔫 Right Trigger: Fire Weapon', 512, 565);
+    vrx.fillText('✊ Right Grip / B: Reload   •   ⏸ Left X / Menu / A: Pause Game   •   📡 Left Wrist: Vital Tactical PDA', 512, 593);
+  },
+  drawPauseMenu(hoveredId) {
+    vrx.font = 'bold 46px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#ef4444';
+    vrx.textAlign = 'center';
+    vrx.fillText('GAME PAUSED', 512, 100);
+    
+    vrx.font = 'bold 20px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#f59e0b';
+    vrx.fillText(`${LEVELS[selectedLevel].shortName.toUpperCase()} · WAVE ${wave}/3 · ${enemyCategory.toUpperCase()} MODE`, 512, 140);
+    
+    vrx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+    vrx.fillRect(280, 168, 464, 80);
+    vrx.strokeStyle = '#475569';
+    vrx.strokeRect(280, 168, 464, 80);
+    vrx.font = 'bold 20px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#cbd5e1';
+    vrx.fillText(`SCORE: ${score}   |   KILLS: ${kills}`, 512, 204);
+    
+    let timerStr = '';
+    if (sessionDurationLimit > 0) {
+      const rem = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
+      const m = Math.floor(rem / 60), s = Math.floor(rem % 60);
+      timerStr = `REMAINING TIME: ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    } else {
+      const m = Math.floor(sessionTimeElapsed / 60), s = Math.floor(sessionTimeElapsed % 60);
+      timerStr = `ELAPSED TIME: ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+    vrx.font = '16px sans-serif';
+    vrx.fillStyle = '#38bdf8';
+    vrx.fillText(timerStr, 512, 234);
+    
+    this.drawVRActionButton('resume', 332, 275, 360, 58, '▶ RESUME', '#dc2626', '#991b1b', hoveredId, () => togglePause());
+    this.drawVRActionButton('restart', 332, 350, 360, 56, '🔄 RESTART SECTOR', '#1e293b', '#0f172a', hoveredId, () => retryGame());
+    this.drawVRActionButton('quit', 332, 422, 360, 56, '🚪 QUIT TO MAIN MENU', '#1e293b', '#0f172a', hoveredId, () => quitToMenu());
+  },
+  drawWinMenu(hoveredId) {
+    vrx.font = 'bold 50px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#fbbf24';
+    vrx.textAlign = 'center';
+    vrx.fillText('SURVIVAL COMPLETE', 512, 110);
+    
+    vrx.font = 'bold 42px sans-serif';
+    vrx.fillStyle = '#fbbf24';
+    vrx.fillText('★  ★  ★', 512, 162);
+    
+    vrx.font = 'bold 20px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#e2e8f0';
+    vrx.fillText(`Sector ${selectedLevel + 1}: ${LEVELS[selectedLevel].name.toUpperCase()} Cleared!`, 512, 205);
+    
+    vrx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+    vrx.fillRect(280, 226, 464, 76);
+    vrx.strokeStyle = '#f59e0b';
+    vrx.strokeRect(280, 226, 464, 76);
+    vrx.font = 'bold 22px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#fbbf24';
+    vrx.fillText(`FINAL SCORE: ${score}   |   KILLS: ${kills}`, 512, 272);
+    
+    const isFinal = (selectedLevel >= LEVELS.length - 1);
+    this.drawVRActionButton('next-loc', 332, 330, 360, 62, isFinal ? '🔄 REPLAY CAMPAIGN' : '▶ NEXT LOCATION', '#dc2626', '#991b1b', hoveredId, () => {
+      if (selectedLevel < LEVELS.length - 1) {
+        selectedLevel++;
+        wave = 0;
+        applyLevelTheme(selectedLevel);
+        startWave();
+        vrUI.hide();
+      } else {
+        quitToMenu();
+      }
+    });
+    this.drawVRActionButton('quit', 332, 412, 360, 56, '🚪 QUIT TO MENU', '#1e293b', '#0f172a', hoveredId, () => quitToMenu());
+  },
+  drawGameOverMenu(hoveredId) {
+    vrx.font = 'bold 58px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#ef4444';
+    vrx.textAlign = 'center';
+    vrx.fillText('YOU DIED', 512, 120);
+    
+    vrx.font = '18px sans-serif';
+    vrx.fillStyle = '#94a3b8';
+    vrx.fillText(`The horde overwhelmed you in ${LEVELS[selectedLevel].shortName}`, 512, 165);
+    
+    vrx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+    vrx.fillRect(280, 195, 464, 80);
+    vrx.strokeStyle = '#ef4444';
+    vrx.strokeRect(280, 195, 464, 80);
+    vrx.font = 'bold 22px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#f87171';
+    vrx.fillText(`WAVE REACHED: ${wave}/3   |   SCORE: ${score}`, 512, 235);
+    vrx.fillStyle = '#cbd5e1';
+    vrx.fillText(`ZOMBIES ELIMINATED: ${kills}`, 512, 263);
+    
+    this.drawVRActionButton('retry', 332, 310, 360, 62, '🔄 RETRY SECTOR', '#dc2626', '#991b1b', hoveredId, () => retryGame());
+    this.drawVRActionButton('quit', 332, 392, 360, 56, '🚪 QUIT TO MENU', '#1e293b', '#0f172a', hoveredId, () => quitToMenu());
+  },
+  drawSessionOverMenu(hoveredId) {
+    vrx.font = 'bold 50px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#f59e0b';
+    vrx.textAlign = 'center';
+    vrx.fillText('SESSION EXPIRED', 512, 120);
+    
+    vrx.font = '18px sans-serif';
+    vrx.fillStyle = '#cbd5e1';
+    vrx.fillText('Designated survival mission duration has elapsed!', 512, 165);
+    
+    vrx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+    vrx.fillRect(280, 195, 464, 80);
+    vrx.strokeStyle = '#f59e0b';
+    vrx.strokeRect(280, 195, 464, 80);
+    vrx.font = 'bold 22px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#f59e0b';
+    vrx.fillText(`FINAL SCORE: ${score}   |   TOTAL KILLS: ${kills}`, 512, 245);
+    
+    this.drawVRActionButton('retry', 332, 310, 360, 62, '🔄 PLAY AGAIN', '#dc2626', '#991b1b', hoveredId, () => retryGame());
+    this.drawVRActionButton('quit', 332, 392, 360, 56, '🚪 QUIT TO MENU', '#1e293b', '#0f172a', hoveredId, () => quitToMenu());
+  },
+  drawVRActionButton(id, x, y, w, h, label, col1, col2, hoveredId, onClick) {
+    const isHov = (hoveredId === id);
+    vrButtons.push({ id, x, y, w, h, onClick });
+    const g = vrx.createLinearGradient(x, y, x, y + h);
+    g.addColorStop(0, isHov ? '#ef4444' : col1);
+    g.addColorStop(1, isHov ? '#b91c1c' : col2);
+    vrx.fillStyle = g;
+    vrx.fillRect(x, y, w, h);
+    vrx.strokeStyle = isHov ? '#fef08a' : '#f87171';
+    vrx.lineWidth = isHov ? 3.5 : 1.5;
+    vrx.strokeRect(x, y, w, h);
+    vrx.font = 'bold 22px Impact, "Arial Black", sans-serif';
+    vrx.fillStyle = '#ffffff';
+    vrx.textAlign = 'center';
+    vrx.fillText(label, x + w / 2, y + h / 2 + 8);
+  }
+};
+
+// 5. In-VR 3D Controller Raycast Interaction
+function pollVRUIInteraction(ctrl) {
+  if (!ctrl || !ctrl.userData.src) return;
+  const s = ctrl.userData.src;
+  const b = s.gamepad.buttons;
+  const pv = ctrl.userData.prev;
+  const dn = i => b[i] && b[i].pressed && !pv[i];
+
+  ctrl.getWorldPosition(P1);
+  ctrl.getWorldQuaternion(Q);
+  P2.set(0, 0, -1).applyQuaternion(Q);
+
+  ray.set(P1, P2);
+  const hits = ray.intersectObject(vrMesh);
+
+  let hovered = null;
+  if (hits.length > 0) {
+    const hit = hits[0];
+    const dist = P1.distanceTo(hit.point);
+
+    if (ctrl.userData.laser) {
+      ctrl.userData.laser.visible = true;
+      ctrl.userData.laser.scale.z = dist;
+    }
+    if (ctrl.userData.dot) {
+      ctrl.userData.dot.position.copy(hit.point).addScaledVector(P2, -0.01);
+      ctrl.userData.dot.visible = true;
+    }
+
+    const px = hit.uv.x * 1024;
+    const py = (1.0 - hit.uv.y) * 640;
+
+    for (const btn of vrButtons) {
+      if (px >= btn.x && px <= btn.x + btn.w && py >= btn.y && py <= btn.y + btn.h) {
+        hovered = btn;
+        break;
+      }
+    }
+
+    if (hovered !== lastHoveredBtn) {
+      lastHoveredBtn = hovered;
+      if (hovered && s.gamepad && s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
+        try { s.gamepad.hapticActuators[0].pulse(0.12, 10); } catch (e) {}
+      }
+      vrUI.draw(hovered ? hovered.id : null);
+    }
+
+    if ((dn(0) || dn(4)) && hovered) {
+      if (s.gamepad && s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
+        try { s.gamepad.hapticActuators[0].pulse(0.75, 35); } catch (e) {}
+      }
+      SND.uiClick();
+      hovered.onClick();
+    }
+  } else {
+    if (ctrl.userData.laser) {
+      ctrl.userData.laser.visible = true;
+      ctrl.userData.laser.scale.z = 3.5;
+    }
+    if (ctrl.userData.dot) ctrl.userData.dot.visible = false;
+    if (lastHoveredBtn) {
+      lastHoveredBtn = null;
+      vrUI.draw(null);
+    }
+  }
+}
+
+// 6. Meta Quest 2 6DOF Touch Controllers Initialization
 const ctrls = [0, 1].map(i => {
   const c = renderer.xr.getController(i);
-  c.userData = { prev: [], snap: 0 };
+  c.userData = { prev: [], snap: 0, sprinting: false };
+
+  const laserGeo = new THREE.CylinderGeometry(0.0012, 0.0012, 1, 8);
+  laserGeo.rotateX(Math.PI / 2);
+  laserGeo.translate(0, 0, -0.5);
+  const laserMesh = new THREE.Mesh(laserGeo, new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.85 }));
+  laserMesh.visible = false;
+  c.add(laserMesh);
+  c.userData.laser = laserMesh;
+
+  const dotMesh = new THREE.Mesh(new THREE.SphereGeometry(0.014, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
+  dotMesh.visible = false;
+  scene.add(dotMesh);
+  c.userData.dot = dotMesh;
+
   c.addEventListener('connected', e => {
     c.userData.src = e.data;
-    if (e.data.handedness === 'left') c.add(box(0.04, 0.04, 0.12, 0, 0, 0.03, gm));
-    else attachGun(c, new V());
+    if (e.data.handedness === 'left') {
+      c.add(createTouchControllerMesh('left'));
+      c.add(wristGroup);
+    } else {
+      c.add(createTouchControllerMesh('right'));
+      attachGun(c, new V(0, -0.018, -0.065));
+    }
   });
-  c.addEventListener('disconnected', () => c.userData.src = null);
+  c.addEventListener('disconnected', () => {
+    c.userData.src = null;
+    if (c.userData.laser) c.userData.laser.visible = false;
+    if (c.userData.dot) c.userData.dot.visible = false;
+  });
   rig.add(c);
   return c;
 });
@@ -2970,6 +3790,13 @@ function hurt(d) {
   hurtA = 0.65;
   SND.hurt();
   triggerPlayerBloodShed(d);
+  if (xr()) {
+    ctrls.forEach(c => {
+      if (c.userData.src && c.userData.src.gamepad && c.userData.src.gamepad.hapticActuators && c.userData.src.gamepad.hapticActuators[0]) {
+        try { c.userData.src.gamepad.hapticActuators[0].pulse(0.95, 80); } catch(e) {}
+      }
+    });
+  }
   if (hp <= 0) {
     hp = 0;
     gameOver(false);
@@ -2982,9 +3809,11 @@ function gameOver(win = false) {
   if (document.pointerLockElement === dom) document.exitPointerLock();
   if (win) {
     showStoryModal('SURVIVAL COMPLETE', 'All sectors cleared! Mission accomplished, survivor.', true, false, true);
+    if (xr()) vrUI.show('win');
   } else {
     SND.eat();
     showStoryModal('YOU DIED', 'The horde overwhelmed you.', false, true, false);
+    if (xr()) vrUI.show('over');
   }
 }
 
@@ -3020,16 +3849,13 @@ function showStoryModal(title, sub, isWin = false, isDeath = false, canResume = 
   $('modal-btn-primary').style.display = (canResume || isWin) ? 'block' : 'none';
   $('modal-btn-primary').textContent = isWin ? 'NEXT LOCATION' : 'RESUME';
   if ($('modal-btn-retry')) $('modal-btn-retry').textContent = isDeath ? 'RETRY' : 'RESTART';
-  $('modal-ov').style.display = 'flex';
+  if (!xr()) $('modal-ov').style.display = 'flex';
 }
 
 function showPauseModal(title, sub, canResume = true) {
   showStoryModal(title, sub, false, false, canResume);
   if ($('modal-btn-retry')) $('modal-btn-retry').textContent = 'RESTART';
 }
-
-
-// Modal Button Handlers bound below in bindClick
 
 function togglePause() {
   if (state === 'play') {
@@ -3038,10 +3864,12 @@ function togglePause() {
     touchState.firing = false;
     if (document.pointerLockElement === dom) document.exitPointerLock();
     showPauseModal('GAME PAUSED', `${LEVELS[selectedLevel].shortName} · ${enemyCategory.toUpperCase()} MODE`, true);
+    if (xr()) vrUI.show('paused');
     SND.uiClick();
   } else if (state === 'paused') {
     state = 'play';
     $('modal-ov').style.display = 'none';
+    if (xr()) vrUI.hide();
     SND.uiClick();
     if (!mobileMode && !xr()) dom.requestPointerLock();
   }
@@ -3057,12 +3885,17 @@ function quitToMenu() {
   $('modal-ov').style.display = 'none';
   $('hud').style.display = 'none';
   $('mobile-ui').style.display = 'none';
-  $('ov').style.display = 'flex';
+  if (xr()) {
+    vrUI.show('menu');
+  } else {
+    $('ov').style.display = 'flex';
+  }
 }
 
 function retryGame() {
   SND.uiClick();
   $('modal-ov').style.display = 'none';
+  if (xr()) vrUI.hide();
   selectedLevel = initialSelectedLevel || 0;
   startGame(true);
   if (!mobileMode && !xr()) dom.requestPointerLock();
@@ -3406,21 +4239,41 @@ $('vr').onclick = async () => {
     mobileMode = false;
     initAudio();
     SND.uiClick();
-    const s = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor', 'bounded-floor'] });
+    const s = await navigator.xr.requestSession('immersive-vr', {
+      optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']
+    });
     s.addEventListener('end', () => {
       camera.position.y = 1.7;
       rig.rotation.y = 0;
       hudP.visible = false;
+      vrUI.hide();
       attachGun(camera, new V(0.22, -0.22, -0.4));
       $('ov').style.display = 'flex';
       $('hud').style.display = 'none';
       state = 'menu';
     });
     await renderer.xr.setSession(s);
+
+    // Meta Quest 2 Snapdragon XR2 Optimizations
+    if (renderer.xr.setFoveation) renderer.xr.setFoveation(1.0);
+    if (s.supportedFrameRates) {
+      const rates = Array.from(s.supportedFrameRates);
+      if (rates.includes(90)) s.updateTargetFrameRate(90);
+      else if (rates.includes(72)) s.updateTargetFrameRate(72);
+    }
+    renderer.setPixelRatio(1.0);
+
     camera.position.y = 0;
-    startGame();
+    $('ov').style.display = 'none';
+    $('hud').style.display = 'none';
+    $('mobile-ui').style.display = 'none';
+
+    // Present 3D Spatial Hologram Menu inside Quest 2 headset
+    state = 'menu';
+    vrUI.show('menu');
   } catch (e) {
-    if ($('device-detect-badge')) $('device-detect-badge').textContent = 'VR unavailable. Running PC mode.';
+    console.error('VR Session Error:', e);
+    if ($('device-detect-badge')) $('device-detect-badge').textContent = 'VR unavailable: ' + (e.message || e);
   }
 };
 if (!navigator.xr) {
@@ -3433,50 +4286,102 @@ function reload() {
   reloading = w.rel;
   SND.reload(w.rel);
   say('RELOADING', '', w.rel);
+  haptic(0.4, 30);
 }
 
-function haptic() {
+function haptic(intensity = 0.85, duration = 45) {
   ctrls.forEach(c => {
     if (c === gun.parent && c.userData.src && c.userData.src.gamepad) {
-      try { c.userData.src.gamepad.hapticActuators[0].pulse(0.7, 60); } catch (e) {}
+      try {
+        if (c.userData.src.gamepad.hapticActuators && c.userData.src.gamepad.hapticActuators[0]) {
+          c.userData.src.gamepad.hapticActuators[0].pulse(intensity, duration);
+        }
+      } catch (e) {}
     }
   });
 }
 
 function pollVR(dt) {
   trig = false;
+  updateWristPDA();
+
+  let leftCtrl = ctrls.find(c => c.userData.src && c.userData.src.handedness === 'left');
+  let rightCtrl = ctrls.find(c => c.userData.src && c.userData.src.handedness === 'right');
+  if (!leftCtrl && ctrls[0]) leftCtrl = ctrls[0];
+  if (!rightCtrl && ctrls[1]) rightCtrl = ctrls[1];
+
   ctrls.forEach(c => {
     const s = c.userData.src;
     if (!s || !s.gamepad) return;
     const b = s.gamepad.buttons, ax = s.gamepad.axes, pv = c.userData.prev;
-    const left = s.handedness === 'left';
+    const isLeft = (s.handedness === 'left' || c === leftCtrl);
     const dn = i => b[i] && b[i].pressed && !pv[i];
     const x = ax[2] || ax[0] || 0, y = ax[3] || ax[1] || 0;
 
-    if (left && state === 'play') {
-      if (Math.hypot(x, y) > 0.15) {
+    // Movement on Left Controller (when in play)
+    if (isLeft && state === 'play') {
+      const mag = Math.hypot(x, y);
+      if (mag > 0.12) {
         camera.getWorldDirection(P2);
         P2.y = 0;
         P2.normalize();
-        const nx = rig.position.x + (P2.x * -y - P2.z * x) * 2.5 * dt;
-        const nz = rig.position.z + (P2.z * -y + P2.x * x) * 2.5 * dt;
+        const sprint = !!c.userData.sprinting;
+        const sp = (sprint ? 4.8 : 3.2) * dt;
+        const nx = rig.position.x + (P2.x * -y - P2.z * x) * sp;
+        const nz = rig.position.z + (P2.z * -y + P2.x * x) * sp;
         if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
+
+        stepT -= dt * (sprint ? 1.5 : 1.0);
+        if (stepT <= 0) {
+          stepT = sprint ? 0.32 : 0.45;
+          SND.step();
+        }
       }
-      if (dn(3)) cyc(1);
+      // Left thumbstick click = toggle sprint
+      if (dn(3)) {
+        c.userData.sprinting = !c.userData.sprinting;
+        if (s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
+          try { s.gamepad.hapticActuators[0].pulse(0.25, 20); } catch(e) {}
+        }
+      }
+      // Left X Button (4) or Menu Button (5) = Pause
+      if (dn(4) || dn(5)) {
+        togglePause();
+      }
     }
-    if (!left) {
-      if (Math.abs(x) > 0.7 && !c.userData.snap) {
-        rig.rotation.y -= Math.sign(x) * Math.PI / 6;
+
+    // Snap Turning on Right Controller
+    if (!isLeft) {
+      if (Math.abs(x) > 0.65 && !c.userData.snap) {
+        rig.rotation.y -= Math.sign(x) * (Math.PI / 6);
         c.userData.snap = 1;
+        if (s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
+          try { s.gamepad.hapticActuators[0].pulse(0.18, 15); } catch(e) {}
+        }
       }
-      if (Math.abs(x) < 0.3) c.userData.snap = 0;
-      if (dn(4) || dn(5)) cyc(1);
+      if (Math.abs(x) < 0.25) c.userData.snap = 0;
+
+      // Right Grip (1) or B Button (5) = Reload
+      if (dn(1) || dn(5)) reload();
+
+      // Right A Button (4) = Toggle Pause (if in play)
+      if (dn(4) && state === 'play') togglePause();
     }
-    if (dn(1)) reload();
-    if (c === gun.parent && b[0] && b[0].pressed) trig = true;
-    if (dn(0) && state !== 'play' && state !== 'menu') startGame();
+
+    // Gun Trigger Firing (when in play)
+    if (state === 'play') {
+      if (c === gun.parent && b[0] && b[0].pressed) trig = true;
+      if (c.userData.laser) c.userData.laser.visible = false;
+      if (c.userData.dot) c.userData.dot.visible = false;
+    }
+
     b.forEach((q, i) => pv[i] = q.pressed);
   });
+
+  // Interactive 3D Spatial UI Raycasting (when in Menu / Pause / Win / Over)
+  if (state !== 'play' && vrMesh && vrMesh.visible) {
+    pollVRUIInteraction(rightCtrl || ctrls[0]);
+  }
 }
 
 function aim() {
@@ -3580,6 +4485,7 @@ function updateHUD() {
   $('ammo-txt').textContent = at;
 
   if (xr()) {
+    updateWristPDA();
     hx.fillStyle = 'rgba(5, 12, 20, 0.85)';
     hx.fillRect(0, 0, 256, 128);
     hx.font = 'bold 22px monospace';
@@ -3605,6 +4511,9 @@ function update(dt) {
   if (state === 'paused') return;
 
   const w = W[cur], a = ammo ? ammo[cur] : { mag: 0, res: 0 };
+
+  // Update In-VR Tactical Laser Sight & Crosshair Reticle
+  updateVRLaserSight();
 
   // Animate floating ash particles
   const posAttr = ashGeo.attributes.position;
@@ -3669,6 +4578,7 @@ function update(dt) {
           state = 'session_over';
           if (document.pointerLockElement === dom) document.exitPointerLock();
           showStoryModal('SESSION EXPIRED', 'Designated survival mission time has ended!', false, true, false);
+          if (xr()) vrUI.show('session_over');
           return;
         }
       } else {
@@ -3879,10 +4789,10 @@ function update(dt) {
     }
   }
 
-  // Weapon Recoil & Muzzle Flash
+  // Weapon Recoil & Muzzle Flash (Ergonomic ~14° Quest 2 Grip in VR)
   kick = Math.max(0, kick - dt * 8);
-  gun.position.set(gunBase.x, gunBase.y, gunBase.z + kick * 0.05);
-  gun.rotation.x = kick * 0.13 + (reloading ? 0.72 : 0);
+  gun.position.set(gunBase.x, gunBase.y, gunBase.z + (xr() ? kick * 0.035 : kick * 0.05));
+  gun.rotation.x = (xr() ? -0.24 : 0) + kick * 0.12 + (reloading ? 0.72 : 0);
   if (slide) slide.position.z = (ammo && ammo[cur].mag === 0 ? 0.04 : kick * 0.04);
   if (pump) pump.position.z = -0.35 + (cd > 0 ? Math.sin(Math.max(0, Math.min(1, 1 - cd / W[cur].rate)) * Math.PI) * 0.12 : 0);
 
