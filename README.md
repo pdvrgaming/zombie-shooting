@@ -72,7 +72,7 @@ Configure your playtime in the main menu before deployment:
 | **Aim / Look** | Mouse Movement | Right Half Screen Drag | **Head Tracking (6DOF)** |
 | **Fire Weapon** | Left Mouse Click | Red `FIRE` Button | **Right Index Trigger** |
 | **Reload** | `R` Key | `REL` Button | **Right Grip Button** |
-| **Weapon Swap** | `1` `2` `3` `4` / Scroll / `Q` `E` | `GUN` Button | **A / B / X / Y Buttons** |
+| **Weapon Selection** | Choose in Main Menu UI | Choose in Main Menu UI | **Choose in Main Menu UI** |
 | **Sprint** | Hold `Left Shift` | `RUN` Toggle Button | Push Left Stick Forward |
 | **Pause Game** | `P` / `Escape` | `PAUSE` Top Button | **Left Menu / Grip Button** |
 | **Turn** | Mouse Aim | Touch Drag | **Right Thumbstick (Snap Turn)** |
