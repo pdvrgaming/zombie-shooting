@@ -1,5 +1,5 @@
 // Dead Zone: Survival Apocalypse - Service Worker (PWA & WebXR)
-const CACHE_NAME = 'deadzone-vr-v2';
+const CACHE_NAME = 'deadzone-vr-v3';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -40,11 +40,25 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (!url.protocol.startsWith('http')) return;
 
+  // Network-first strategy for HTML pages so updates are seen immediately
+  if (event.request.mode === 'navigate' || event.request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(event.request).then(response => {
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      }).catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Cache-first strategy for static assets
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
       return fetch(event.request).then(response => {
-        // Cache successful responses for game assets
         if (response && response.status === 200 && response.type === 'basic') {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => {
@@ -52,11 +66,6 @@ self.addEventListener('fetch', event => {
           });
         }
         return response;
-      }).catch(() => {
-        // Fallback for HTML navigation if offline
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
       });
     })
   );

@@ -562,13 +562,286 @@
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    margin: 6px 0 10px;
+    margin: 4px 0 10px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-transform: uppercase;
   }
   #device-detect-badge.vr-mode { background: rgba(147, 51, 234, 0.28); border-color: #c084fc; color: #e9d5ff; }
   #device-detect-badge.mobile-mode { background: rgba(34, 197, 94, 0.24); border-color: #4ade80; color: #bbf7d0; }
   #device-detect-badge.pc-mode { background: rgba(56, 189, 248, 0.24); border-color: #38bdf8; color: #bae6fd; }
+
+  /* Storyboard Step Navigator Bar (Panel 7 Flow) */
+  .storyboard-nav-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0 14px 0;
+    background: rgba(15, 23, 42, 0.9);
+    padding: 6px 14px;
+    border-radius: 30px;
+    border: 1.5px solid rgba(51, 65, 85, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    flex-wrap: wrap;
+    max-width: 680px;
+    width: 100%;
+  }
+  .nav-step-tab {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #94a3b8;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    touch-action: manipulation;
+  }
+  .nav-step-tab .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(51, 65, 85, 0.8);
+    color: #cbd5e1;
+    font-size: 10px;
+    font-family: sans-serif;
+    font-weight: 800;
+  }
+  .nav-step-tab:hover {
+    color: #e2e8f0;
+    background: rgba(51, 65, 85, 0.5);
+  }
+  .nav-step-tab.active {
+    background: linear-gradient(180deg, rgba(220, 38, 38, 0.55) 0%, rgba(153, 27, 27, 0.75) 100%);
+    border-color: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.6);
+  }
+  .nav-step-tab.active .step-num {
+    background: #dc2626;
+    color: #fff;
+    box-shadow: 0 0 8px #ef4444;
+  }
+  .step-arrow {
+    color: #475569;
+    font-size: 11px;
+    user-select: none;
+  }
+
+  /* Story Step Panels Container */
+  .story-panel-wrap {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .story-panel {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    animation: panelFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .story-panel.active {
+    display: flex;
+  }
+  @keyframes panelFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Panel Headers */
+  .panel-banner {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid #334155;
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-banner-title {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: #f8fafc;
+  }
+  .panel-banner-sub {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  /* Step Action Cards in Panel 1 */
+  .step-action-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .step-action-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1.5px solid #334155;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    touch-action: manipulation;
+    width: 100%;
+  }
+  .step-action-card:hover {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: #38bdf8;
+    transform: translateX(3px);
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+  }
+  .step-action-icon {
+    font-size: 22px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid #475569;
+    flex-shrink: 0;
+  }
+  .step-action-text {
+    flex: 1;
+  }
+  .step-action-title {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1.2px;
+    color: #f1f5f9;
+    display: block;
+  }
+  .step-action-sub {
+    font-size: 11px;
+    color: #94a3b8;
+    display: block;
+    margin-top: 2px;
+  }
+  .step-action-arr {
+    color: #64748b;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .step-action-card:hover .step-action-arr {
+    color: #38bdf8;
+    transform: translateX(2px);
+  }
+
+  /* Mission Summary Bar */
+  .mission-summary-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .mission-summary-bar span {
+    color: var(--gold);
+  }
+
+  /* Panel Action Bottom Row */
+  .panel-action-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .panel-nav-btn {
+    padding: 10px 18px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+    background: rgba(30, 41, 59, 0.9);
+    color: #cbd5e1;
+    border: 1.5px solid #475569;
+  }
+  .panel-nav-btn:hover {
+    background: #334155;
+    border-color: #94a3b8;
+    color: #fff;
+  }
+  .panel-nav-btn.forward {
+    border-color: #38bdf8;
+    color: #38bdf8;
+  }
+  .panel-nav-btn.forward:hover {
+    background: rgba(56, 189, 248, 0.2);
+    color: #fff;
+  }
+  .btn-start-survival.compact {
+    max-width: 260px;
+    margin-bottom: 0;
+    padding: 10px 20px;
+    font-size: 17px;
+  }
+  @media (max-width: 600px) {
+    .panel-action-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .panel-action-row .panel-nav-btn,
+    .panel-action-row .btn-start-survival.compact {
+      width: 100%;
+      max-width: 100%;
+    }
+    .storyboard-nav-tabs {
+      gap: 3px;
+      padding: 4px 8px;
+    }
+    .nav-step-tab {
+      font-size: 10px;
+      padding: 5px 8px;
+      letter-spacing: 0.8px;
+    }
+    .step-arrow {
+      font-size: 9px;
+    }
+    .step-action-card {
+      padding: 8px 10px;
+    }
+  }
 
   /* 3 Location Cards matching Storyboard Panel 1 & 2 */
   .locations-grid {
@@ -586,7 +859,7 @@
     background: rgba(15, 23, 42, 0.85);
     border: 2px solid #334155;
     border-radius: 8px;
-    padding: 10px 8px;
+    padding: 12px 10px;
     cursor: pointer;
     transition: all 0.2s ease-out;
     display: flex;
@@ -614,6 +887,12 @@
     color: var(--gold);
     letter-spacing: 1px;
     margin-top: 3px;
+  }
+  .location-card-desc {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 4px;
+    text-align: center;
   }
 
   /* Mode Select (Zombies vs Animals) matching Storyboard */
@@ -650,9 +929,9 @@
   .btn-start-survival {
     width: 100%;
     max-width: 380px;
-    padding: 14px 28px;
+    padding: 13px 26px;
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 22px;
+    font-size: 21px;
     letter-spacing: 3px;
     color: #fff;
     background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
@@ -669,41 +948,13 @@
     transform: translateY(-2px);
   }
 
-  /* Compact Loadout & Timer Button Bar (Zero Screen Clutter!) */
-  .compact-loadout-bar {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    border-radius: 20px;
-    padding: 7px 18px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    color: #cbd5e1;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  }
-  .compact-loadout-bar:hover {
-    border-color: #38bdf8;
-    background: rgba(30, 41, 59, 0.95);
-    transform: translateY(-1px);
-    box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
-  }
-  .compact-loadout-bar .loadout-label { color: #94a3b8; }
-  .compact-loadout-bar .loadout-val { color: var(--gold); }
-  .compact-loadout-bar .loadout-edit-hint { color: var(--cyan); margin-left: 6px; font-size: 10.5px; }
-  .compact-loadout-bar .divider { color: #475569; }
-
   /* Platform Mode & Secondary Action Buttons */
   .platform-row {
     display: flex;
     gap: 8px;
     justify-content: center;
     flex-wrap: wrap;
+    margin-top: 6px;
   }
   .platform-btn {
     padding: 7px 14px;
@@ -1320,146 +1571,238 @@
     <div id="device-detect-badge" class="vr-mode">&#129523; QUEST 2 VR DETECTED &bull; DEDICATED EDITION</div>
   </div>
 
-  <!-- Meta Quest 2 Primary VR Launch Banner -->
-  <div class="quest2-hero-card" id="quest2-hero-card">
-    <div class="quest2-hero-badge">&#129523; META QUEST 2 DEDICATED VR EDITION</div>
-    <div class="quest2-hero-sub">Full 6DOF Dual Touch Tracking &bull; In-VR 3D Menus &bull; Wrist PDA &bull; 90Hz XR2 Performance</div>
-    <button class="quest2-hero-btn" id="btn-quest-hero">&#9654; ENTER VR (QUEST 2)</button>
+  <!-- Storyboard Step Flow Navigator Tabs (Matching Storyboard Panel 7) -->
+  <div class="storyboard-nav-tabs">
+    <button class="nav-step-tab active" data-step="1" id="tab-step-1"><span class="step-num">1</span> MAIN MENU</button>
+    <span class="step-arrow">&#10148;</span>
+    <button class="nav-step-tab" data-step="2" id="tab-step-2"><span class="step-num">2</span> LOCATION &amp; MODE</button>
+    <span class="step-arrow">&#10148;</span>
+    <button class="nav-step-tab" data-step="3" id="tab-step-3"><span class="step-num">3</span> LOADOUT &amp; TIME</button>
+    <span class="step-arrow">&#10148;</span>
+    <button class="nav-step-tab" data-step="4" id="tab-step-4"><span class="step-num">4</span> CONTROLS</button>
   </div>
 
-  <!-- 3 Locations Grid matching Storyboard Panel 1 & 2 -->
-  <div class="locations-grid" id="lvl-select">
-    <div class="location-card active" data-lvl="0">
-      <div class="location-card-title">1. DOWNTOWN CITY</div>
-      <div class="location-card-waves">WAVES: 1-3 &bull; THE WARDEN</div>
+  <!-- Storyboard Step Panels Container -->
+  <div class="story-panel-wrap">
+
+    <!-- STEP 1: MAIN MENU (Storyboard Panel 1 & 7) -->
+    <div class="story-panel active" id="panel-step-1">
+      <!-- Active Mission Summary Bar -->
+      <div class="mission-summary-bar">
+        <span>SECTOR:</span> <b id="sum-step1-loc">DOWNTOWN CITY</b> &bull;
+        <span>MODE:</span> <b id="sum-step1-mode">ZOMBIES (3D GLB)</b> &bull;
+        <span>GUN:</span> <b id="sum-step1-gun">GLOCK 17</b> &bull;
+        <span>TIME:</span> <b id="sum-step1-time">UNLIMITED</b>
+      </div>
+
+      <!-- Hero Start Survival CTA -->
+      <button class="btn-start-survival" id="btn-start-hero">&#9763; START SURVIVAL &#9763;</button>
+
+      <!-- Step Navigation Action Cards -->
+      <div class="step-action-grid">
+        <div class="step-action-card" id="btn-goto-sectors">
+          <div class="step-action-icon">&#128205;</div>
+          <div class="step-action-text">
+            <span class="step-action-title">STEP 2: SELECT SECTOR &amp; ENEMY MODE</span>
+            <span class="step-action-sub" id="sub-goto-sectors">Downtown City, Dark Pine Forest, Bio-Lab &bull; Zombies (3D GLB) / Animals</span>
+          </div>
+          <div class="step-action-arr">&#10148;</div>
+        </div>
+
+        <div class="step-action-card" id="btn-goto-loadout">
+          <div class="step-action-icon">&#9881;&#65039;</div>
+          <div class="step-action-text">
+            <span class="step-action-title">STEP 3: WEAPONS ARMORY &amp; MISSION TIME</span>
+            <span class="step-action-sub" id="sub-goto-loadout">Glock 17, Deagle, M4A1, Breacher &bull; 3D GLB Models &bull; Session Timer</span>
+          </div>
+          <div class="step-action-arr">&#10148;</div>
+        </div>
+
+        <div class="step-action-card" id="btn-goto-controls">
+          <div class="step-action-icon">&#127918;</div>
+          <div class="step-action-text">
+            <span class="step-action-title">STEP 4: QUEST 2 VR &amp; PC COMBAT CONTROLS</span>
+            <span class="step-action-sub">6DOF Dual Touch Controller Layout &bull; PC Keyboard &amp; Mouse Bindings</span>
+          </div>
+          <div class="step-action-arr">&#10148;</div>
+        </div>
+      </div>
+
+      <!-- Platform Launch Row -->
+      <div class="platform-row">
+        <button class="platform-btn vr-btn" id="vr">&#129523; ENTER VR (QUEST 2)</button>
+        <button class="platform-btn" id="pc">&#128421; PLAY (PC)</button>
+        <button class="platform-btn" id="mob">&#128241; PLAY (MOBILE)</button>
+        <button class="platform-btn" id="btn-pwa-install-manual">&#128242; INSTALL PWA</button>
+      </div>
     </div>
-    <div class="location-card" data-lvl="1">
-      <div class="location-card-title">2. DARK PINE FOREST</div>
-      <div class="location-card-waves">WAVES: 4-6 &bull; ALPHA BEHEMOTH</div>
+
+    <!-- STEP 2: LOCATION & MODE (Storyboard Panel 2) -->
+    <div class="story-panel" id="panel-step-2">
+      <div class="panel-banner">
+        <div>
+          <div class="panel-banner-title">&#128205; 9 WAVES &bull; 3 INFILTRATION SECTORS</div>
+          <div class="panel-banner-sub">SELECT TARGET DESTINATION &amp; MUTATION TYPE</div>
+        </div>
+      </div>
+
+      <!-- 3 Locations Grid matching Storyboard Panel 1 & 2 -->
+      <div class="locations-grid" id="lvl-select">
+        <div class="location-card active" data-lvl="0">
+          <div class="location-card-title">1. DOWNTOWN CITY</div>
+          <div class="location-card-waves">WAVES: 1-3 &bull; THE WARDEN</div>
+          <div class="location-card-desc">Urban ruins, barricaded streets &amp; close-quarters combat</div>
+        </div>
+        <div class="location-card" data-lvl="1">
+          <div class="location-card-title">2. DARK PINE FOREST</div>
+          <div class="location-card-waves">WAVES: 4-6 &bull; ALPHA BEHEMOTH</div>
+          <div class="location-card-desc">Dense fog, high-density tree lines &amp; creeping mutations</div>
+        </div>
+        <div class="location-card" data-lvl="2">
+          <div class="location-card-title">3. BIO-LAB COMPOUND</div>
+          <div class="location-card-waves">WAVES: 7-9 &bull; OMEGA APEX</div>
+          <div class="location-card-desc">Subterranean facility, radioactive toxic pools &amp; boss hive</div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--gold);margin-bottom:8px;text-align:center;">
+        &#9763; SELECT ENEMY MUTATION TYPE
+      </div>
+      <div class="mode-select-wrap">
+        <button class="mode-pill-btn active" data-mode="zombies">&#128128; ZOMBIES (HQ 3D GLB)</button>
+        <button class="mode-pill-btn" data-mode="animals">&#128062; MUTANT ANIMALS</button>
+      </div>
+
+      <!-- Action Row -->
+      <div class="panel-action-row">
+        <button class="panel-nav-btn" id="btn-step2-back">&#10140; 1. MAIN MENU</button>
+        <button class="btn-start-survival compact" id="btn-step2-start">&#9763; START SURVIVAL &#9763;</button>
+        <button class="panel-nav-btn forward" id="btn-step2-next">3. LOADOUT &#10148;</button>
+      </div>
     </div>
-    <div class="location-card" data-lvl="2">
-      <div class="location-card-title">3. BIO-LAB COMPOUND</div>
-      <div class="location-card-waves">WAVES: 7-9 &bull; OMEGA APEX</div>
+
+    <!-- STEP 3: LOADOUT & TIME LIMIT (Weapons & Mission Options) -->
+    <div class="story-panel" id="panel-step-3">
+      <div class="panel-banner">
+        <div>
+          <div class="panel-banner-title">&#9881;&#65039; ARMORY LOADOUT &amp; SURVIVAL RULES</div>
+          <div class="panel-banner-sub">SELECT PRIMARY WEAPON &bull; MISSION TIMER &bull; 3D MODEL TYPE</div>
+        </div>
+      </div>
+
+      <!-- Weapon Select Grid -->
+      <div class="gun-select-card" style="width:100%;">
+        <div class="gun-select-header">&#128299; CHOOSE STARTING FIREARM</div>
+        <div class="gun-select-grid" id="gun-select-grid">
+          <div class="gun-card active" data-gun="pistol">
+            <div class="gun-card-name">GLOCK 17</div>
+            <div class="gun-card-desc">MAG: 15 &bull; DMG: 42 &bull; HIGH MOBILITY</div>
+          </div>
+          <div class="gun-card" data-gun="deagle">
+            <div class="gun-card-name">DESERT EAGLE</div>
+            <div class="gun-card-desc">MAG: 7 &bull; DMG: 105 &bull; HEAVY CALIBER</div>
+          </div>
+          <div class="gun-card" data-gun="rifle">
+            <div class="gun-card-name">M4A1 CARBINE</div>
+            <div class="gun-card-desc">MAG: 30 &bull; DMG: 25 &bull; RAPID ASSAULT</div>
+          </div>
+          <div class="gun-card" data-gun="shotgun">
+            <div class="gun-card-name">M870 BREACHER</div>
+            <div class="gun-card-desc">MAG: 8 &bull; DMG: 20x8 &bull; PUMP SPREAD</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Time Limit Selector -->
+      <div class="time-select-card" style="width:100%;margin-bottom:10px;">
+        <div class="time-select-header">&#9201; MISSION TIME LIMIT</div>
+        <div class="time-select-grid">
+          <button class="time-btn active" data-sec="0">UNLIMITED</button>
+          <button class="time-btn" data-sec="120">2 MIN</button>
+          <button class="time-btn" data-sec="300">5 MIN</button>
+          <button class="time-btn" data-sec="600">10 MIN</button>
+          <button class="time-btn" data-sec="900">15 MIN</button>
+        </div>
+      </div>
+
+      <!-- Zombie Model Appearance Selector -->
+      <div class="time-select-card" style="width:100%;margin-bottom:6px;">
+        <div class="time-select-header" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>&#129503; ZOMBIE 3D MODEL TYPE</span>
+          <span id="glb-status-indicator" style="font-size:10.5px;color:#4ade80;font-weight:bold;">3D GLB ACTIVE</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;">
+          <button type="button" class="model-pill-btn active" id="btn-model-glb" data-model="glb" style="padding:10px 8px;font-size:12px;border:1.5px solid #22c55e;border-radius:6px;background:rgba(22,101,52,0.3);color:#e2e8f0;cursor:pointer;touch-action:manipulation;">
+            &#128128; 3D GLB MONSTERS<br><span style="font-size:10px;color:#86efac;font-weight:normal;">[HQ GLTF &bull; SKELETAL RIG]</span>
+          </button>
+          <button type="button" class="model-pill-btn" id="btn-model-procedural" data-model="procedural" style="padding:10px 8px;font-size:12px;opacity:0.65;border:1px dashed #64748b;border-radius:6px;background:rgba(15,23,42,0.6);color:#94a3b8;cursor:pointer;touch-action:manipulation;">
+            &#9881;&#65039; BASIC PROCEDURAL<br><span style="font-size:10px;color:#94a3b8;font-weight:normal;">[LEGACY BLOCKS &bull; FALLBACK]</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Row -->
+      <div class="panel-action-row">
+        <button class="panel-nav-btn" id="btn-step3-back">&#10140; 2. LOCATION</button>
+        <button class="btn-start-survival compact" id="btn-step3-start">&#9763; START SURVIVAL &#9763;</button>
+        <button class="panel-nav-btn forward" id="btn-step3-next">4. CONTROLS &#10148;</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Mode Toggle (Zombies vs Animals) matching Storyboard Panel 1 & 2 -->
-  <div class="mode-select-wrap">
-    <button class="mode-pill-btn active" data-mode="zombies">&#128128; ZOMBIES</button>
-    <button class="mode-pill-btn" data-mode="animals">&#128062; MUTANT ANIMALS</button>
-  </div>
+    <!-- STEP 4: CONTROLS & VR GUIDE (Storyboard Panel 8) -->
+    <div class="story-panel" id="panel-step-4">
+      <div class="panel-banner">
+        <div>
+          <div class="panel-banner-title">&#127918; COMBAT CONTROLS REFERENCE</div>
+          <div class="panel-banner-sub">META QUEST 2 6DOF TOUCH &bull; PC KEYBOARD/MOUSE &bull; MOBILE</div>
+        </div>
+      </div>
 
-  <!-- Big Red Start Button matching Storyboard Panel 1 & 2 -->
-  <button class="btn-start-survival" id="btn-start-main">&#9763; START SURVIVAL &#9763;</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-bottom:12px;">
+        <div style="background:rgba(30,41,59,0.85);padding:12px 14px;border-radius:8px;border:1.5px solid #38bdf8;text-align:left;">
+          <div style="font-family:Impact,'Arial Black',sans-serif;color:#38bdf8;font-size:14px;letter-spacing:1px;margin-bottom:6px;">
+            &#129523; META QUEST 2 (6DOF TOUCH)
+          </div>
+          <div style="font-size:11.5px;color:#cbd5e1;line-height:1.7;">
+            &#128377; <b>Left Thumbstick:</b> Move / Strafe<br>
+            &#128377; <b>Right Thumbstick:</b> Snap Turn (30&deg;)<br>
+            &#127919; <b>Index Trigger:</b> Fire Weapon / Click UI<br>
+            &#9994; <b>Grip Squeeze:</b> Reload Magazine<br>
+            &#128296; <b>A / X Button:</b> Pause Menu<br>
+            &#9200; <b>Left Wrist:</b> Tactical PDA (Health/Wave)
+          </div>
+        </div>
 
-  <!-- Compact Loadout & Settings Bar (Clean & Uncluttered!) -->
-  <div class="compact-loadout-bar" id="btn-open-loadout">
-    <span class="loadout-label">&#9881;&#65039; LOADOUT:</span>
-    <span class="loadout-val" id="loadout-summary-weapon">GLOCK 17</span>
-    <span class="divider">&bull;</span>
-    <span class="loadout-label">&#9201; TIME:</span>
-    <span class="loadout-val" id="loadout-summary-timer">UNLIMITED</span>
-    <span class="divider">&bull;</span>
-    <span class="loadout-label">&#129503; ZOMBIES:</span>
-    <span class="loadout-val" id="loadout-summary-model" style="color:#4ade80;">3D GLB</span>
-    <span class="loadout-edit-hint">[CUSTOMIZE &#9662;]</span>
-  </div>
+        <div style="background:rgba(30,41,59,0.85);padding:12px 14px;border-radius:8px;border:1.5px solid #475569;text-align:left;">
+          <div style="font-family:Impact,'Arial Black',sans-serif;color:#facc15;font-size:14px;letter-spacing:1px;margin-bottom:6px;">
+            &#128421; PC &bull; &#128241; MOBILE
+          </div>
+          <div style="font-size:11.5px;color:#cbd5e1;line-height:1.7;">
+            &#9000; <b>WASD / On-Screen Joy:</b> Move<br>
+            &#128431; <b>Mouse / Touch Drag:</b> Aim Sight<br>
+            &#127919; <b>Left Click / Fire Button:</b> Shoot<br>
+            &#128260; <b>R Key / Reload Button:</b> Reload<br>
+            &#9208; <b>P / Esc:</b> In-Game Pause<br>
+            &#128242; <b>PWA Standalone:</b> Fullscreen WebXR
+          </div>
+        </div>
+      </div>
 
-  <!-- Platform Launch Row -->
-  <div class="platform-row">
-    <button class="platform-btn vr-btn" id="vr">&#129523; ENTER VR (QUEST 2)</button>
-    <button class="platform-btn" id="pc">&#128421; PLAY (PC)</button>
-    <button class="platform-btn" id="mob">&#128241; PLAY (MOBILE)</button>
-    <button class="platform-btn" id="btn-pwa-install-manual">&#128242; INSTALL PWA</button>
-    <button class="platform-btn" id="btn-show-controls">&#127918; CONTROLS GUIDE</button>
-  </div>
+      <!-- Action Row -->
+      <div class="panel-action-row">
+        <button class="panel-nav-btn" id="btn-step4-back">&#10140; 3. LOADOUT</button>
+        <button class="btn-start-survival compact" id="btn-step4-start">&#9763; START SURVIVAL &#9763;</button>
+        <button class="panel-nav-btn forward" id="btn-step4-home">&#127968; MAIN MENU</button>
+      </div>
+    </div>
+
+  </div> <!-- /story-panel-wrap -->
 </div>
 
-<!-- Modal: Loadout & Timer Settings -->
-<div class="sub-modal-ov" id="loadout-modal">
-  <div class="sub-modal-box">
-    <div class="sub-modal-title">&#9881;&#65039; SURVIVAL LOADOUT & TIMER</div>
-
-    <!-- Gun Selection UI (Pick One Weapon for Run) -->
-    <div class="gun-select-card">
-      <div class="gun-select-header">&#128299; CHOOSE SURVIVAL WEAPON</div>
-      <div class="gun-select-grid" id="gun-select-grid">
-        <div class="gun-card active" data-gun="pistol">
-          <div class="gun-card-name">GLOCK 17</div>
-          <div class="gun-card-desc">MAG: 15 &bull; DMG: 42 &bull; FAST</div>
-        </div>
-        <div class="gun-card" data-gun="deagle">
-          <div class="gun-card-name">DESERT EAGLE</div>
-          <div class="gun-card-desc">MAG: 7 &bull; DMG: 105 &bull; HEAVY</div>
-        </div>
-        <div class="gun-card" data-gun="rifle">
-          <div class="gun-card-name">M4A1 CARBINE</div>
-          <div class="gun-card-desc">MAG: 30 &bull; DMG: 25 &bull; AUTO</div>
-        </div>
-        <div class="gun-card" data-gun="shotgun">
-          <div class="gun-card-name">M870 BREACHER</div>
-          <div class="gun-card-desc">MAG: 8 &bull; DMG: 20x8 &bull; PUMP</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mission Session Limit Selector -->
-    <div class="time-select-card">
-      <div class="time-select-header">&#9201; MISSION TIME LIMIT</div>
-      <div class="time-select-grid">
-        <button class="time-btn active" data-sec="0">UNLIMITED</button>
-        <button class="time-btn" data-sec="120">2 MIN</button>
-        <button class="time-btn" data-sec="300">5 MIN</button>
-        <button class="time-btn" data-sec="600">10 MIN</button>
-        <button class="time-btn" data-sec="900">15 MIN</button>
-      </div>
-    </div>
-
-    <!-- Zombie Model Appearance Selector (GLB Option 2 Active by default, Procedural Option 1 Hidden/Secondary) -->
-    <div class="time-select-card" style="margin-top:12px;">
-      <div class="time-select-header" style="display:flex;justify-content:space-between;align-items:center;">
-        <span>&#129503; ZOMBIE 3D MODEL TYPE</span>
-        <span id="glb-status-indicator" style="font-size:10.5px;color:#4ade80;font-weight:bold;">3D GLB READY</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;">
-        <button type="button" class="model-pill-btn active" id="btn-model-glb" data-model="glb" style="padding:10px 8px;font-size:12px;border:1.5px solid #22c55e;border-radius:6px;background:rgba(22,101,52,0.3);color:#e2e8f0;cursor:pointer;touch-action:manipulation;">
-          &#128128; 3D GLB MONSTERS<br><span style="font-size:10px;color:#86efac;font-weight:normal;">[HQ GLTF &bull; SKELETAL RIG]</span>
-        </button>
-        <button type="button" class="model-pill-btn" id="btn-model-procedural" data-model="procedural" style="padding:10px 8px;font-size:12px;opacity:0.65;border:1px dashed #64748b;border-radius:6px;background:rgba(15,23,42,0.6);color:#94a3b8;cursor:pointer;touch-action:manipulation;">
-          &#9881;&#65039; BASIC PROCEDURAL<br><span style="font-size:10px;color:#94a3b8;font-weight:normal;">[LEGACY BLOCKS &bull; FALLBACK]</span>
-        </button>
-      </div>
-    </div>
-
-    <button class="modal-close-btn" id="btn-close-loadout">CONFIRM LOADOUT</button>
-  </div>
-</div>
-
-<!-- Modal: Quest 2 & PC Controls Guide (Storyboard Panel 8) -->
-<div class="sub-modal-ov" id="controls-modal">
-  <div class="sub-modal-box">
-    <div class="sub-modal-title">&#127918; QUEST 2 &bull; PC CONTROLS</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;color:#cbd5e1;text-align:left;margin-bottom:14px;">
-      <div style="background:rgba(30,41,59,0.7);padding:8px 12px;border-radius:6px;border:1px solid #334155;">
-        <span style="color:#38bdf8;font-weight:bold;">&#129523; QUEST 2 VR</span><br>
-        &#128377; Left Stick: <b style="color:var(--gold);">Move / Strafe</b><br>
-        &#128377; Right Stick: <b style="color:var(--gold);">Snap Turn</b><br>
-        &#127919; Trigger: <b style="color:var(--gold);">Fire Gun</b><br>
-        &#9994; Grip: <b style="color:var(--gold);">Reload</b><br>
-        &#128296; A / X Button: <b style="color:var(--gold);">Pause</b>
-      </div>
-      <div style="background:rgba(30,41,59,0.7);padding:8px 12px;border-radius:6px;border:1px solid #334155;">
-        <span style="color:#38bdf8;font-weight:bold;">&#128421; PC KEYBOARD/MOUSE</span><br>
-        &#9000; WASD: <b style="color:var(--gold);">Move / Strafe</b><br>
-        &#128431; Mouse: <b style="color:var(--gold);">Aim Crosshair</b><br>
-        &#127919; Left Click: <b style="color:var(--gold);">Shoot</b><br>
-        &#128260; R Key: <b style="color:var(--gold);">Reload</b><br>
-        &#9208; P / Esc: <b style="color:var(--gold);">Pause Menu</b>
-      </div>
-    </div>
-    <button class="modal-close-btn" id="btn-close-controls">CLOSE</button>
-  </div>
-</div>
+<!-- Legacy modal containers kept hidden for compatibility -->
+<div class="sub-modal-ov" id="loadout-modal" style="display:none;"></div>
+<div class="sub-modal-ov" id="controls-modal" style="display:none;"></div>
 
 <!-- Storyboard Multi-Modal (Pause, Survival Results, Death) -->
 <div id="modal-ov">
@@ -1835,58 +2178,134 @@ if (devBadge) {
   }
 }
 
-// Bind Primary Quest 2 Hero Button (Direct WebXR Launch)
-if ($('btn-quest-hero')) {
-  bindUniversalClick('btn-quest-hero', () => launchVRMode());
+// Universal Start Survival Game Launcher
+function launchCurrentGameMode() {
+  if (detectedDevice === 'vr') {
+    launchVRMode();
+  } else if (detectedDevice === 'mobile') {
+    launchMobileMode();
+  } else {
+    launchPCMode();
+  }
 }
+
+// Bind All Start Survival Buttons
+['btn-start-hero', 'btn-step2-start', 'btn-step3-start', 'btn-step4-start', 'btn-start-main', 'btn-quest-hero'].forEach(id => {
+  if ($(id)) bindUniversalClick(id, launchCurrentGameMode);
+});
+
+// Update Menu Mission Summaries across all panels
+function updateMenuSummaries() {
+  const locNames = ['DOWNTOWN CITY', 'DARK PINE FOREST', 'BIO-LAB COMPOUND'];
+  const locName = locNames[selectedLevel] || 'DOWNTOWN CITY';
+  const modeName = enemyCategory === 'animals' ? 'MUTANT ANIMALS' : (zombieModelType === 'glb' ? 'ZOMBIES (3D GLB)' : 'ZOMBIES (PROC)');
+  const gunName = (typeof W !== 'undefined' && chosenWeapon && W[chosenWeapon]) ? W[chosenWeapon].n : (chosenWeapon ? chosenWeapon.toUpperCase() : 'GLOCK 17');
+  const timeName = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit / 60)} MIN` : 'UNLIMITED';
+
+  if ($('sum-step1-loc')) $('sum-step1-loc').textContent = locName;
+  if ($('sum-step1-mode')) $('sum-step1-mode').textContent = modeName;
+  if ($('sum-step1-gun')) $('sum-step1-gun').textContent = gunName;
+  if ($('sum-step1-time')) $('sum-step1-time').textContent = timeName;
+
+  if ($('sub-goto-sectors')) $('sub-goto-sectors').textContent = `${locName} • ${modeName}`;
+  if ($('sub-goto-loadout')) $('sub-goto-loadout').textContent = `${gunName} • ${timeName} • ${zombieModelType === 'glb' ? '3D GLB Monsters' : 'Procedural'}`;
+}
+
+// Stepped Panel Switching (Storyboard Flow Steps 1-4)
+let currentStep = 1;
+function switchStep(stepNum) {
+  currentStep = Math.max(1, Math.min(4, stepNum));
+  if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
+
+  // Update nav tabs
+  document.querySelectorAll('.nav-step-tab').forEach(tab => {
+    const s = parseInt(tab.dataset.step, 10);
+    tab.classList.toggle('active', s === currentStep);
+  });
+
+  // Update panels
+  document.querySelectorAll('.story-panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
+  const targetPanel = $(`panel-step-${currentStep}`);
+  if (targetPanel) {
+    targetPanel.classList.add('active');
+  }
+
+  updateMenuSummaries();
+}
+
+// Bind Nav Step Tabs
+document.querySelectorAll('.nav-step-tab').forEach(tab => {
+  bindUniversalClick(tab, () => {
+    const s = parseInt(tab.dataset.step, 10) || 1;
+    switchStep(s);
+  });
+});
+
+// Bind Step Quick Action & Navigation Buttons
+if ($('btn-goto-sectors')) bindUniversalClick('btn-goto-sectors', () => switchStep(2));
+if ($('btn-goto-loadout')) bindUniversalClick('btn-goto-loadout', () => switchStep(3));
+if ($('btn-goto-controls')) bindUniversalClick('btn-goto-controls', () => switchStep(4));
+
+if ($('btn-step2-back')) bindUniversalClick('btn-step2-back', () => switchStep(1));
+if ($('btn-step2-next')) bindUniversalClick('btn-step2-next', () => switchStep(3));
+
+if ($('btn-step3-back')) bindUniversalClick('btn-step3-back', () => switchStep(2));
+if ($('btn-step3-next')) bindUniversalClick('btn-step3-next', () => switchStep(4));
+
+if ($('btn-step4-back')) bindUniversalClick('btn-step4-back', () => switchStep(3));
+if ($('btn-step4-home')) bindUniversalClick('btn-step4-home', () => switchStep(1));
 
 // Location Cards Listeners
 document.querySelectorAll('.location-card').forEach(card => {
   bindUniversalClick(card, () => {
-    SND.uiClick();
+    if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
     document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
     initialSelectedLevel = parseInt(card.dataset.lvl, 10) || 0;
     selectedLevel = initialSelectedLevel;
+    updateMenuSummaries();
   });
 });
 
 // Mode Pill Listeners
 document.querySelectorAll('.mode-pill-btn').forEach(btn => {
   bindUniversalClick(btn, () => {
-    SND.uiClick();
+    if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
     document.querySelectorAll('.mode-pill-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     enemyCategory = btn.dataset.mode;
+    updateMenuSummaries();
   });
 });
 
 // Gun Selection Listener
 document.querySelectorAll('.gun-card').forEach(card => {
   bindUniversalClick(card, () => {
-    SND.uiClick();
+    if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
     document.querySelectorAll('.gun-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
     chosenWeapon = card.dataset.gun;
-    if ($('loadout-summary-weapon')) $('loadout-summary-weapon').textContent = (W[chosenWeapon] ? W[chosenWeapon].n : 'GLOCK 17');
+    updateMenuSummaries();
   });
 });
 
 // Session Time Limit Listener
 document.querySelectorAll('.time-btn').forEach(btn => {
   bindUniversalClick(btn, () => {
-    SND.uiClick();
+    if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
     document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     sessionDurationLimit = parseInt(btn.dataset.sec, 10) || 0;
-    if ($('loadout-summary-timer')) $('loadout-summary-timer').textContent = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit/60)} MIN` : 'UNLIMITED';
+    updateMenuSummaries();
   });
 });
 
 // Zombie Model Appearance Listener (Option 2 GLB active by default, Option 1 procedural secondary)
 document.querySelectorAll('.model-pill-btn').forEach(btn => {
   bindUniversalClick(btn, () => {
-    SND.uiClick();
+    if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
     document.querySelectorAll('.model-pill-btn').forEach(b => {
       b.classList.remove('active');
       b.style.border = '1px dashed #64748b';
@@ -1901,29 +2320,16 @@ document.querySelectorAll('.model-pill-btn').forEach(btn => {
     btn.style.border = isGLB ? '1.5px solid #22c55e' : '1.5px solid #f59e0b';
     btn.style.background = isGLB ? 'rgba(22,101,52,0.3)' : 'rgba(120,53,15,0.3)';
     zombieModelType = btn.dataset.model;
-    if ($('loadout-summary-model')) {
-      $('loadout-summary-model').textContent = isGLB ? '3D GLB' : 'PROCEDURAL';
-      $('loadout-summary-model').style.color = isGLB ? '#4ade80' : '#f59e0b';
-    }
     if ($('glb-status-indicator')) {
       $('glb-status-indicator').textContent = isGLB ? '3D GLB ACTIVE' : 'PROCEDURAL (LEGACY)';
       $('glb-status-indicator').style.color = isGLB ? '#4ade80' : '#f59e0b';
     }
+    updateMenuSummaries();
   });
 });
 
-// Big Start Button Handler
-if ($('btn-start-main')) {
-  bindUniversalClick('btn-start-main', () => {
-    if (detectedDevice === 'vr') {
-      launchVRMode();
-    } else if (detectedDevice === 'mobile') {
-      launchMobileMode();
-    } else {
-      launchPCMode();
-    }
-  });
-}
+// Initialize Default Summaries on Load
+updateMenuSummaries();
 
 // ---------- PROGRESSIVE WEB APP (PWA) INSTALL & SERVICE WORKER ----------
 if ('serviceWorker' in navigator) {
@@ -3740,7 +4146,7 @@ const vrUI = {
     vrx.font = 'bold 50px Impact, "Arial Black", sans-serif';
     vrx.fillStyle = '#f59e0b';
     vrx.textAlign = 'center';
-    vrx.fillText('SESSION EXPIRED', 512, 120);
+    vrx.fillText('SESSION COMPLETED', 512, 120);
     
     vrx.font = '18px sans-serif';
     vrx.fillStyle = '#cbd5e1';
@@ -3754,8 +4160,8 @@ const vrUI = {
     vrx.fillStyle = '#f59e0b';
     vrx.fillText(`FINAL SCORE: ${score}   |   TOTAL KILLS: ${kills}`, 512, 245);
     
-    this.drawVRActionButton('retry', 332, 310, 360, 62, '🔄 PLAY AGAIN', '#dc2626', '#991b1b', hoveredId, () => retryGame());
-    this.drawVRActionButton('quit', 332, 392, 360, 56, '🚪 QUIT TO MENU', '#1e293b', '#0f172a', hoveredId, () => quitToMenu());
+    // Only "MAIN MENU" button appears per user requirement (Play Again removed)
+    this.drawVRActionButton('quit', 332, 330, 360, 64, '🏠 MAIN MENU', '#dc2626', '#991b1b', hoveredId, () => quitToMenu());
   },
   drawVRActionButton(id, x, y, w, h, label, col1, col2, hoveredId, onClick) {
     const isHov = (hoveredId === id);
@@ -4504,18 +4910,37 @@ function say(main, sub = '', sec = 3) {
   $('sub-msg').textContent = sub;
 }
 
-function showStoryModal(title, sub, isWin = false, isDeath = false, canResume = true) {
+function showStoryModal(title, sub, isWin = false, isDeath = false, canResume = true, isSessionOver = false) {
   $('modal-title').textContent = title;
   $('modal-title').className = 'modal-title-main' + (isWin ? ' gold' : '');
   $('modal-sub').textContent = sub;
   $('modal-stars').style.display = isWin ? 'block' : 'none';
-  $('modal-stats').style.display = (isWin || isDeath) ? 'block' : 'none';
+  $('modal-stats').style.display = (isWin || isDeath || isSessionOver) ? 'block' : 'none';
   $('modal-stat-score').textContent = score;
   $('modal-stat-kills').textContent = kills;
 
-  $('modal-btn-primary').style.display = (canResume || isWin) ? 'block' : 'none';
-  $('modal-btn-primary').textContent = isWin ? 'NEXT LOCATION' : 'RESUME';
-  if ($('modal-btn-retry')) $('modal-btn-retry').textContent = isDeath ? 'RETRY' : 'RESTART';
+  if (isSessionOver) {
+    // Only "MAIN MENU" button appears per user requirement! Remove "PLAY AGAIN" / "RETRY"
+    $('modal-btn-primary').style.display = 'none';
+    if ($('modal-btn-retry')) $('modal-btn-retry').style.display = 'none';
+    if ($('modal-btn-quit')) {
+      $('modal-btn-quit').style.display = 'inline-block';
+      $('modal-btn-quit').textContent = 'MAIN MENU';
+      $('modal-btn-quit').className = 'modal-btn-primary';
+    }
+  } else {
+    $('modal-btn-primary').style.display = (canResume || isWin) ? 'block' : 'none';
+    $('modal-btn-primary').textContent = isWin ? 'NEXT LOCATION' : 'RESUME';
+    if ($('modal-btn-retry')) {
+      $('modal-btn-retry').style.display = 'inline-block';
+      $('modal-btn-retry').textContent = isDeath ? 'RETRY' : 'RESTART';
+    }
+    if ($('modal-btn-quit')) {
+      $('modal-btn-quit').style.display = 'inline-block';
+      $('modal-btn-quit').textContent = 'QUIT TO MENU';
+      $('modal-btn-quit').className = 'modal-btn-secondary';
+    }
+  }
   if (!xr()) $('modal-ov').style.display = 'flex';
 }
 
@@ -4556,6 +4981,7 @@ function quitToMenu() {
     vrUI.show('menu');
   } else {
     $('ov').style.display = 'flex';
+    switchStep(1);
   }
 }
 
@@ -4592,25 +5018,11 @@ bindClick('modal-btn-primary', () => {
 bindClick('modal-btn-retry', retryGame);
 bindClick('modal-btn-quit', quitToMenu);
 
-// Loadout & Controls Sub-Modals Handlers
-bindClick('btn-open-loadout', () => {
-  const m = $('loadout-modal');
-  if (m) m.style.display = 'flex';
-});
-bindClick('btn-close-loadout', () => {
-  const m = $('loadout-modal');
-  if (m) m.style.display = 'none';
-  if ($('loadout-summary-weapon')) $('loadout-summary-weapon').textContent = (W[chosenWeapon] ? W[chosenWeapon].n : 'GLOCK 17');
-  if ($('loadout-summary-timer')) $('loadout-summary-timer').textContent = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit/60)} MIN` : 'UNLIMITED';
-});
-bindClick('btn-show-controls', () => {
-  const m = $('controls-modal');
-  if (m) m.style.display = 'flex';
-});
-bindClick('btn-close-controls', () => {
-  const m = $('controls-modal');
-  if (m) m.style.display = 'none';
-});
+// Loadout & Controls Sub-Modals Handlers / Step Navigation Redirection
+bindClick('btn-open-loadout', () => switchStep(3));
+bindClick('btn-close-loadout', () => switchStep(1));
+bindClick('btn-show-controls', () => switchStep(4));
+bindClick('btn-close-controls', () => switchStep(1));
 
 function startWave() {
   if ($('boss-hud')) $('boss-hud').style.display = 'none';
@@ -4889,17 +5301,9 @@ bindUniversalClick('pc', launchPCMode);
 bindUniversalClick('mob', launchMobileMode);
 bindUniversalClick('vr', launchVRMode);
 if ($('btn-quest-hero')) bindUniversalClick('btn-quest-hero', launchVRMode);
-if ($('btn-start-main')) {
-  bindUniversalClick('btn-start-main', () => {
-    if (detectedDevice === 'vr') {
-      launchVRMode();
-    } else if (detectedDevice === 'mobile') {
-      launchMobileMode();
-    } else {
-      launchPCMode();
-    }
-  });
-}
+['btn-start-hero', 'btn-step2-start', 'btn-step3-start', 'btn-step4-start', 'btn-start-main'].forEach(id => {
+  if ($(id)) bindUniversalClick(id, launchCurrentGameMode);
+});
 if (isTouchDevice) {
   $('mob').style.borderColor = '#4ade80';
   $('mob').style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.5)';
@@ -5205,7 +5609,7 @@ function update(dt) {
         if (remaining <= 0) {
           state = 'session_over';
           if (document.pointerLockElement === dom) document.exitPointerLock();
-          showStoryModal('SESSION EXPIRED', 'Designated survival mission time has ended!', false, true, false);
+          showStoryModal('SESSION COMPLETED', 'Designated survival mission duration has elapsed!', false, false, false, true);
           if (xr()) vrUI.show('session_over');
           return;
         }
