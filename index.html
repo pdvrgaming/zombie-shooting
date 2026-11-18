@@ -2847,7 +2847,14 @@ const W = {
   shotgun: { n: 'M870 BREACHER', mag: 8, dmg: 20, rate: 0.8, auto: 0, pel: 8, spr: 0.068, rel: 2.2 }
 };
 const NAMES = Object.keys(W);
-let cur = 'pistol', ammo, cd = 0, reloading = 0, kick = 0, flash = 0;
+let cur = 'pistol';
+let ammo = {
+  pistol:  { mag: 15, res: 75 },
+  deagle:  { mag: 7,  res: 35 },
+  rifle:   { mag: 30, res: 150 },
+  shotgun: { mag: 8,  res: 40 }
+};
+let cd = 0, reloading = 0, kick = 0, flash = 0;
 let hp = 100, score = 0, kills = 0, wave = 0, state = 'menu';
 let queue = [], spawnT = 0, breakT = 0, bossT = 0, msgT = 0, hurtA = 0, hudT = 0, stepT = 0;
 
@@ -3625,112 +3632,166 @@ const vrUI = {
 };
 
 // 5. In-VR 3D Controller Raycast Interaction
-function triggerVRButtonClick(ctrl, btn) {
+let activeVRHoverBtn = null;
+let lastHoveredId = null;
+let lastVRClickTime = 0;
+
+function executeVRButtonClick(btn, ctrl) {
   if (!btn || !btn.onClick) return;
+  const now = performance.now();
+  if (now - lastVRClickTime < 320) return; // 320ms click debounce
+  lastVRClickTime = now;
+
+  // Haptic feedback pulse on interacting controller
   if (ctrl && ctrl.userData && ctrl.userData.src && ctrl.userData.src.gamepad) {
     const gp = ctrl.userData.src.gamepad;
     if (gp.hapticActuators && gp.hapticActuators[0]) {
-      try { gp.hapticActuators[0].pulse(0.85, 40); } catch (e) {}
+      try { gp.hapticActuators[0].pulse(0.9, 50); } catch (e) {}
     }
+  } else {
+    ctrls.forEach(c => {
+      try {
+        if (c.userData.src && c.userData.src.gamepad && c.userData.src.gamepad.hapticActuators && c.userData.src.gamepad.hapticActuators[0]) {
+          c.userData.src.gamepad.hapticActuators[0].pulse(0.9, 50);
+        }
+      } catch (e) {}
+    });
   }
+
   SND.uiClick();
   btn.onClick();
 }
 
-function pollVRUIInteraction(ctrl) {
-  if (!ctrl) return;
-  const s = ctrl.userData.src;
-  const gp = s ? s.gamepad : null;
+function pollVRUIInteraction() {
+  if (state === 'play' || !vrMesh || !vrMesh.visible) {
+    ctrls.forEach(c => {
+      if (c.userData.laser) c.userData.laser.visible = false;
+      if (c.userData.dot) c.userData.dot.visible = false;
+    });
+    activeVRHoverBtn = null;
+    lastHoveredId = null;
+    return;
+  }
 
-  ctrl.getWorldPosition(P1);
-  ctrl.getWorldQuaternion(Q);
-  P2.set(0, 0, -1).applyQuaternion(Q);
+  let bestHit = null;
+  let bestCtrl = null;
+  let bestDist = Infinity;
+  let bestHoveredBtn = null;
 
-  ray.set(P1, P2);
-  const hits = ray.intersectObject(vrMesh);
+  // 1. Raycast BOTH controllers against vrMesh
+  ctrls.forEach(c => {
+    if (!c || !c.userData) return;
+    c.getWorldPosition(P1);
+    c.getWorldQuaternion(Q);
+    P2.set(0, 0, -1).applyQuaternion(Q);
 
-  let hovered = null;
-  if (hits.length > 0) {
-    const hit = hits[0];
-    const dist = P1.distanceTo(hit.point);
+    ray.set(P1, P2);
+    const hits = ray.intersectObject(vrMesh);
 
-    if (ctrl.userData.laser) {
-      ctrl.userData.laser.visible = true;
-      ctrl.userData.laser.scale.z = dist;
-    }
-    if (ctrl.userData.dot) {
-      ctrl.userData.dot.position.copy(hit.point).addScaledVector(P2, -0.01);
-      ctrl.userData.dot.visible = true;
-    }
+    if (hits.length > 0) {
+      const hit = hits[0];
+      const dist = P1.distanceTo(hit.point);
 
-    const px = hit.uv.x * 1024;
-    const py = (1.0 - hit.uv.y) * 640;
-
-    for (const btn of vrButtons) {
-      if (px >= btn.x && px <= btn.x + btn.w && py >= btn.y && py <= btn.y + btn.h) {
-        hovered = btn;
-        break;
+      if (c.userData.laser) {
+        c.userData.laser.visible = true;
+        c.userData.laser.scale.z = dist;
       }
-    }
+      if (c.userData.dot) {
+        c.userData.dot.position.copy(hit.point).addScaledVector(P2, -0.015);
+        c.userData.dot.visible = true;
+      }
 
-    ctrl.userData.hoveredBtn = hovered;
+      const px = hit.uv.x * 1024;
+      const py = (1.0 - hit.uv.y) * 640;
 
-    // Visual feedback on laser & reticle dot
-    if (ctrl.userData.laser && ctrl.userData.laser.material) {
-      ctrl.userData.laser.material.color.setHex(hovered ? 0x22d3ee : 0xef4444);
-    }
-    if (ctrl.userData.dot && ctrl.userData.dot.material) {
-      ctrl.userData.dot.material.color.setHex(hovered ? 0x38bdf8 : 0xff2222);
-    }
+      let btnHit = null;
+      for (const btn of vrButtons) {
+        if (px >= btn.x && px <= btn.x + btn.w && py >= btn.y && py <= btn.y + btn.h) {
+          btnHit = btn;
+          break;
+        }
+      }
 
-    if (hovered !== lastHoveredBtn) {
-      lastHoveredBtn = hovered;
-      if (hovered && gp && gp.hapticActuators && gp.hapticActuators[0]) {
+      if (c.userData.laser && c.userData.laser.material) {
+        c.userData.laser.material.color.setHex(btnHit ? 0x22d3ee : 0xef4444);
+      }
+      if (c.userData.dot && c.userData.dot.material) {
+        c.userData.dot.material.color.setHex(btnHit ? 0x38bdf8 : 0xff2222);
+      }
+
+      if (btnHit) {
+        if (!bestHoveredBtn || dist < bestDist) {
+          bestDist = dist;
+          bestHit = hit;
+          bestCtrl = c;
+          bestHoveredBtn = btnHit;
+        }
+      } else if (!bestHoveredBtn && dist < bestDist) {
+        bestDist = dist;
+        bestHit = hit;
+        bestCtrl = c;
+      }
+    } else {
+      if (c.userData.laser) {
+        c.userData.laser.visible = true;
+        c.userData.laser.scale.z = 3.5;
+        if (c.userData.laser.material) c.userData.laser.material.color.setHex(0xef4444);
+      }
+      if (c.userData.dot) c.userData.dot.visible = false;
+    }
+  });
+
+  activeVRHoverBtn = bestHoveredBtn;
+
+  // 2. Redraw ONLY when hovered button ID changes
+  const newHoverId = bestHoveredBtn ? bestHoveredBtn.id : null;
+  if (newHoverId !== lastHoveredId) {
+    lastHoveredId = newHoverId;
+    if (bestHoveredBtn && bestCtrl && bestCtrl.userData.src && bestCtrl.userData.src.gamepad) {
+      const gp = bestCtrl.userData.src.gamepad;
+      if (gp.hapticActuators && gp.hapticActuators[0]) {
         try { gp.hapticActuators[0].pulse(0.18, 15); } catch (e) {}
       }
-      vrUI.draw(hovered ? hovered.id : null);
     }
+    vrUI.draw(newHoverId);
+  }
 
-    // Trigger (0) and Primary Action A/X (4) click detection with controller-local state
-    if (gp && gp.buttons) {
-      const b = gp.buttons;
-      const trigPressed = !!(b[0] && (b[0].pressed || b[0].value > 0.45));
-      const aPressed = !!(b[4] && b[4].pressed);
+  // 3. Multi-button click detection: Trigger, Grip, Thumbstick, A/X, B/Y
+  if (bestHoveredBtn) {
+    ctrls.forEach(c => {
+      const s = c.userData.src;
+      if (!s || !s.gamepad || !s.gamepad.buttons) return;
+      const b = s.gamepad.buttons;
 
-      const trigDown = trigPressed && !ctrl.userData.lastTrigDown;
-      const aDown = aPressed && !ctrl.userData.lastADown;
+      const trig = !!(b[0] && (b[0].pressed || b[0].value > 0.4));
+      const grip = !!(b[1] && (b[1].pressed || b[1].value > 0.4));
+      const stick = !!(b[3] && b[3].pressed);
+      const btnA = !!(b[4] && b[4].pressed);
+      const btnB = !!(b[5] && b[5].pressed);
 
-      ctrl.userData.lastTrigDown = trigPressed;
-      ctrl.userData.lastADown = aPressed;
+      const anyPressed = (trig || grip || stick || btnA || btnB);
+      const wasPressed = !!c.userData.uiBtnDown;
+      c.userData.uiBtnDown = anyPressed;
 
-      if ((trigDown || aDown) && hovered) {
-        triggerVRButtonClick(ctrl, hovered);
+      if (anyPressed && !wasPressed) {
+        executeVRButtonClick(bestHoveredBtn, c);
       }
-    }
+    });
   } else {
-    ctrl.userData.hoveredBtn = null;
-    if (ctrl.userData.laser) {
-      ctrl.userData.laser.visible = (state !== 'play');
-      ctrl.userData.laser.scale.z = 3.5;
-      if (ctrl.userData.laser.material) ctrl.userData.laser.material.color.setHex(0xef4444);
-    }
-    if (ctrl.userData.dot) ctrl.userData.dot.visible = false;
-    if (lastHoveredBtn) {
-      lastHoveredBtn = null;
-      vrUI.draw(null);
-    }
-    if (gp && gp.buttons) {
-      const b = gp.buttons;
-      ctrl.userData.lastTrigDown = !!(b[0] && (b[0].pressed || b[0].value > 0.45));
-      ctrl.userData.lastADown = !!(b[4] && b[4].pressed);
-    }
+    ctrls.forEach(c => {
+      const s = c.userData.src;
+      if (s && s.gamepad && s.gamepad.buttons) {
+        const b = s.gamepad.buttons;
+        c.userData.uiBtnDown = !!((b[0] && (b[0].pressed || b[0].value > 0.4)) || (b[1] && (b[1].pressed || b[1].value > 0.4)) || (b[4] && b[4].pressed) || (b[5] && b[5].pressed));
+      }
+    });
   }
 }
 
 // 6. Meta Quest 2 6DOF Touch Controllers Initialization
 const ctrls = [0, 1].map(i => {
   const c = renderer.xr.getController(i);
-  c.userData = { prev: [], snap: 0, sprinting: false, lastTrigDown: false, lastADown: false, hoveredBtn: null };
+  c.userData = { prev: [], snap: 0, sprinting: false, uiBtnDown: false };
 
   const laserGeo = new THREE.CylinderGeometry(0.0012, 0.0012, 1, 8);
   laserGeo.rotateX(Math.PI / 2);
@@ -3746,10 +3807,20 @@ const ctrls = [0, 1].map(i => {
   scene.add(dotMesh);
   c.userData.dot = dotMesh;
 
-  // Native WebXR Select event on Quest 2 (Standard VR Primary Trigger Pull)
+  // WebXR native input events for trigger & squeeze
+  c.addEventListener('selectstart', () => {
+    if (state !== 'play' && vrMesh && vrMesh.visible && activeVRHoverBtn) {
+      executeVRButtonClick(activeVRHoverBtn, c);
+    }
+  });
   c.addEventListener('select', () => {
-    if (state !== 'play' && vrMesh && vrMesh.visible && c.userData.hoveredBtn) {
-      triggerVRButtonClick(c, c.userData.hoveredBtn);
+    if (state !== 'play' && vrMesh && vrMesh.visible && activeVRHoverBtn) {
+      executeVRButtonClick(activeVRHoverBtn, c);
+    }
+  });
+  c.addEventListener('squeezestart', () => {
+    if (state !== 'play' && vrMesh && vrMesh.visible && activeVRHoverBtn) {
+      executeVRButtonClick(activeVRHoverBtn, c);
     }
   });
 
@@ -4582,6 +4653,8 @@ if (isTouchDevice) {
 }
 
 function reload() {
+  if (state !== 'play') return;
+  if (!ammo || !cur || !W[cur] || !ammo[cur]) return;
   const w = W[cur], a = ammo[cur];
   if (reloading || a.mag === w.mag || a.res <= 0) return;
   reloading = w.rel;
@@ -4645,8 +4718,8 @@ function pollVR(dt) {
           try { s.gamepad.hapticActuators[0].pulse(0.25, 20); } catch(e) {}
         }
       }
-      // Left X Button (4) or Menu Button (5) = Pause
-      if (dn(4) || dn(5)) {
+      // Left X Button (4) or Menu Button (5) = Pause (in play)
+      if (state === 'play' && (dn(4) || dn(5))) {
         togglePause();
       }
     }
@@ -4662,11 +4735,11 @@ function pollVR(dt) {
       }
       if (Math.abs(x) < 0.25) c.userData.snap = 0;
 
-      // Right Grip (1) or B Button (5) = Reload
-      if (dn(1) || dn(5)) reload();
+      // Right Grip (1) or B Button (5) = Reload (ONLY IN PLAY!)
+      if (state === 'play' && (dn(1) || dn(5))) reload();
 
       // Right A Button (4) = Toggle Pause (if in play)
-      if (dn(4) && state === 'play') togglePause();
+      if (state === 'play' && dn(4)) togglePause();
     }
 
     // Gun Trigger Firing (when in play)
@@ -4681,7 +4754,7 @@ function pollVR(dt) {
 
   // Interactive 3D Spatial UI Raycasting (when in Menu / Pause / Win / Over)
   if (state !== 'play' && vrMesh && vrMesh.visible) {
-    ctrls.forEach(c => pollVRUIInteraction(c));
+    pollVRUIInteraction();
   }
 }
 
