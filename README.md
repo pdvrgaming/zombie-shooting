@@ -1,11 +1,33 @@
-# DEAD ZONE: ZOMBIE APOCALYPSE 🧟‍♂️💥
+# DEAD ZONE: SURVIVAL APOCALYPSE 🧟‍♂️💥
 
-> **3D Multi-Platform Survival FPS** optimized for **Desktop PC**, **Mobile Touch**, and **Oculus / Meta Quest 2 (WebXR)**.
+> **Immersive 3D WebXR Survival Horror FPS** engineered for **Meta Quest 2 (Oculus Quest 2)**, with full cross-platform support for Desktop PC and Mobile Touchscreens.
 
-[![GitHub Repo](https://img.shields.io/badge/GitHub-pdvrgaming%2Fzombie--shooting-red.svg?logo=github)](https://github.com/pdvrgaming/zombie-shooting.git)
-[![WebXR Ready](https://img.shields.io/badge/WebXR-Meta%20Quest%202%20Compatible-blue.svg?logo=oculus)](https://immersiveweb.dev/)
-[![Engine](https://img.shields.io/badge/Engine-Three.js%20r128-black.svg?logo=three.js)](https://threejs.org/)
-[![Audio](https://img.shields.io/badge/Audio-Catastic%20Horror%20Pack-orange.svg)](sounds/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Play%20on%20GitHub%20Pages-brightgreen?style=for-the-badge&logo=github)](https://pdvrgaming.github.io/zombie-shooting/)
+[![Meta Quest 2](https://img.shields.io/badge/Meta%20Quest%202-WebXR%206DOF%20Ready-blue?style=for-the-badge&logo=oculus)](https://pdvrgaming.github.io/zombie-shooting/)
+[![Three.js](https://img.shields.io/badge/Three.js-r128-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
+[![Audio Engine](https://img.shields.io/badge/Audio-Spatial%203D%20Horror-orange?style=for-the-badge)](sounds/)
+
+---
+
+## 🌐 Live Website & Play Link
+
+Play instantly in your browser or **Meta Quest Browser** with no installation required:
+👉 **[https://pdvrgaming.github.io/zombie-shooting/](https://pdvrgaming.github.io/zombie-shooting/)**
+
+---
+
+## 🏷️ Discovery & Repository Settings
+
+Copy and paste these directly into your GitHub Repository settings (**About** section at top-right of your repo):
+
+- **Description:**
+  > Immersive 3D WebXR Survival Horror FPS built with Three.js for Meta Quest 2 & Oculus Browser. Features 6DOF dual Touch controllers, spatial 3D audio, realistic ballistics, gore physics, interactive 3D spatial UI, and a 9-wave apocalypse campaign.
+- **Website:**
+  > `https://pdvrgaming.github.io/zombie-shooting/`
+- **Topics / Tags for Discovery:**
+  ```
+  meta-quest-2, oculus-quest-2, webxr, threejs, vr-game, virtual-reality, zombie-shooter, survival-horror, fps, html5-game, webgl, spatial-audio, pwa, quest2-vr, browser-game
+  ```
 
 ---
 
