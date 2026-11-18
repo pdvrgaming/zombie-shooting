@@ -1,0 +1,21 @@
+{
+  "name": "Dead Zone: Zombie Apocalypse",
+  "short_name": "DeadZone",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#06090e",
+  "theme_color": "#d91e18",
+  "description": "3D Survival Shooter featuring 3 atmospheric locations and 9 waves of intense zombie combat with realistic blood splatter, real sound effects, and WebXR Quest 2 VR support.",
+  "orientation": "landscape",
+  "categories": ["games", "action"],
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "ovr_package_name": "com.deadzone.zombieapocalypse",
+  "xr_targets": ["immersive-vr"]
+}
