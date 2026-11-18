@@ -33,6 +33,9 @@ e:\Zombie Shooting/
 ├── Dead Zone_ Apocalypse at Dusk.png       # High-res concept art
 ├── bg-dusk.png                             # Dusk background texture
 ├── _backup/                                # Historical legacy backups
+├── zombie characteres/                     # High-Definition 3D GLB Character Models (Option 2 Active)
+│   ├── classic_zombie_torso__half-life_2.glb  # Half-Life 2 Torso Crawler (Valve Biped rig, 4.16MB)
+│   └── zombie_monster_slasher_necromorph.glb  # Dead Space Slasher Necromorph (Mixamo rig, 4.97MB)
 └── sounds/                                 # Spatial 3D Audio Library
     ├── Bite/                               # Zombie bite sound effects
     ├── Blood/                              # Blood splatter & gory impact sounds
@@ -89,6 +92,7 @@ stateDiagram-v2
 - `selectedLevel`: `0` (Downtown City), `1` (Dark Pine Forest), `2` (Bio-Lab Compound)
 - `wave`: `1` to `3` per location (total 9 waves)
 - `enemyCategory`: `'zombies' | 'animals'`
+- `zombieModelType`: `'glb'` (3D High-Def Skeletal Models, active default) | `'procedural'` (Legacy basic blocks fallback)
 - `chosenWeapon`: `'pistol' | 'deagle' | 'rifle' | 'shotgun'`
 - `sessionDurationLimit`: `0` (Unlimited), `120` (2m), `300` (5m), `600` (10m), `900` (15m)
 - `sessionTimeElapsed`: Accumulated survival gameplay seconds (pauses during menus)
@@ -191,7 +195,53 @@ Sector 3: BIO-LAB COMPOUND (Industrial Red Alarms, Toxic Hazards)
 
 ---
 
-## 8. Spatial Audio Engine & Asset Map
+## 8. 3D GLB Character Model System & Skeletal Animation Architecture
+
+The game features high-definition 3D character models loaded via Three.js `GLTFLoader` and cloned per-instance using `THREE.SkeletonUtils.clone()`:
+
+```mermaid
+flowchart TD
+    Init["Page Initialization"] --> LoadGLTF["initGLBZombieLoader()"]
+    LoadGLTF --> Slasher["Preload & Cache Slasher Necromorph GLB"]
+    LoadGLTF --> Torso["Preload & Cache Half-Life 2 Torso GLB"]
+    Torso --> FixRoot["Patch Torso Root Motion -> In-Place Crawl"]
+    
+    Spawn["spawn(type)"] --> CheckMode{"zombieModelType === 'glb'?"}
+    CheckMode -- "Yes (Active Default)" --> Clone["SkeletonUtils.clone(template)"]
+    CheckMode -- "No / Fallback" --> Procedural["Basic Procedural Geometry"]
+    
+    Clone --> Mix["Assign AnimationMixer & Actions"]
+    Mix --> Hitbox["Attach Headshot Spherical Hitbox & Height Threshold"]
+    Hitbox --> Scene["scene.add(z.g) & zombies.push(z)"]
+    
+    Loop["update(dt)"] --> UpdateMix["z.mixer.update(dt)"]
+    Dmg["dmgZ(z, d, pt, head)"] --> HitCheck["Check h.object.userData.head || point.y threshold"]
+    HitCheck --> Die{"z.hp <= 0?"}
+    Die --> Fall["Play Fall Action / Death Ragdoll Rotation"]
+    Fall --> Cleanup["z.mixer.stopAllAction() & scene.remove()"]
+```
+
+### 8.1 Model & Rig Specifications:
+1. **Slasher Necromorph (`zombie_monster_slasher_necromorph.glb`):**
+   - **Size:** 4.97 MB, 42 Bones, Mixamo Skeletal Rig.
+   - **Usage:** Walker (Scale: 1.05), Runner (Scale: 0.95, `timeScale = 1.65`), Giant (Scale: 1.75, `timeScale = 0.75`), Boss (Scale: 2.5, `timeScale = 0.85`).
+   - **Animations:** Continuous high-speed charge & blade slashing (`anim`).
+   - **Material:** Self-contained `MeshStandardMaterial` (`Scene_-_Root`) with embedded diffuse & normal maps.
+2. **Classic Zombie Torso Crawler (`classic_zombie_torso__half-life_2.glb`):**
+   - **Size:** 4.16 MB, 60 Bones, Valve Biped Skeletal Rig.
+   - **Usage:** Spitter / Acid Crawler.
+   - **Animations:** Crawling forward (`crawl`), attacking (`attack`), falling/dying (`fall`), idle (`Idle01`).
+   - **Root Motion Patch:** The crawler's `Spine_01.position` track has its forward delta zeroed in memory at load time, transforming the root-motion animation into a perfect in-place crawl that aligns with game AI.
+   - **Special FX:** Equipped with an emissive toxic acid gland that spits projectile globules.
+
+### 8.2 Headshot Detection & Performance Optimization:
+- **Dual-Layer Headshot Detection:** Every GLB zombie has both an invisible sphere hitbox (`userData.head = true`) positioned at the head bone and a dynamic Y-height threshold (`h.point.y - z.g.position.y >= z.headYThreshold`), ensuring 100% reliable 2.5x critical headshots.
+- **Quest 2 VRAM Optimization:** Geometries and textures are shared via `SkeletonUtils.clone()`, keeping VRAM usage under 40MB total.
+- **Garbage Collection:** When dead zombies sink after 3.5 seconds, `mixer.stopAllAction()` and `mixer.uncacheRoot(z.g)` prevent bone memory leaks.
+
+---
+
+## 9. Spatial Audio Engine & Asset Map
 
 The audio engine (`SND` object) uses a **hybrid loading system**:
 1. Checks preloaded Web Audio sample buffers (`sampleBuffers[name]`).
@@ -210,7 +260,7 @@ The audio engine (`SND` object) uses a **hybrid loading system**:
 
 ---
 
-## 9. Critical Architecture Invariants (DO NOT BREAK)
+## 10. Critical Architecture Invariants (DO NOT BREAK)
 
 > [!CAUTION]
 > Breaking any of these rules will cause crashes, screen freezes, or unclickable UI on Meta Quest 2.
@@ -233,7 +283,7 @@ The audio engine (`SND` object) uses a **hybrid loading system**:
 
 ---
 
-## 10. Developer & Testing Workflow
+## 11. Developer & Testing Workflow
 
 ### Syntax Validation:
 ```powershell

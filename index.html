@@ -1359,6 +1359,9 @@
     <span class="divider">&bull;</span>
     <span class="loadout-label">&#9201; TIME:</span>
     <span class="loadout-val" id="loadout-summary-timer">UNLIMITED</span>
+    <span class="divider">&bull;</span>
+    <span class="loadout-label">&#129503; ZOMBIES:</span>
+    <span class="loadout-val" id="loadout-summary-model" style="color:#4ade80;">3D GLB</span>
     <span class="loadout-edit-hint">[CUSTOMIZE &#9662;]</span>
   </div>
 
@@ -1409,6 +1412,22 @@
         <button class="time-btn" data-sec="300">5 MIN</button>
         <button class="time-btn" data-sec="600">10 MIN</button>
         <button class="time-btn" data-sec="900">15 MIN</button>
+      </div>
+    </div>
+
+    <!-- Zombie Model Appearance Selector (GLB Option 2 Active by default, Procedural Option 1 Hidden/Secondary) -->
+    <div class="time-select-card" style="margin-top:12px;">
+      <div class="time-select-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>&#129503; ZOMBIE 3D MODEL TYPE</span>
+        <span id="glb-status-indicator" style="font-size:10.5px;color:#4ade80;font-weight:bold;">3D GLB READY</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;">
+        <button type="button" class="model-pill-btn active" id="btn-model-glb" data-model="glb" style="padding:10px 8px;font-size:12px;border:1.5px solid #22c55e;border-radius:6px;background:rgba(22,101,52,0.3);color:#e2e8f0;cursor:pointer;touch-action:manipulation;">
+          &#128128; 3D GLB MONSTERS<br><span style="font-size:10px;color:#86efac;font-weight:normal;">[HQ GLTF &bull; SKELETAL RIG]</span>
+        </button>
+        <button type="button" class="model-pill-btn" id="btn-model-procedural" data-model="procedural" style="padding:10px 8px;font-size:12px;opacity:0.65;border:1px dashed #64748b;border-radius:6px;background:rgba(15,23,42,0.6);color:#94a3b8;cursor:pointer;touch-action:manipulation;">
+          &#9881;&#65039; BASIC PROCEDURAL<br><span style="font-size:10px;color:#94a3b8;font-weight:normal;">[LEGACY BLOCKS &bull; FALLBACK]</span>
+        </button>
       </div>
     </div>
 
@@ -1509,6 +1528,8 @@
 <div id="blood-vignette"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const R = (a, b) => a + Math.random() * (b - a);
@@ -1688,9 +1709,103 @@ const LEVELS = [
 let initialSelectedLevel = 0;
 let selectedLevel = 0;
 let enemyCategory = 'zombies'; // 'zombies' | 'animals'
+let zombieModelType = 'glb';    // 'glb' (3D High-Def GLB models, active default) | 'procedural' (basic procedural meshes)
 let chosenWeapon = 'pistol';   // Only one gun equipped for run
 let sessionDurationLimit = 0;  // 0 = unlimited, or seconds (120, 300, 600, 900)
 let sessionTimeElapsed = 0;
+
+// ---------- 3D GLB ZOMBIE LOADER & TEMPLATE CACHE ----------
+const zombieTemplates = {
+  slasher: null, // Slasher Necromorph GLTF scene & animations
+  torso: null,   // Classic Zombie Torso GLTF scene & animations
+  loaded: false,
+  loading: false
+};
+
+function initGLBZombieLoader() {
+  if (typeof THREE === 'undefined' || typeof THREE.GLTFLoader === 'undefined') {
+    setTimeout(initGLBZombieLoader, 150);
+    return;
+  }
+  if (zombieTemplates.loading || zombieTemplates.loaded) return;
+  zombieTemplates.loading = true;
+
+  const loader = new THREE.GLTFLoader();
+  const slasherPath = 'zombie%20characteres/zombie_monster_slasher_necromorph.glb';
+  const torsoPath = 'zombie%20characteres/classic_zombie_torso__half-life_2.glb';
+
+  let loadedCount = 0;
+  const checkDone = () => {
+    loadedCount++;
+    if (loadedCount >= 2) {
+      zombieTemplates.loaded = true;
+      zombieTemplates.loading = false;
+      console.log('✅ All 3D GLB Zombie character models loaded & primed for horde spawning!');
+      const ind = $('glb-status-indicator');
+      if (ind) { ind.textContent = '3D GLB READY'; ind.style.color = '#4ade80'; }
+    }
+  };
+
+  // Preload Slasher Necromorph (Walker, Runner, Giant, Boss)
+  loader.load(slasherPath, gltf => {
+    gltf.scene.traverse(o => {
+      if (o.isMesh || o.isSkinnedMesh) {
+        o.castShadow = true;
+        o.receiveShadow = true;
+        if (o.material) {
+          o.material.roughness = 0.75;
+          o.material.metalness = 0.15;
+        }
+      }
+    });
+    zombieTemplates.slasher = {
+      scene: gltf.scene,
+      animations: gltf.animations
+    };
+    checkDone();
+  }, undefined, err => {
+    console.warn('Could not load Slasher GLB, will fallback to procedural if needed:', err);
+    checkDone();
+  });
+
+  // Preload Half-Life 2 Classic Zombie Torso Crawler (Spitter)
+  loader.load(torsoPath, gltf => {
+    gltf.scene.traverse(o => {
+      if (o.isMesh || o.isSkinnedMesh) {
+        o.castShadow = true;
+        o.receiveShadow = true;
+        if (o.material) {
+          o.material.roughness = 0.8;
+          o.material.metalness = 0.1;
+        }
+      }
+    });
+
+    // Fix crawler root motion so it crawls smoothly in-place with game AI
+    if (gltf.animations) {
+      const crawlClip = gltf.animations.find(a => a.name.includes('crawl'));
+      if (crawlClip) {
+        const spineTrack = crawlClip.tracks.find(t => t.name.includes('Spine_01.position'));
+        if (spineTrack) {
+          const initialY = spineTrack.values[1];
+          for (let i = 0; i < spineTrack.values.length; i += 3) {
+            spineTrack.values[i + 1] = initialY;
+          }
+        }
+      }
+    }
+
+    zombieTemplates.torso = {
+      scene: gltf.scene,
+      animations: gltf.animations
+    };
+    checkDone();
+  }, undefined, err => {
+    console.warn('Could not load Torso GLB, will fallback to procedural if needed:', err);
+    checkDone();
+  });
+}
+initGLBZombieLoader();
 
 // Device Auto-Detection
 function detectDevice() {
@@ -1765,6 +1880,35 @@ document.querySelectorAll('.time-btn').forEach(btn => {
     btn.classList.add('active');
     sessionDurationLimit = parseInt(btn.dataset.sec, 10) || 0;
     if ($('loadout-summary-timer')) $('loadout-summary-timer').textContent = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit/60)} MIN` : 'UNLIMITED';
+  });
+});
+
+// Zombie Model Appearance Listener (Option 2 GLB active by default, Option 1 procedural secondary)
+document.querySelectorAll('.model-pill-btn').forEach(btn => {
+  bindUniversalClick(btn, () => {
+    SND.uiClick();
+    document.querySelectorAll('.model-pill-btn').forEach(b => {
+      b.classList.remove('active');
+      b.style.border = '1px dashed #64748b';
+      b.style.opacity = '0.65';
+      b.style.background = 'rgba(15,23,42,0.6)';
+      b.style.color = '#94a3b8';
+    });
+    btn.classList.add('active');
+    btn.style.opacity = '1';
+    btn.style.color = '#e2e8f0';
+    const isGLB = (btn.dataset.model === 'glb');
+    btn.style.border = isGLB ? '1.5px solid #22c55e' : '1.5px solid #f59e0b';
+    btn.style.background = isGLB ? 'rgba(22,101,52,0.3)' : 'rgba(120,53,15,0.3)';
+    zombieModelType = btn.dataset.model;
+    if ($('loadout-summary-model')) {
+      $('loadout-summary-model').textContent = isGLB ? '3D GLB' : 'PROCEDURAL';
+      $('loadout-summary-model').style.color = isGLB ? '#4ade80' : '#f59e0b';
+    }
+    if ($('glb-status-indicator')) {
+      $('glb-status-indicator').textContent = isGLB ? '3D GLB ACTIVE' : 'PROCEDURAL (LEGACY)';
+      $('glb-status-indicator').style.color = isGLB ? '#4ade80' : '#f59e0b';
+    }
   });
 });
 
@@ -3344,7 +3488,7 @@ const vrUI = {
     });
     
     const modes = [
-      { id: 'zombies', label: '💀 ZOMBIES', x: 260, y: 248, w: 240, h: 48 },
+      { id: 'zombies', label: '💀 ZOMBIES (3D GLB)', x: 260, y: 248, w: 240, h: 48 },
       { id: 'animals', label: '🐾 MUTANT ANIMALS', x: 524, y: 248, w: 240, h: 48 }
     ];
     modes.forEach(m => {
@@ -3967,6 +4111,13 @@ function spawn(type) {
   const up = new THREE.Group();
   g.add(up);
 
+  let isGLB = false;
+  let mixer = null;
+  let animAction = null;
+  let attackAction = null;
+  let fallAction = null;
+  let headYThreshold = 1.35;
+
   const cy = (a, b, h, x, y, z, m) => {
     const o = new THREE.Mesh(new THREE.CylinderGeometry(a, b, h, 8), m);
     o.position.set(x, y, z);
@@ -4057,75 +4208,162 @@ function spawn(type) {
     g.scale.setScalar(type === 'boss' ? 2.4 : type === 'giant' ? 1.75 : 1.05);
 
   } else {
-    // --- ZOMBIE HUMANOID MODELS ---
-    const sc = new THREE.Color(T.c).offsetHSL(R(-0.03, 0.03), R(-0.12, 0.06), R(-0.04, 0.08));
-    const sk = L(sc.getHex());
-    const cl = L(type === 'runner' ? 0x451a22 : type === 'spitter' ? 0x134e4a : [0x2a3a55, 0x4a4a3a, 0x5a2a2a, 0x3a3f45, 0x6b6b60][Math.random() * 5 | 0]);
-    const pt = L([0x23262c, 0x2b3140, 0x3a3328][Math.random() * 3 | 0]);
-    const bl = L(0x7f0909);
-    const bn = L(0xd6ccb2);
-    const ey = new THREE.MeshBasicMaterial({ color: type === 'spitter' ? 0x4ade80 : type === 'boss' ? 0xff4500 : 0xe8ff80 });
-    const hr = L(0x1a1410);
+    // --- ZOMBIE HUMANOID MODELS (GLB 3D Skeletal Mesh vs Basic Procedural Fallback) ---
+    const useGLB = (zombieModelType === 'glb') && (zombieTemplates.slasher || zombieTemplates.torso) && (typeof THREE.SkeletonUtils !== 'undefined');
+    if (useGLB) {
+      const isCrawler = (type === 'spitter' && zombieTemplates.torso);
+      const template = isCrawler ? zombieTemplates.torso : (zombieTemplates.slasher || zombieTemplates.torso);
+      if (template && template.scene) {
+        isGLB = true;
+        const model = THREE.SkeletonUtils.clone(template.scene);
+        mixer = new THREE.AnimationMixer(model);
 
-    const fat = (type === 'giant' || type === 'boss') ? 1.35 : 1;
-    up.position.y = 1;
-    up.rotation.x = type === 'runner' ? 0.45 : 0.25;
+        if (isCrawler && template === zombieTemplates.torso) {
+          // Half-Life 2 Classic Zombie Torso Crawler
+          const crawlClip = template.animations.find(a => a.name.includes('crawl')) || template.animations[0];
+          const atkClip   = template.animations.find(a => a.name.includes('attack'));
+          const fallClip  = template.animations.find(a => a.name.includes('fall'));
 
-    const tor = cy(0.24 * fat, 0.2 * fat, 0.72, 0, 0.3, 0, cl);
-    tor.scale.z = 0.65;
-    up.add(tor, cy(0.055, 0.065, 0.13, 0, 0.74, 0.03, sk));
+          animAction = mixer.clipAction(crawlClip);
+          animAction.play();
+          animAction.timeScale = 1.3;
 
-    for (let i = 0; i < 5; i++) {
-      up.add(box(0.06, R(0.05, 0.16), 0.04, -0.16 + i * 0.08, -0.08, 0, cl));
-    }
-    if (Math.random() < 0.7) {
-      up.add(box(0.26, 0.2, 0.02, 0, 0.38, 0.16 * fat, bl));
-      for (let k = 0; k < 3; k++) up.add(box(0.25, 0.02, 0.03, 0, 0.3 + k * 0.06, 0.175 * fat, bn));
-    }
+          if (atkClip) attackAction = mixer.clipAction(atkClip);
+          if (fallClip) fallAction = mixer.clipAction(fallClip);
 
-    if (type === 'spitter') up.add(sp(0.2, 0, 0.36, 0.16, new THREE.MeshBasicMaterial({ color: 0x22c55e })));
-    if (type === 'giant') up.add(sp(0.32, 0, 0.14, 0.12, cl));
-    if (type === 'boss') {
-      up.add(box(0.34, 0.34, 0.06, 0, 0.38, 0.21, new THREE.MeshBasicMaterial({ color: 0xff5500 })));
-      for (let k = 0; k < 6; k++) {
-        const s = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.38, 6), bn);
-        s.position.set(R(-0.16, 0.16), 0.1 + k * 0.1, -0.22);
-        s.rotation.x = -1.3;
-        up.add(s);
+          model.position.set(0, 0, 0.65);
+          g.scale.setScalar(T.s * 1.0);
+          headYThreshold = 0.55 * T.s;
+
+          // Glowing toxic acid gland on headcrab
+          const acidGland = new THREE.Mesh(
+            new THREE.SphereGeometry(0.18, 8, 8),
+            new THREE.MeshBasicMaterial({ color: 0x4ade80 })
+          );
+          acidGland.position.set(0, 0.72, 0.35);
+          g.add(acidGland);
+
+          // Head hitbox sphere for precision headshots
+          const headBox = new THREE.Mesh(
+            new THREE.SphereGeometry(0.24, 8, 8),
+            new THREE.MeshBasicMaterial({ visible: false })
+          );
+          headBox.position.set(0, 0.72, 0.25);
+          headBox.userData.head = true;
+          g.add(headBox);
+
+        } else {
+          // Slasher Necromorph (Walker, Runner, Giant, Boss)
+          const animClip = template.animations[0];
+          animAction = mixer.clipAction(animClip);
+          animAction.play();
+
+          if (type === 'runner') animAction.timeScale = 1.65;
+          else if (type === 'giant') animAction.timeScale = 0.75;
+          else if (type === 'boss') animAction.timeScale = 0.85;
+          else animAction.timeScale = 1.05;
+
+          const scaleMult = (type === 'boss' ? 2.5 : type === 'giant' ? 1.75 : type === 'runner' ? 0.95 : 1.05);
+          g.scale.setScalar(T.s * scaleMult);
+          headYThreshold = 1.3 * (T.s * scaleMult);
+
+          // Precision head hitbox sphere
+          const headRadius = (type === 'boss' ? 0.42 : type === 'giant' ? 0.32 : 0.22);
+          const headHeight = (type === 'boss' ? 3.6 : type === 'giant' ? 2.45 : 1.45);
+          const headBox = new THREE.Mesh(
+            new THREE.SphereGeometry(headRadius, 8, 8),
+            new THREE.MeshBasicMaterial({ visible: false })
+          );
+          headBox.position.set(0, headHeight, 0.28);
+          headBox.userData.head = true;
+          g.add(headBox);
+
+          // Boss ominous crimson core
+          if (type === 'boss') {
+            const bossCore = new THREE.Mesh(
+              new THREE.SphereGeometry(0.38, 12, 10),
+              new THREE.MeshBasicMaterial({ color: 0xff2200 })
+            );
+            bossCore.position.set(0, 2.2, 0.15);
+            g.add(bossCore);
+          }
+        }
+
+        g.add(model);
       }
     }
 
-    const hd = sp(0.175, 0, 0.95, 0.08, sk, 1.2);
-    hd.userData.head = true;
-    up.add(
-      hd,
-      sp(0.19, 0, 1.02, -0.03, hr, 1.05),
-      box(0.14, 0.05, 0.1, 0, 0.72, 0.15, sk),
-      box(0.12, 0.025, 0.02, 0, 0.76, 0.215, bn),
-      box(0.13, 0.05, 0.04, 0, 0.78, 0.2, L(0x1a0505)),
-      sp(0.04, -0.06, 0.98, 0.215, L(0x120808)),
-      sp(0.04, 0.06, 0.98, 0.215, L(0x120808)),
-      sp(0.03, -0.06, 0.98, 0.238, ey),
-      sp(0.03, 0.06, 0.98, 0.238, ey),
-      box(0.05, 0.1, 0.02, 0.11, 0.93, 0.17, bl)
-    );
+    if (!isGLB) {
+      // --- BASIC PROCEDURAL HUMANOID FALLBACK (OPTION 1) ---
+      const sc = new THREE.Color(T.c).offsetHSL(R(-0.03, 0.03), R(-0.12, 0.06), R(-0.04, 0.08));
+      const sk = L(sc.getHex());
+      const cl = L(type === 'runner' ? 0x451a22 : type === 'spitter' ? 0x134e4a : [0x2a3a55, 0x4a4a3a, 0x5a2a2a, 0x3a3f45, 0x6b6b60][Math.random() * 5 | 0]);
+      const pt = L([0x23262c, 0x2b3140, 0x3a3328][Math.random() * 3 | 0]);
+      const bl = L(0x7f0909);
+      const bn = L(0xd6ccb2);
+      const ey = new THREE.MeshBasicMaterial({ color: type === 'spitter' ? 0x4ade80 : type === 'boss' ? 0xff4500 : 0xe8ff80 });
+      const hr = L(0x1a1410);
 
-    [-1, 1].forEach(s => {
-      let p = new THREE.Group();
-      p.position.set(s * 0.3 * fat, 0.62, 0);
-      p.add(cy(0.055, 0.05, 0.32, 0, -0.16, 0, cl), cy(0.045, 0.04, 0.3, 0, -0.47, 0, sk), sp(0.05, 0, -0.64, 0, sk));
-      p.rotation.x = -1.4;
-      up.add(p);
-      arms.push(p);
+      const fat = (type === 'giant' || type === 'boss') ? 1.35 : 1;
+      up.position.y = 1;
+      up.rotation.x = type === 'runner' ? 0.45 : 0.25;
 
-      p = new THREE.Group();
-      p.position.set(s * 0.13, 0.95, 0);
-      p.add(cy(0.085, 0.07, 0.5, 0, -0.25, 0, pt), cy(0.065, 0.055, 0.45, 0, -0.7, 0, pt), box(0.1, 0.07, 0.25, 0, -0.94, 0.06, L(0x111111)));
-      g.add(p);
-      legs.push(p);
-    });
+      const tor = cy(0.24 * fat, 0.2 * fat, 0.72, 0, 0.3, 0, cl);
+      tor.scale.z = 0.65;
+      up.add(tor, cy(0.055, 0.065, 0.13, 0, 0.74, 0.03, sk));
 
-    g.scale.setScalar(T.s);
+      for (let i = 0; i < 5; i++) {
+        up.add(box(0.06, R(0.05, 0.16), 0.04, -0.16 + i * 0.08, -0.08, 0, cl));
+      }
+      if (Math.random() < 0.7) {
+        up.add(box(0.26, 0.2, 0.02, 0, 0.38, 0.16 * fat, bl));
+        for (let k = 0; k < 3; k++) up.add(box(0.25, 0.02, 0.03, 0, 0.3 + k * 0.06, 0.175 * fat, bn));
+      }
+
+      if (type === 'spitter') up.add(sp(0.2, 0, 0.36, 0.16, new THREE.MeshBasicMaterial({ color: 0x22c55e })));
+      if (type === 'giant') up.add(sp(0.32, 0, 0.14, 0.12, cl));
+      if (type === 'boss') {
+        up.add(box(0.34, 0.34, 0.06, 0, 0.38, 0.21, new THREE.MeshBasicMaterial({ color: 0xff5500 })));
+        for (let k = 0; k < 6; k++) {
+          const s = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.38, 6), bn);
+          s.position.set(R(-0.16, 0.16), 0.1 + k * 0.1, -0.22);
+          s.rotation.x = -1.3;
+          up.add(s);
+        }
+      }
+
+      const hd = sp(0.175, 0, 0.95, 0.08, sk, 1.2);
+      hd.userData.head = true;
+      up.add(
+        hd,
+        sp(0.19, 0, 1.02, -0.03, hr, 1.05),
+        box(0.14, 0.05, 0.1, 0, 0.72, 0.15, sk),
+        box(0.12, 0.025, 0.02, 0, 0.76, 0.215, bn),
+        box(0.13, 0.05, 0.04, 0, 0.78, 0.2, L(0x1a0505)),
+        sp(0.04, -0.06, 0.98, 0.215, L(0x120808)),
+        sp(0.04, 0.06, 0.98, 0.215, L(0x120808)),
+        sp(0.03, -0.06, 0.98, 0.238, ey),
+        sp(0.03, 0.06, 0.98, 0.238, ey),
+        box(0.05, 0.1, 0.02, 0.11, 0.93, 0.17, bl)
+      );
+
+      [-1, 1].forEach(s => {
+        let p = new THREE.Group();
+        p.position.set(s * 0.3 * fat, 0.62, 0);
+        p.add(cy(0.055, 0.05, 0.32, 0, -0.16, 0, cl), cy(0.045, 0.04, 0.3, 0, -0.47, 0, sk), sp(0.05, 0, -0.64, 0, sk));
+        p.rotation.x = -1.4;
+        up.add(p);
+        arms.push(p);
+
+        p = new THREE.Group();
+        p.position.set(s * 0.13, 0.95, 0);
+        p.add(cy(0.085, 0.07, 0.5, 0, -0.25, 0, pt), cy(0.065, 0.055, 0.45, 0, -0.7, 0, pt), box(0.1, 0.07, 0.25, 0, -0.94, 0.06, L(0x111111)));
+        g.add(p);
+        legs.push(p);
+      });
+
+      g.scale.setScalar(T.s);
+    }
   }
 
   const ax = Math.random() < 0.5;
@@ -4135,8 +4373,9 @@ function spawn(type) {
   g.position.set(ax ? lane : sd * dist, 0, ax ? sd * dist : lane);
 
   const z = {
-    g, T, type, isAnimal, hp: T.hp, cd: 0, spitCd: R(2, 4),
-    t: R(0, 6), gt: R(1, 5), dead: false, dt: 0, arms, legs, up
+    g, T, type, isAnimal, isGLB, hp: T.hp, cd: 0, spitCd: R(2, 4),
+    t: R(0, 6), gt: R(1, 5), dead: false, dt: 0, arms, legs, up,
+    mixer, animAction, attackAction, fallAction, headYThreshold
   };
   g.userData.owner = z;
   scene.add(g);
@@ -4196,6 +4435,12 @@ function dmgZ(z, d, pt, head) {
   if (z.hp <= 0) {
     z.dead = true;
     z.dt = 0;
+    if (z.fallAction) {
+      try {
+        if (z.animAction) z.animAction.fadeOut(0.25);
+        z.fallAction.reset().fadeIn(0.25).play();
+      } catch (e) {}
+    }
     if (z.type === 'boss' && $('boss-hud')) $('boss-hud').style.display = 'none';
     score += z.T.pts + (head ? 75 : 0);
     kills++;
@@ -4413,7 +4658,15 @@ function startGame(isRetry = false) {
   applyLevelTheme(selectedLevel);
 
   // Clean all scene entities
-  zombies.forEach(z => scene.remove(z.g));
+  zombies.forEach(z => {
+    if (z.mixer) {
+      try {
+        z.mixer.stopAllAction();
+        z.mixer.uncacheRoot(z.g);
+      } catch (e) {}
+    }
+    scene.remove(z.g);
+  });
   zombies.length = 0;
   parts.forEach(p => scene.remove(p.m));
   parts.length = 0;
@@ -4823,7 +5076,8 @@ function fire() {
           boom(t);
         } else {
           spawnBulletDebris(h.point, dir, 'flesh');
-          dmgZ(t, w.dmg, h.point, !!h.object.userData.head);
+          const isHead = !!h.object.userData.head || (t.isGLB && (h.point.y - t.g.position.y) >= (t.headYThreshold || 1.35));
+          dmgZ(t, w.dmg, h.point, isHead);
         }
       }
     } else {
@@ -5082,6 +5336,11 @@ function update(dt) {
       g.rotation.y = Math.atan2(dx, dz);
       z.t += dt;
 
+      // Update Skeletal Animation Mixer for 3D GLB Zombies
+      if (z.mixer) {
+        z.mixer.update(dt);
+      }
+
       if (z.type === 'spitter' && d < 22 && d > 5) {
         z.spitCd -= dt;
         if (z.spitCd <= 0) {
@@ -5093,26 +5352,35 @@ function update(dt) {
       if (d > rg) {
         g.position.x += (dx / d) * z.T.sp * dt;
         g.position.z += (dz / d) * z.T.sp * dt;
-        const sw = Math.sin(z.t * z.T.sp * (z.isAnimal ? 4.5 : 3.2));
-        if (z.isAnimal) {
-          // Quadruped galloping animation
-          z.up.position.y = (0.72 + Math.abs(sw) * 0.08) * ((z.type === 'giant' || z.type === 'boss') ? 1.45 : 1);
-          z.arms[0].rotation.x = sw * 0.75;
-          z.arms[1].rotation.x = sw * 0.75;
-          z.legs[0].rotation.x = -sw * 0.75;
-          z.legs[1].rotation.x = -sw * 0.75;
-        } else {
-          // Bipedal zombie shamble animation
-          z.up.rotation.z = sw * 0.08;
-          z.legs[0].rotation.x = sw * 0.65;
-          z.legs[1].rotation.x = -sw * 0.65;
-          z.arms.forEach(r => r.rotation.x = -1.4 + Math.sin(z.t * 3) * 0.16);
+        if (!z.isGLB) {
+          const sw = Math.sin(z.t * z.T.sp * (z.isAnimal ? 4.5 : 3.2));
+          if (z.isAnimal) {
+            // Quadruped galloping animation
+            z.up.position.y = (0.72 + Math.abs(sw) * 0.08) * ((z.type === 'giant' || z.type === 'boss') ? 1.45 : 1);
+            z.arms[0].rotation.x = sw * 0.75;
+            z.arms[1].rotation.x = sw * 0.75;
+            z.legs[0].rotation.x = -sw * 0.75;
+            z.legs[1].rotation.x = -sw * 0.75;
+          } else {
+            // Bipedal zombie shamble animation
+            z.up.rotation.z = sw * 0.08;
+            z.legs[0].rotation.x = sw * 0.65;
+            z.legs[1].rotation.x = -sw * 0.65;
+            z.arms.forEach(r => r.rotation.x = -1.4 + Math.sin(z.t * 3) * 0.16);
+          }
         }
       } else {
-        if (z.isAnimal) {
-          z.up.rotation.x = Math.sin(z.t * 14) * 0.25;
-        } else {
-          z.arms.forEach((r, i) => r.rotation.x = -1.4 + Math.sin(z.t * 10 + i) * 0.55);
+        if (!z.isGLB) {
+          if (z.isAnimal) {
+            z.up.rotation.x = Math.sin(z.t * 14) * 0.25;
+          } else {
+            z.arms.forEach((r, i) => r.rotation.x = -1.4 + Math.sin(z.t * 10 + i) * 0.55);
+          }
+        } else if (z.attackAction && !z.isAttacking) {
+          try {
+            z.isAttacking = true;
+            z.attackAction.reset().fadeIn(0.15).play();
+          } catch (e) {}
         }
         z.cd -= dt;
         if (z.cd <= 0) {
@@ -5155,9 +5423,18 @@ function update(dt) {
     const z = zombies[i];
     if (!z.dead) continue;
     z.dt += dt;
+    if (z.mixer) {
+      z.mixer.update(dt);
+    }
     z.g.rotation.x = -Math.min(z.dt * 3, 1.5);
     if (z.dt > 2) z.g.position.y -= dt * 0.5;
     if (z.dt > 3.5) {
+      if (z.mixer) {
+        try {
+          z.mixer.stopAllAction();
+          z.mixer.uncacheRoot(z.g);
+        } catch (e) {}
+      }
       scene.remove(z.g);
       zombies.splice(i, 1);
     }
