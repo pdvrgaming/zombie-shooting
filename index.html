@@ -1378,6 +1378,7 @@ const LEVELS = [
   }
 ];
 
+let initialSelectedLevel = 0;
 let selectedLevel = 0;
 let enemyCategory = 'zombies'; // 'zombies' | 'animals'
 let chosenWeapon = 'pistol';   // Only one gun equipped for run
@@ -1417,7 +1418,8 @@ document.querySelectorAll('.location-card').forEach(card => {
     SND.uiClick();
     document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
-    selectedLevel = parseInt(card.dataset.lvl, 10);
+    initialSelectedLevel = parseInt(card.dataset.lvl, 10) || 0;
+    selectedLevel = initialSelectedLevel;
   });
 });
 
@@ -1574,6 +1576,9 @@ function updateBloodScreen(dt) {
 
 // ---------- REAL AUDIO FILES INTEGRATION (sounds/) ----------
 const AUDIO_MANIFEST = {
+  pistol: [
+    'sounds/pistol/pi_hand_single_near_03.wav'
+  ],
   bite: [
     'sounds/Bite/Zombie_Attack_Bite_001.mp3',
     'sounds/Bite/Zombie_Attack_Bite_002.mp3'
@@ -2213,6 +2218,10 @@ const SND = {
   uiClick() { /* Clean silent UI */ },
   shot(w) {
     if (!AC) return;
+    if (w === 'pistol') {
+      const played = playSample('pistol', null, 1.3, 0.02);
+      if (played) return;
+    }
     const t = AC.currentTime;
 
     // 1. Sharp 9mm / Caliber Supersonic Muzzle Crack (2ms transient burst)
@@ -2935,11 +2944,13 @@ function showStoryModal(title, sub, isWin = false, isDeath = false, canResume = 
 
   $('modal-btn-primary').style.display = (canResume || isWin) ? 'block' : 'none';
   $('modal-btn-primary').textContent = isWin ? 'NEXT LOCATION' : 'RESUME';
+  if ($('modal-btn-retry')) $('modal-btn-retry').textContent = isDeath ? 'RETRY' : 'RESTART';
   $('modal-ov').style.display = 'flex';
 }
 
 function showPauseModal(title, sub, canResume = true) {
   showStoryModal(title, sub, false, false, canResume);
+  if ($('modal-btn-retry')) $('modal-btn-retry').textContent = 'RESTART';
 }
 
 
@@ -2966,6 +2977,7 @@ function quitToMenu() {
   state = 'menu';
   mouseDown = false;
   touchState.firing = false;
+  sessionTimeElapsed = 0;
   if (document.pointerLockElement === dom) document.exitPointerLock();
   $('modal-ov').style.display = 'none';
   $('hud').style.display = 'none';
@@ -2976,7 +2988,8 @@ function quitToMenu() {
 function retryGame() {
   SND.uiClick();
   $('modal-ov').style.display = 'none';
-  startGame();
+  selectedLevel = initialSelectedLevel || 0;
+  startGame(true);
   if (!mobileMode && !xr()) dom.requestPointerLock();
 }
 
@@ -3054,8 +3067,28 @@ function startWave() {
   updateHUD();
 }
 
-function startGame() {
+function updateTimerDisplay() {
+  const timerBadge = $('hud-timer-badge');
+  if (!timerBadge) return;
+  if (sessionDurationLimit > 0) {
+    const remaining = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
+    const m = Math.floor(remaining / 60);
+    const s = Math.floor(remaining % 60);
+    timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  } else {
+    const m = Math.floor(sessionTimeElapsed / 60);
+    const s = Math.floor(sessionTimeElapsed % 60);
+    timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+}
+
+function startGame(isRetry = false) {
+  if (isRetry) {
+    selectedLevel = initialSelectedLevel || 0;
+  }
   applyLevelTheme(selectedLevel);
+
+  // Clean all scene entities
   zombies.forEach(z => scene.remove(z.g));
   zombies.length = 0;
   parts.forEach(p => scene.remove(p.m));
@@ -3073,10 +3106,25 @@ function startGame() {
     }
   });
 
+  // Reset full game stats & mission session timer
   hp = 100;
   score = 0;
   kills = 0;
   wave = 0;
+  sessionTimeElapsed = 0;
+  breakT = 0;
+  bossT = 0;
+  msgT = 0;
+  queue.length = 0;
+
+  // Clear screen bloodshed visor canvas & vignette
+  screenSplats.length = 0;
+  screenDrips.length = 0;
+  if (bloodCtx && bloodCanvas) bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
+  if (bloodVignette) bloodVignette.style.opacity = '0';
+  if ($('boss-hud')) $('boss-hud').style.display = 'none';
+
+  // Reset player transform
   rig.position.set(0, 0, 0);
   rig.rotation.y = 0;
   pitch = 0;
@@ -3106,6 +3154,7 @@ function startGame() {
     $('mobile-ui').style.display = 'none';
   }
 
+  updateTimerDisplay();
   startWave();
 }
 
@@ -3421,6 +3470,7 @@ function fire() {
 }
 
 function updateHUD() {
+  updateTimerDisplay();
   const w = W[cur];
   const a = ammo ? ammo[cur] : { mag: 0, res: 0 };
   const at = `${a.mag} / ${a.res}`;
