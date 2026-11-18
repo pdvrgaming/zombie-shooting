@@ -2177,6 +2177,8 @@ function initAudio() {
   nb = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate);
   const d = nb.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+
+  preloadAllSounds();
 }
 
 function noise(dur, f, g0, type = 'lowpass', out, q = 1.0, sendReverb = false) {
@@ -2255,12 +2257,12 @@ const SND = {
     playSample('eat', pos, 1.2, 0.1);
   },
   bodyFall(pos) {
-    const p = playSample('bodyFall', pos, 1.25, 0.12);
-    if (!p && AC) noise(0.06, 850, 0.45, 'lowpass');
+    const played = playSample('bodyFall', pos, 1.25, 0.12);
+    if (!played && AC) noise(0.06, 850, 0.45, 'lowpass');
   },
   bloodSplash(pos) {
-    const p = playSample('blood', pos, 1.4, 0.15);
-    if (!p && AC) noise(0.08, 1200, 0.5, 'bandpass');
+    const played = playSample('blood', pos, 1.4, 0.15);
+    if (!played && AC) noise(0.08, 1200, 0.5, 'bandpass');
   },
   headshot(pos) {
     playSample('blood', pos, 1.5, 0.1);
@@ -2271,8 +2273,8 @@ const SND = {
     }
   },
   fleshImpact(pos, isHead = false) {
-    const p = playSample('fleshImpact', pos, isHead ? 1.4 : 1.1, 0.1);
-    if (!p && AC) noise(0.05, 1100, 0.4, 'bandpass');
+    const played = playSample('fleshImpact', pos, isHead ? 1.4 : 1.1, 0.1);
+    if (!played && AC) noise(0.05, 1100, 0.4, 'bandpass');
   },
   click() {
     if (!AC) return;
@@ -2297,22 +2299,22 @@ const SND = {
     tone('sine', 110, 32, 0.26, 0.85);
     noise(0.18, 520, 0.5, 'lowpass');
   },
-  vocal(p, big, isAnimal) {
-    if (!AC || state !== 'play') return;
+  vocal(pos, big, isAnimal) {
+    if (!AC || state !== 'play' || !pos) return;
     const t = AC.currentTime;
     const pn = AC.createPanner();
     pn.panningModel = 'HRTF';
     pn.refDistance = 4;
     pn.rolloffFactor = 1.3;
-    pn.positionX.value = p.x;
-    pn.positionY.value = p.y + 1.4;
-    pn.positionZ.value = p.z;
+    pn.positionX.value = pos.x || 0;
+    pn.positionY.value = (pos.y || 0) + 1.4;
+    pn.positionZ.value = pos.z || 0;
     pn.connect(compressor);
     if (reverbNode) pn.connect(reverbNode);
 
     if (!isAnimal) {
-      const p = playSample(big ? 'zombieAttack' : 'zombieIdle', p, big ? 1.6 : 1.1, 0.15);
-      if (p) return;
+      const played = playSample(big ? 'zombieAttack' : 'zombieIdle', pos, big ? 1.6 : 1.1, 0.15);
+      if (played) return;
     }
     if (isAnimal) {
       // Snarling predator beast growl
@@ -2421,13 +2423,18 @@ const SND = {
 
 const P1 = new V(), P2 = new V(), Q = new THREE.Quaternion();
 function updateAudioListener() {
-  if (!AC || !AC.listener.positionX) return;
+  if (!AC || !AC.listener) return;
   const l = AC.listener;
   camera.getWorldPosition(P1);
   camera.getWorldDirection(P2);
-  l.positionX.value = P1.x; l.positionY.value = P1.y; l.positionZ.value = P1.z;
-  l.forwardX.value = P2.x; l.forwardY.value = P2.y; l.forwardZ.value = P2.z;
-  l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0;
+  if (l.positionX) {
+    l.positionX.value = P1.x; l.positionY.value = P1.y; l.positionZ.value = P1.z;
+    l.forwardX.value = P2.x; l.forwardY.value = P2.y; l.forwardZ.value = P2.z;
+    l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0;
+  } else if (l.setPosition) {
+    l.setPosition(P1.x, P1.y, P1.z);
+    l.setOrientation(P2.x, P2.y, P2.z, 0, 1, 0);
+  }
 }
 
 // ---------- WEAPONS ----------
