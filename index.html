@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DEAD ZONE: ZOMBIE APOCALYPSE</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon.png">
 <style>
   :root {
     color-scheme: dark;
@@ -456,6 +457,82 @@
     bottom: 75px;
   }
 
+  :root {
+    --bg-dark: #06090e;
+    --panel-bg: rgba(13, 17, 26, 0.92);
+    --primary: #dc2626;
+    --primary-glow: rgba(220, 38, 38, 0.75);
+    --gold: #facc15;
+    --cyan: #38bdf8;
+    --green: #22c55e;
+    --border-metal: rgba(255, 255, 255, 0.16);
+  }
+
+  /* Main Menu Overlay matching Storyboard */
+  #ov {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: linear-gradient(180deg, rgba(8, 12, 18, 0.78) 0%, rgba(4, 6, 10, 0.94) 100%), url('bg-dusk.png') center center / cover no-repeat;
+    text-align: center;
+    z-index: 20;
+    padding: 24px 16px 40px;
+    backdrop-filter: blur(4px);
+    overflow-y: auto;
+  }
+
+  /* Storyboard Header */
+  .storyboard-header {
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tagline-top {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #e2e8f0;
+    text-shadow: 0 2px 8px #000;
+    margin-bottom: 4px;
+  }
+  .tagline-top span { color: var(--primary); }
+  h1.storyboard-title {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: clamp(42px, 7vw, 76px);
+    margin: 0;
+    color: #ef4444;
+    text-shadow: 0 0 35px rgba(239, 68, 68, 0.8), 0 4px 0 #450a0a;
+    letter-spacing: 4px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  h1.storyboard-title .zone-txt {
+    color: #f8fafc;
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.4), 0 4px 0 #1e293b;
+    position: relative;
+  }
+  h1.storyboard-title .handprint-icon {
+    display: inline-block;
+    color: #dc2626;
+    transform: scale(0.9) rotate(-10deg);
+    text-shadow: 0 0 12px #ef4444;
+  }
+  .storyboard-subtitle {
+    font-size: clamp(12px, 2vw, 17px);
+    font-weight: 800;
+    letter-spacing: 5px;
+    color: #cbd5e1;
+    margin-top: 4px;
+    text-shadow: 0 2px 10px #000;
+  }
+
   /* Auto Device Detection Badge */
   #device-detect-badge {
     display: inline-flex;
@@ -463,25 +540,108 @@
     gap: 8px;
     padding: 6px 18px;
     border-radius: 20px;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    margin-bottom: 12px;
+    margin: 8px 0 14px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-transform: uppercase;
   }
-  #device-detect-badge.vr-mode { background: rgba(147, 51, 234, 0.25); border-color: #c084fc; color: #e9d5ff; }
-  #device-detect-badge.mobile-mode { background: rgba(34, 197, 94, 0.22); border-color: #4ade80; color: #bbf7d0; }
-  #device-detect-badge.pc-mode { background: rgba(56, 189, 248, 0.22); border-color: #38bdf8; color: #bae6fd; }
+  #device-detect-badge.vr-mode { background: rgba(147, 51, 234, 0.28); border-color: #c084fc; color: #e9d5ff; }
+  #device-detect-badge.mobile-mode { background: rgba(34, 197, 94, 0.24); border-color: #4ade80; color: #bbf7d0; }
+  #device-detect-badge.pc-mode { background: rgba(56, 189, 248, 0.24); border-color: #38bdf8; color: #bae6fd; }
+
+  /* 3 Location Cards matching Storyboard Panel 1 & 2 */
+  .locations-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .locations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 720px;
+    width: 100%;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 600px) {
+    .locations-grid { grid-template-columns: 1fr; }
+  }
+  .location-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 12px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .location-card:hover { border-color: #64748b; transform: translateY(-2px); }
+  .location-card.active {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: #facc15;
+    box-shadow: 0 0 18px rgba(250, 204, 21, 0.4);
+    transform: translateY(-2px);
+  }
+  .location-card-title {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: 1.5px;
+  }
+  .location-card-waves {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+  }
+
+  /* Mode Select (Zombies vs Animals) matching Storyboard */
+  .mode-select-wrap {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .mode-pill-btn {
+    padding: 9px 24px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    background: rgba(15, 23, 42, 0.88);
+    color: #94a3b8;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mode-pill-btn:hover { border-color: #64748b; }
+  .mode-pill-btn.active {
+    background: linear-gradient(180deg, rgba(220, 38, 38, 0.4) 0%, rgba(153, 27, 27, 0.6) 100%);
+    border-color: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 16px var(--primary-glow);
+  }
 
   /* Gun Selection UI (Pick One Weapon for Game) */
   .gun-select-card {
     background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1px solid var(--border-metal);
     border-radius: 12px;
     padding: 10px 14px;
     margin-bottom: 12px;
-    max-width: 680px;
+    max-width: 720px;
     width: 100%;
   }
   .gun-select-header {
@@ -510,7 +670,7 @@
   }
   .gun-card:hover { border-color: #64748b; }
   .gun-card.active {
-    background: rgba(217, 30, 24, 0.25);
+    background: rgba(220, 38, 38, 0.3);
     border-color: #f87171;
     box-shadow: 0 0 14px var(--primary-glow);
     transform: scale(1.02);
@@ -531,11 +691,11 @@
   /* Mission Session Limit Card */
   .time-select-card {
     background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1px solid var(--border-metal);
     border-radius: 12px;
     padding: 8px 14px;
-    margin-bottom: 12px;
-    max-width: 680px;
+    margin-bottom: 14px;
+    max-width: 720px;
     width: 100%;
   }
   .time-select-header {
@@ -570,7 +730,119 @@
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
   }
 
-  /* Top-Left Mission HUD Timer Badge */
+  /* Big Glow Red Start Button matching Storyboard Panel 1 & 2 */
+  .btn-start-survival {
+    width: 100%;
+    max-width: 420px;
+    padding: 16px 28px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 24px;
+    letter-spacing: 3px;
+    color: #fff;
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+    border: 2px solid #f87171;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.8), 0 4px 12px #000;
+    transition: all 0.2s;
+    margin-bottom: 14px;
+  }
+  .btn-start-survival:hover {
+    background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+    box-shadow: 0 0 42px rgba(239, 68, 68, 0.95), 0 4px 16px #000;
+    transform: translateY(-2px);
+  }
+
+  /* Platform Mode Buttons */
+  .platform-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .platform-btn {
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(30, 41, 59, 0.85);
+    color: #e2e8f0;
+    border: 1px solid #475569;
+  }
+  .platform-btn.vr-btn {
+    background: linear-gradient(180deg, rgba(147, 51, 234, 0.45), rgba(88, 28, 135, 0.65));
+    border-color: #c084fc;
+    color: #fff;
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.45);
+  }
+
+  /* Quest 2 Controls Reference Card (Panel 8) */
+  .quest-controls-card {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--border-metal);
+    border-radius: 10px;
+    padding: 10px 16px;
+    max-width: 720px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .quest-controls-header {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .quest-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #cbd5e1;
+  }
+  @media (max-width: 600px) {
+    .quest-controls-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .control-item span { color: var(--gold); }
+
+  /* In-Game HUD matching Storyboard Panel 3 */
+  #hud {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    display: none;
+  }
+
+  /* Top Center Metallic Pill */
+  #hud-top-pill {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 6px 20px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  }
+  #hud-top-pill .divider { color: #64748b; font-weight: normal; }
+  #hud-top-pill #hud-location { color: var(--cyan); }
+  #hud-top-pill #hud-wave-pill { color: var(--primary); }
+  #hud-top-pill #hud-score-pill { color: var(--gold); }
+
+  /* Top Left Mission Timer */
   #hud-timer-badge {
     position: absolute;
     top: 14px;
@@ -580,13 +852,134 @@
     border-radius: 8px;
     padding: 6px 14px;
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 17px;
+    font-size: 16px;
     letter-spacing: 2px;
     color: var(--gold);
     text-shadow: 0 0 8px rgba(250, 204, 21, 0.4);
-    z-index: 10;
-    pointer-events: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Bottom Left Health Card (Storyboard Panel 3) */
+  #hud-health-card {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 16px;
+    min-width: 180px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  }
+  .health-header {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .health-header .cross-icon {
+    color: var(--green);
+    font-weight: 900;
+    font-size: 18px;
+  }
+  .health-header #health-val {
+    margin-left: auto;
+    color: var(--green);
+  }
+  .health-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  #health-bar-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    transition: width 0.15s ease-out, background 0.2s;
+  }
+
+  /* Bottom Right Ammo Card (Storyboard Panel 3) */
+  #hud-ammo-card {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    letter-spacing: 1.5px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  }
+  #hud-ammo-card .gun-icon { font-size: 20px; }
+  #hud-ammo-card #ammo-gun-name { color: #e2e8f0; font-size: 15px; }
+  #hud-ammo-card #ammo-val { color: var(--gold); font-size: 18px; }
+
+  /* Crosshair: Authentic Precise '+' (Storyboard Panel 3) */
+  #cx {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    margin: -11px 0 0 -11px;
+    pointer-events: none;
+    transition: transform 0.08s ease-out;
+  }
+  #cx::before, #cx::after {
+    content: '';
+    position: absolute;
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.9), 0 0 2px #000;
+  }
+  #cx::before { left: 10px; top: 0; width: 2px; height: 22px; }
+  #cx::after { top: 10px; left: 0; width: 22px; height: 2px; }
+  #cx.hit::before, #cx.hit::after { background: #facc15; transform: scale(1.4); }
+
+  /* Boss Encounter UI matching Storyboard Panel 4 */
+  #boss-hud {
+    position: absolute;
+    top: 54px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90%, 460px);
+    display: none;
+    pointer-events: none;
+    text-align: center;
+  }
+  #boss-name-lbl {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #ef4444;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+    margin-bottom: 4px;
+  }
+  .boss-bar-bg {
+    width: 100%;
+    height: 12px;
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid #ef4444;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+  }
+  #boss-bar-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #dc2626, #f97316);
+    transition: width 0.15s;
   }
 
   /* Realistic Player Bloodshed Canvas Overlay & Low-HP Vignette */
@@ -603,41 +996,135 @@
     inset: 0;
     pointer-events: none;
     z-index: 5;
-    background: radial-gradient(circle at center, transparent 38%, rgba(139, 0, 0, 0.4) 75%, rgba(60, 0, 0, 0.95) 100%);
+    background: radial-gradient(circle at center, transparent 38%, rgba(139, 0, 0, 0.45) 75%, rgba(60, 0, 0, 0.95) 100%);
     opacity: 0;
     transition: opacity 0.25s ease-out;
   }
+
+  /* Storyboard Modal (Pause, Victory Results, Death) */
+  #modal-ov {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(4, 6, 10, 0.88);
+    backdrop-filter: blur(8px);
+    z-index: 25;
+    padding: 16px;
+  }
+  .storyboard-modal-box {
+    background: rgba(15, 23, 42, 0.95);
+    border: 2px solid #ef4444;
+    border-radius: 14px;
+    padding: 24px 28px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.4), 0 8px 32px #000;
+  }
+  .modal-title-main {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: #ef4444;
+    margin-bottom: 6px;
+  }
+  .modal-title-main.gold { color: var(--gold); text-shadow: 0 0 16px rgba(250, 204, 21, 0.6); }
+  .modal-stars {
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 6px;
+    margin-bottom: 12px;
+    text-shadow: 0 0 12px var(--gold);
+  }
+  .modal-stats-card {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 18px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #e2e8f0;
+  }
+  .modal-stats-card div { margin: 4px 0; }
+  .modal-stats-card .stat-num { color: var(--gold); }
+  .modal-btn-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .modal-btn-primary {
+    padding: 13px 20px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #fff;
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+    border: 1px solid #f87171;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(220, 38, 38, 0.6);
+    transition: all 0.2s;
+  }
+  .modal-btn-primary:hover {
+    background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+  }
+  .modal-btn-secondary {
+    padding: 11px 20px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: #cbd5e1;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid #475569;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .modal-btn-secondary:hover { background: #334155; color: #fff; }
 
 </style>
 </head>
 <body>
 
 <div id="ov">
-  <h1 class="title-font">DEAD ZONE</h1>
-  <h2>SURVIVAL APOCALYPSE</h2>
-  <div class="desc">
-    Survive <b>3 Distinct Realistic Locations</b> across <b>9 Intense Waves</b>. Shoot red fuel barrels to detonate hordes, grab glowing supply drops, and aim for the head!<br><br>
-    <b>PC:</b> WASD Move · Shift Sprint · Mouse Aim · Click Fire · R Reload · P Pause<br>
-    <b>Mobile:</b> Left Stick Move · Right Screen Drag Aim · On-Screen Buttons
+  <div class="storyboard-header">
+    <div class="tagline-top">SURVIVE <span>&bull;</span> FIGHT <span>&bull;</span> COMPLETE</div>
+    <h1 class="storyboard-title">
+      DEAD <span class="zone-txt">Z<span class="handprint-icon">&#9995;</span>NE</span>
+    </h1>
+    <div class="storyboard-subtitle">SURVIVAL APOCALYPSE</div>
+    <div id="device-detect-badge" class="pc-mode">&#128421; PC CONTROLS DETECTED</div>
   </div>
 
-    <!-- Auto Device Detection Badge -->
-  <div id="device-detect-badge" class="pc-mode">&#128421; PC CONTROLS DETECTED</div>
-
-  <!-- 3 Distinct Locations -->
-  <div class="level-select" id="lvl-select">
-    <button class="lvl-btn active" data-lvl="0">1. DOWNTOWN CITY</button>
-    <button class="lvl-btn" data-lvl="1">2. DARK PINE FOREST</button>
-    <button class="lvl-btn" data-lvl="2">3. BIO-LAB COMPOUND</button>
+  <!-- 3 Locations Grid matching Storyboard Panel 1 & 2 -->
+  <div class="locations-section-title">9 WAVES &bull; 3 LOCATIONS</div>
+  <div class="locations-grid" id="lvl-select">
+    <div class="location-card active" data-lvl="0">
+      <div class="location-card-title">1. DOWNTOWN CITY</div>
+      <div class="location-card-waves">WAVES: 1-3 &bull; THE WARDEN</div>
+    </div>
+    <div class="location-card" data-lvl="1">
+      <div class="location-card-title">2. DARK PINE FOREST</div>
+      <div class="location-card-waves">WAVES: 4-6 &bull; ALPHA BEHEMOTH</div>
+    </div>
+    <div class="location-card" data-lvl="2">
+      <div class="location-card-title">3. BIO-LAB COMPOUND</div>
+      <div class="location-card-waves">WAVES: 7-9 &bull; OMEGA APEX</div>
+    </div>
   </div>
 
-  <!-- 2 Main Mode Options: Zombies vs Animals -->
-  <div class="mode-select" id="mode-select">
-    <button class="mode-btn active" data-mode="zombies">A. ZOMBIES</button>
-    <button class="mode-btn" data-mode="animals">B. ANIMALS</button>
+  <!-- Mode Toggle (Zombies vs Animals) matching Storyboard Panel 1 & 2 -->
+  <div class="mode-select-wrap">
+    <button class="mode-pill-btn active" data-mode="zombies">&#128128; ZOMBIES</button>
+    <button class="mode-pill-btn" data-mode="animals">&#128062; MUTANT ANIMALS</button>
   </div>
 
-    <!-- Gun Selection UI: Pick One Survival Gun Before Starting -->
+  <!-- Gun Selection UI: Pick One Survival Gun Before Starting -->
   <div class="gun-select-card">
     <div class="gun-select-header">&#128299; SURVIVAL WEAPON (EQUIPPED FOR RUN)</div>
     <div class="gun-select-grid" id="gun-select-grid">
@@ -660,7 +1147,7 @@
     </div>
   </div>
 
-  <!-- Session Time Limit Selector -->
+  <!-- Mission Session Limit Selector -->
   <div class="time-select-card">
     <div class="time-select-header">&#9201; MISSION TIME LIMIT</div>
     <div class="time-select-grid">
@@ -672,30 +1159,48 @@
     </div>
   </div>
 
-  <!-- PLAY Options Below -->
-  <div class="btn-group">
-    <button class="play-btn" id="pc">PLAY (PC)</button>
-    <button class="play-btn" id="mob">PLAY (MOBILE)</button>
-    <button class="play-btn secondary" id="vr">PLAY (VR)</button>
+  <!-- Big Red Start Button matching Storyboard Panel 1 & 2 -->
+  <button class="btn-start-survival" id="btn-start-main">START SURVIVAL</button>
+
+  <!-- Platform Launch Row -->
+  <div class="platform-row">
+    <button class="platform-btn vr-btn" id="vr">&#129523; ENTER VR (QUEST 2)</button>
+    <button class="platform-btn" id="pc">&#128421; PLAY (PC)</button>
+    <button class="platform-btn" id="mob">&#128241; PLAY (MOBILE)</button>
   </div>
-  <p id="note" style="font-size:12px;color:#94a3b8;margin-top:12px;max-width:500px;"></p>
+
+  <!-- Quest 2 Controls Guide Card (Storyboard Panel 8) -->
+  <div class="quest-controls-card">
+    <div class="quest-controls-header">&#129523; QUEST 2 &bull; PC CONTROLS GUIDE</div>
+    <div class="quest-controls-grid">
+      <div class="control-item">&#128377; LEFT STICK: <span>MOVE</span></div>
+      <div class="control-item">&#128377; RIGHT STICK: <span>TURN</span></div>
+      <div class="control-item">&#127919; TRIGGER / CLICK: <span>FIRE</span></div>
+      <div class="control-item">&#128296; A / X / P: <span>PAUSE</span></div>
+    </div>
+  </div>
 </div>
 
 <!-- Pause / Retry / Quit Modal -->
-<div id="pause-ov">
-  <h2 id="pause-title" class="title-font">GAME PAUSED</h2>
-  <div id="pause-sub">Take a breather or choose an action below</div>
-  <div class="btn-group">
-    <button class="play-btn" id="btn-resume">RESUME</button>
-    <button class="play-btn secondary" id="btn-modal-retry">RETRY</button>
-    <button class="play-btn secondary" id="btn-modal-quit">QUIT TO MENU</button>
+<!-- Storyboard Multi-Modal (Pause, Survival Results, Death) -->
+<div id="modal-ov">
+  <div class="storyboard-modal-box">
+    <div class="modal-stars" id="modal-stars" style="display:none;">&#9733;&#9733;&#9733;</div>
+    <div class="modal-title-main" id="modal-title">PAUSED</div>
+    <div id="modal-sub" style="font-size:13px;color:#94a3b8;margin-bottom:14px;">Game is paused</div>
+    <div class="modal-stats-card" id="modal-stats" style="display:none;">
+      <div>SCORE: <span class="stat-num" id="modal-stat-score">0</span></div>
+      <div>KILLS: <span class="stat-num" id="modal-stat-kills">0</span></div>
+    </div>
+    <div class="modal-btn-row">
+      <button class="modal-btn-primary" id="modal-btn-primary">RESUME</button>
+      <button class="modal-btn-secondary" id="modal-btn-retry">RETRY</button>
+      <button class="modal-btn-secondary" id="modal-btn-quit">QUIT TO MENU</button>
+    </div>
   </div>
 </div>
 
 <div id="hud">
-  <!-- Top-Left Session / Mission Timer -->
-  <div id="hud-timer-badge">&#9201; 00:00</div>
-
   <div id="top-bar">
     <span id="hud-lvl" class="badge">CITY</span>
     <span>|</span>
@@ -740,7 +1245,7 @@ const $ = id => document.getElementById(id);
 const R = (a, b) => a + Math.random() * (b - a);
 const V = THREE.Vector3;
 
-// ---------- LEVEL LOCATIONS & CONFIGURATION ----------
+// ---------- CAMPAIGN LEVELS & 9-WAVE CONFIGURATION ----------
 const LEVELS = [
   {
     id: 'city',
@@ -800,26 +1305,6 @@ const LEVELS = [
 
 let selectedLevel = 0;
 let enemyCategory = 'zombies'; // 'zombies' | 'animals'
-
-document.querySelectorAll('.lvl-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    SND.uiClick();
-    document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedLevel = parseInt(btn.dataset.lvl, 10);
-  });
-});
-
-document.querySelectorAll('.mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    SND.uiClick();
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    enemyCategory = btn.dataset.mode;
-  });
-});
-
-// Global Campaign & Session Settings
 let chosenWeapon = 'pistol';   // Only one gun equipped for run
 let sessionDurationLimit = 0;  // 0 = unlimited, or seconds (120, 300, 600, 900)
 let sessionTimeElapsed = 0;
@@ -851,6 +1336,26 @@ if (devBadge) {
   }
 }
 
+// Location Cards Listeners
+document.querySelectorAll('.location-card').forEach(card => {
+  card.addEventListener('click', () => {
+    SND.uiClick();
+    document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    selectedLevel = parseInt(card.dataset.lvl, 10);
+  });
+});
+
+// Mode Pill Listeners
+document.querySelectorAll('.mode-pill-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    SND.uiClick();
+    document.querySelectorAll('.mode-pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    enemyCategory = btn.dataset.mode;
+  });
+});
+
 // Gun Selection Listener
 document.querySelectorAll('.gun-card').forEach(card => {
   card.addEventListener('click', () => {
@@ -871,6 +1376,17 @@ document.querySelectorAll('.time-btn').forEach(btn => {
   });
 });
 
+// Big Start Button Handler
+$('btn-start-main').onclick = () => {
+  if (detectedDevice === 'vr') {
+    $('vr').click();
+  } else if (detectedDevice === 'mobile') {
+    $('mob').click();
+  } else {
+    $('pc').click();
+  }
+};
+
 // ---------- REALISTIC PLAYER BLOODSHED ENGINE ----------
 const bloodCanvas = $('player-blood-canvas');
 const bloodCtx = bloodCanvas ? bloodCanvas.getContext('2d') : null;
@@ -888,7 +1404,6 @@ window.addEventListener('resize', resizeBloodCanvas);
 
 function triggerPlayerBloodShed(dmg) {
   if (!bloodCanvas || !bloodCtx) return;
-  // 1. Organic arterial blood splatters across screen/visor
   const splatCount = Math.min(24, Math.max(8, Math.floor(dmg / 2.2)));
   const cx = R(bloodCanvas.width * 0.15, bloodCanvas.width * 0.85);
   const cy = R(bloodCanvas.height * 0.15, bloodCanvas.height * 0.85);
@@ -904,7 +1419,6 @@ function triggerPlayerBloodShed(dmg) {
     });
   }
 
-  // 2. Realistic dripping blood streams running downward with gravity
   const dripCount = Math.floor(R(2, 5));
   for (let d = 0; d < dripCount; d++) {
     screenDrips.push({
@@ -919,7 +1433,6 @@ function triggerPlayerBloodShed(dmg) {
     });
   }
 
-  // 3. Low Health throbbing red vignette
   if (bloodVignette) {
     bloodVignette.style.opacity = Math.min(0.9, Math.max(0.4, (100 - hp) / 100)).toFixed(2);
   }
@@ -929,7 +1442,6 @@ function updateBloodScreen(dt) {
   if (!bloodCanvas || !bloodCtx) return;
   bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
 
-  // Render & Fade Blood Splats
   for (let i = screenSplats.length - 1; i >= 0; i--) {
     const s = screenSplats[i];
     s.alpha -= s.fadeRate * dt;
@@ -943,8 +1455,6 @@ function updateBloodScreen(dt) {
     bloodCtx.beginPath();
     bloodCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
     bloodCtx.fill();
-
-    // Satellite micro-droplets
     for (let k = 0; k < 3; k++) {
       bloodCtx.beginPath();
       bloodCtx.arc(s.x + Math.sin(k * 2) * (s.r + 4), s.y + Math.cos(k * 2) * (s.r + 4), s.r * 0.28, 0, Math.PI * 2);
@@ -953,7 +1463,6 @@ function updateBloodScreen(dt) {
     bloodCtx.restore();
   }
 
-  // Render & Animate Flowing Blood Drips Down Screen
   for (let i = screenDrips.length - 1; i >= 0; i--) {
     const d = screenDrips[i];
     if (d.length < d.maxLength) {
@@ -974,8 +1483,6 @@ function updateBloodScreen(dt) {
     bloodCtx.moveTo(d.x, d.y);
     bloodCtx.lineTo(d.x, d.y + d.length);
     bloodCtx.stroke();
-
-    // Drip bulb at bottom tip
     bloodCtx.fillStyle = '#680505';
     bloodCtx.beginPath();
     bloodCtx.arc(d.x, d.y + d.length, d.width * 1.15, 0, Math.PI * 2);
@@ -983,13 +1490,12 @@ function updateBloodScreen(dt) {
     bloodCtx.restore();
   }
 
-  // Reset vignette if player is healthy
   if (bloodVignette && hp > 75 && screenSplats.length === 0) {
     bloodVignette.style.opacity = '0';
   }
 }
 
-// ---------- REAL AUDIO FILES INTEGRATION (ZombieHorrorPackageFree) ----------
+// ---------- REAL AUDIO FILES INTEGRATION (sounds/) ----------
 const AUDIO_MANIFEST = {
   bite: [
     'sounds/Bite/Zombie_Attack_Bite_001.mp3',
@@ -1666,22 +2172,22 @@ const SND = {
     playSample('footstep', pos, 0.45, 0.08);
   },
   bite(pos) {
-    playSample('bite', pos, 1.3, 0.1);
+    playSample('bite', pos, 1.35, 0.1);
   },
   eat(pos) {
     playSample('eat', pos, 1.2, 0.1);
   },
   bodyFall(pos) {
-    const p = playSample('bodyFall', pos, 1.2, 0.12);
+    const p = playSample('bodyFall', pos, 1.25, 0.12);
     if (!p && AC) noise(0.06, 850, 0.45, 'lowpass');
   },
   bloodSplash(pos) {
-    const p = playSample('blood', pos, 1.35, 0.15);
+    const p = playSample('blood', pos, 1.4, 0.15);
     if (!p && AC) noise(0.08, 1200, 0.5, 'bandpass');
   },
   headshot(pos) {
     playSample('blood', pos, 1.5, 0.1);
-    playSample('fleshImpact', pos, 1.4, 0.08);
+    playSample('fleshImpact', pos, 1.45, 0.08);
     if (AC) {
       tone('sine', 480, 180, 0.14, 0.85);
       noise(0.06, 2800, 0.7, 'bandpass');
@@ -1728,7 +2234,7 @@ const SND = {
     if (reverbNode) pn.connect(reverbNode);
 
     if (!isAnimal) {
-      const p = playSample(big ? 'zombieAttack' : 'zombieIdle', pos, big ? 1.6 : 1.1, 0.15);
+      const p = playSample(big ? 'zombieAttack' : 'zombieIdle', p, big ? 1.6 : 1.1, 0.15);
       if (p) return;
     }
     if (isAnimal) {
@@ -2284,13 +2790,23 @@ function hurt(d) {
   hp -= d;
   hurtA = 0.65;
   SND.hurt();
+  triggerPlayerBloodShed(d);
   if (hp <= 0) {
     hp = 0;
-    state = 'dead';
-    if (document.pointerLockElement === dom) document.exitPointerLock();
-    showPauseModal('YOU DIED', `Final Score: ${score} · Kills: ${kills}`, false);
+    gameOver(false);
   }
   updateHUD();
+}
+
+function gameOver(win = false) {
+  state = win ? 'win' : 'over';
+  if (document.pointerLockElement === dom) document.exitPointerLock();
+  if (win) {
+    showStoryModal('SURVIVAL COMPLETE', 'All sectors cleared! Mission accomplished, survivor.', true, false, true);
+  } else {
+    SND.eat();
+    showStoryModal('YOU DIED', 'The horde overwhelmed you.', false, true, false);
+  }
 }
 
 // ---------- GAME FLOW, PAUSE, RETRY & QUIT CONTROLS ----------
@@ -2313,12 +2829,44 @@ function say(main, sub = '', sec = 3) {
   $('sub-msg').textContent = sub;
 }
 
-function showPauseModal(title, sub, canResume = true) {
-  $('pause-title').textContent = title;
-  $('pause-sub').textContent = sub;
-  $('btn-resume').style.display = canResume ? 'inline-block' : 'none';
-  $('pause-ov').style.display = 'flex';
+function showStoryModal(title, sub, isWin = false, isDeath = false, canResume = true) {
+  $('modal-title').textContent = title;
+  $('modal-title').className = 'modal-title-main' + (isWin ? ' gold' : '');
+  $('modal-sub').textContent = sub;
+  $('modal-stars').style.display = isWin ? 'block' : 'none';
+  $('modal-stats').style.display = (isWin || isDeath) ? 'block' : 'none';
+  $('modal-stat-score').textContent = score;
+  $('modal-stat-kills').textContent = kills;
+
+  $('modal-btn-primary').style.display = (canResume || isWin) ? 'block' : 'none';
+  $('modal-btn-primary').textContent = isWin ? 'NEXT LOCATION' : 'RESUME';
+  $('modal-ov').style.display = 'flex';
 }
+
+function showPauseModal(title, sub, canResume = true) {
+  showStoryModal(title, sub, false, false, canResume);
+}
+
+
+// Modal Button Handlers
+$('modal-btn-primary').onclick = () => {
+  if (state === 'win') {
+    // Next Location
+    $('modal-ov').style.display = 'none';
+    if (selectedLevel < LEVELS.length - 1) {
+      selectedLevel++;
+      wave = 0;
+      applyLevelTheme(selectedLevel);
+      startWave();
+    } else {
+      quitToMenu();
+    }
+  } else {
+    togglePause();
+  }
+};
+$('modal-btn-retry').onclick = retryGame;
+$('modal-btn-quit').onclick = quitToMenu;
 
 function togglePause() {
   if (state === 'play') {
@@ -2330,7 +2878,7 @@ function togglePause() {
     SND.uiClick();
   } else if (state === 'paused') {
     state = 'play';
-    $('pause-ov').style.display = 'none';
+    $('modal-ov').style.display = 'none';
     SND.uiClick();
     if (!mobileMode && !xr()) dom.requestPointerLock();
   }
@@ -2342,7 +2890,7 @@ function quitToMenu() {
   mouseDown = false;
   touchState.firing = false;
   if (document.pointerLockElement === dom) document.exitPointerLock();
-  $('pause-ov').style.display = 'none';
+  $('modal-ov').style.display = 'none';
   $('hud').style.display = 'none';
   $('mobile-ui').style.display = 'none';
   $('ov').style.display = 'flex';
@@ -2350,7 +2898,7 @@ function quitToMenu() {
 
 function retryGame() {
   SND.uiClick();
-  $('pause-ov').style.display = 'none';
+  $('modal-ov').style.display = 'none';
   startGame();
   if (!mobileMode && !xr()) dom.requestPointerLock();
 }
@@ -2365,6 +2913,7 @@ $('btn-modal-retry').onclick = () => retryGame();
 $('btn-modal-quit').onclick  = () => quitToMenu();
 
 function startWave() {
+  if ($('boss-hud')) $('boss-hud').style.display = 'none';
   wave++;
   const lv = LEVELS[selectedLevel];
   const wCfg = lv.waves[wave - 1];
@@ -2427,7 +2976,7 @@ function startGame() {
   state = 'play';
 
   $('ov').style.display = 'none';
-  $('pause-ov').style.display = 'none';
+  $('modal-ov').style.display = 'none';
   $('hud').style.display = 'block';
   $('vig').style.display = xr() ? 'none' : 'block';
 
@@ -2760,11 +3309,6 @@ function updateHUD() {
   $('hud-lvl').textContent = LEVELS[selectedLevel].shortName;
   $('hud-wave').textContent = `WAVE ${wave}/3`;
   $('hud-score').textContent = `SCORE ${score}`;
-  const m = Math.floor(sessionTimeElapsed / 60);
-  const s = Math.floor(sessionTimeElapsed % 60);
-  if ($('hud-timer-badge')) {
-    $('hud-timer-badge').textContent = `⏱ ${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-  }
   $('hp-num').textContent = `${Math.ceil(hp)}%`;
   $('hpf').style.width = `${hp}%`;
   $('hpf').style.background = hp > 35 ? 'linear-gradient(90deg, #16a34a, #4ade80)' : 'linear-gradient(90deg, #991b1b, #ef4444)';
@@ -2886,29 +3430,23 @@ function update(dt) {
     if (!queue.length && !alive) {
       if (wave === 3) {
         if (selectedLevel < LEVELS.length - 1) {
-          // Advance to next city automatically!
+          // Advance to next location automatically!
           selectedLevel++;
           wave = 0;
           breakT = 4.5;
-          say('CITY SECTOR CLEARED!', `CONVOY ADVANCING TO ${LEVELS[selectedLevel].name}...`, 4.2);
+          say('LOCATION SECURED!', `CONVOY ADVANCING TO ${LEVELS[selectedLevel].shortName}...`, 4.2);
           hp = Math.min(100, hp + 50);
           ammo[cur].res += W[cur].mag * 3;
-          updateHUD();
           applyLevelTheme(selectedLevel);
+          updateHUD();
         } else {
           // City 3 Wave 3 cleared: Full Campaign Victory!
-          state = 'win';
-          if (document.pointerLockElement === dom) document.exitPointerLock();
-          showPauseModal(
-            'CAMPAIGN COMPLETE! VICTORY!',
-            `All 3 Cities Cleared! 9 Waves Survived! Final Score: ${score} · Total Kills: ${kills}`,
-            false
-          );
+          gameOver(true);
         }
       } else {
         if (!breakT) {
-          breakT = 5.5;
-          say('WAVE CLEARED', 'Resupplying Armor & Ammunition...', 4.5);
+          breakT = 5.0;
+          say('WAVE CLEARED', 'Resupplying Armor & Ammunition...', 4.2);
           hp = Math.min(100, hp + 35);
           ammo[cur].res += W[cur].mag * 2;
           updateHUD();

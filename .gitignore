@@ -7,3 +7,6 @@ __MACOSX/
 **/__MACOSX/**
 Thumbs.db
 **/Thumbs.db
+
+# Local backups
+_backup/
