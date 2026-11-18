@@ -468,19 +468,20 @@
     --border-metal: rgba(255, 255, 255, 0.16);
   }
 
-  /* Main Menu Overlay matching Storyboard */
+  
+  /* Main Menu Overlay matching Storyboard Panel 1 (Clean, Spacious, Apocalyptic Dusk) */
   #ov {
     position: fixed;
     inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    background: linear-gradient(180deg, rgba(8, 12, 18, 0.78) 0%, rgba(4, 6, 10, 0.94) 100%), url('bg-dusk.png') center center / cover no-repeat;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(8, 12, 18, 0.70) 0%, rgba(4, 6, 10, 0.88) 100%), url('bg-dusk.png') center center / cover no-repeat;
     text-align: center;
     z-index: 20;
-    padding: 24px 16px 40px;
-    backdrop-filter: blur(4px);
+    padding: 16px 20px;
+    backdrop-filter: blur(2px);
     overflow-y: auto;
   }
 
@@ -494,24 +495,24 @@
   .tagline-top {
     font-size: 11px;
     font-weight: 800;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     color: #e2e8f0;
     text-shadow: 0 2px 8px #000;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
   .tagline-top span { color: var(--primary); }
   h1.storyboard-title {
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: clamp(42px, 7vw, 76px);
+    font-size: clamp(38px, 6.5vw, 68px);
     margin: 0;
     color: #ef4444;
-    text-shadow: 0 0 35px rgba(239, 68, 68, 0.8), 0 4px 0 #450a0a;
+    text-shadow: 0 0 35px rgba(239, 68, 68, 0.85), 0 4px 0 #450a0a;
     letter-spacing: 4px;
-    line-height: 1;
+    line-height: 1.05;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
   }
   h1.storyboard-title .zone-txt {
     color: #f8fafc;
@@ -522,14 +523,14 @@
     display: inline-block;
     color: #dc2626;
     transform: scale(0.9) rotate(-10deg);
-    text-shadow: 0 0 12px #ef4444;
+    text-shadow: 0 0 14px #ef4444;
   }
   .storyboard-subtitle {
-    font-size: clamp(12px, 2vw, 17px);
+    font-size: clamp(11px, 1.8vw, 15px);
     font-weight: 800;
     letter-spacing: 5px;
     color: #cbd5e1;
-    margin-top: 4px;
+    margin-top: 3px;
     text-shadow: 0 2px 10px #000;
   }
 
@@ -537,13 +538,13 @@
   #device-detect-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 18px;
+    gap: 6px;
+    padding: 4px 14px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    margin: 8px 0 14px;
+    margin: 6px 0 10px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-transform: uppercase;
   }
@@ -552,29 +553,22 @@
   #device-detect-badge.pc-mode { background: rgba(56, 189, 248, 0.24); border-color: #38bdf8; color: #bae6fd; }
 
   /* 3 Location Cards matching Storyboard Panel 1 & 2 */
-  .locations-section-title {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 2.5px;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
   .locations-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    max-width: 720px;
+    max-width: 660px;
     width: 100%;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
-  @media (max-width: 600px) {
-    .locations-grid { grid-template-columns: 1fr; }
+  @media (max-width: 580px) {
+    .locations-grid { grid-template-columns: 1fr; gap: 6px; }
   }
   .location-card {
     background: rgba(15, 23, 42, 0.85);
     border: 2px solid #334155;
-    border-radius: 10px;
-    padding: 12px 10px;
+    border-radius: 8px;
+    padding: 10px 8px;
     cursor: pointer;
     transition: all 0.2s ease-out;
     display: flex;
@@ -587,35 +581,35 @@
   .location-card.active {
     background: rgba(30, 41, 59, 0.95);
     border-color: #facc15;
-    box-shadow: 0 0 18px rgba(250, 204, 21, 0.4);
+    box-shadow: 0 0 16px rgba(250, 204, 21, 0.4);
     transform: translateY(-2px);
   }
   .location-card-title {
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     color: #fff;
     letter-spacing: 1.5px;
   }
   .location-card-waves {
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 800;
     color: var(--gold);
-    letter-spacing: 1.5px;
-    margin-top: 4px;
+    letter-spacing: 1px;
+    margin-top: 3px;
   }
 
   /* Mode Select (Zombies vs Animals) matching Storyboard */
   .mode-select-wrap {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .mode-pill-btn {
-    padding: 9px 24px;
+    padding: 7px 22px;
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 14px;
-    letter-spacing: 2px;
+    font-size: 13px;
+    letter-spacing: 1.5px;
     background: rgba(15, 23, 42, 0.88);
     color: #94a3b8;
     border: 2px solid #334155;
@@ -624,25 +618,131 @@
     transition: all 0.2s;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
   .mode-pill-btn:hover { border-color: #64748b; }
   .mode-pill-btn.active {
     background: linear-gradient(180deg, rgba(220, 38, 38, 0.4) 0%, rgba(153, 27, 27, 0.6) 100%);
     border-color: #ef4444;
     color: #fff;
-    box-shadow: 0 0 16px var(--primary-glow);
+    box-shadow: 0 0 14px var(--primary-glow);
   }
 
-  /* Gun Selection UI (Pick One Weapon for Game) */
-  .gun-select-card {
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid var(--border-metal);
-    border-radius: 12px;
-    padding: 10px 14px;
-    margin-bottom: 12px;
-    max-width: 720px;
+  /* Big Glow Red Start Button matching Storyboard Panel 1 & 2 */
+  .btn-start-survival {
     width: 100%;
+    max-width: 380px;
+    padding: 14px 28px;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: #fff;
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+    border: 2px solid #f87171;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(220, 38, 38, 0.8), 0 4px 12px #000;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .btn-start-survival:hover {
+    background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+    box-shadow: 0 0 38px rgba(239, 68, 68, 0.95), 0 4px 16px #000;
+    transform: translateY(-2px);
+  }
+
+  /* Compact Loadout & Timer Button Bar (Zero Screen Clutter!) */
+  .compact-loadout-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 20px;
+    padding: 7px 18px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
+  .compact-loadout-bar:hover {
+    border-color: #38bdf8;
+    background: rgba(30, 41, 59, 0.95);
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  }
+  .compact-loadout-bar .loadout-label { color: #94a3b8; }
+  .compact-loadout-bar .loadout-val { color: var(--gold); }
+  .compact-loadout-bar .loadout-edit-hint { color: var(--cyan); margin-left: 6px; font-size: 10.5px; }
+  .compact-loadout-bar .divider { color: #475569; }
+
+  /* Platform Mode & Secondary Action Buttons */
+  .platform-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .platform-btn {
+    padding: 7px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(30, 41, 59, 0.85);
+    color: #e2e8f0;
+    border: 1px solid #475569;
+  }
+  .platform-btn:hover { background: #334155; border-color: #64748b; }
+  .platform-btn.vr-btn {
+    background: linear-gradient(180deg, rgba(147, 51, 234, 0.45), rgba(88, 28, 135, 0.65));
+    border-color: #c084fc;
+    color: #fff;
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.45);
+  }
+
+  /* Sub-Modals for Loadout and Controls */
+  .sub-modal-ov {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(4, 6, 10, 0.9);
+    backdrop-filter: blur(8px);
+    z-index: 35;
+    padding: 16px;
+  }
+  .sub-modal-box {
+    background: rgba(15, 23, 42, 0.96);
+    border: 2px solid #38bdf8;
+    border-radius: 12px;
+    padding: 22px 24px;
+    max-width: 540px;
+    width: 100%;
+    box-shadow: 0 0 35px rgba(56, 189, 248, 0.35);
+    text-align: center;
+  }
+  .sub-modal-title {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    margin-bottom: 14px;
+    text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+  }
+  .gun-select-card {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid var(--border-metal);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
   }
   .gun-select-header {
     font-size: 11px;
@@ -650,19 +750,17 @@
     letter-spacing: 2px;
     color: var(--gold);
     margin-bottom: 8px;
+    text-align: left;
   }
   .gun-select-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
-  @media (max-width: 640px) {
-    .gun-select-grid { grid-template-columns: repeat(2, 1fr); }
-  }
   .gun-card {
-    background: rgba(30, 41, 59, 0.7);
+    background: rgba(15, 23, 42, 0.8);
     border: 2px solid #334155;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 8px 6px;
     cursor: pointer;
     transition: all 0.2s;
@@ -682,21 +780,17 @@
     letter-spacing: 1px;
   }
   .gun-card-desc {
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 700;
     color: #94a3b8;
-    margin-top: 3px;
+    margin-top: 2px;
   }
-
-  /* Mission Session Limit Card */
   .time-select-card {
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(30, 41, 59, 0.6);
     border: 1px solid var(--border-metal);
-    border-radius: 12px;
-    padding: 8px 14px;
+    border-radius: 10px;
+    padding: 10px 12px;
     margin-bottom: 14px;
-    max-width: 720px;
-    width: 100%;
   }
   .time-select-header {
     font-size: 11px;
@@ -704,18 +798,19 @@
     letter-spacing: 2px;
     color: var(--cyan);
     margin-bottom: 6px;
+    text-align: left;
   }
   .time-select-grid {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     justify-content: center;
     flex-wrap: wrap;
   }
   .time-btn {
-    padding: 6px 14px;
-    font-size: 11px;
+    padding: 6px 12px;
+    font-size: 10.5px;
     font-weight: 800;
-    background: rgba(30, 41, 59, 0.85);
+    background: rgba(15, 23, 42, 0.85);
     color: #cbd5e1;
     border: 1px solid #475569;
     border-radius: 6px;
@@ -729,85 +824,23 @@
     color: #fff;
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
   }
-
-  /* Big Glow Red Start Button matching Storyboard Panel 1 & 2 */
-  .btn-start-survival {
+  .modal-close-btn {
     width: 100%;
-    max-width: 420px;
-    padding: 16px 28px;
+    padding: 11px;
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 24px;
-    letter-spacing: 3px;
-    color: #fff;
-    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
-    border: 2px solid #f87171;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 0 30px rgba(220, 38, 38, 0.8), 0 4px 12px #000;
-    transition: all 0.2s;
-    margin-bottom: 14px;
-  }
-  .btn-start-survival:hover {
-    background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
-    box-shadow: 0 0 42px rgba(239, 68, 68, 0.95), 0 4px 16px #000;
-    transform: translateY(-2px);
-  }
-
-  /* Platform Mode Buttons */
-  .platform-row {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 14px;
-  }
-  .platform-btn {
-    padding: 10px 18px;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: rgba(30, 41, 59, 0.85);
-    color: #e2e8f0;
-    border: 1px solid #475569;
-  }
-  .platform-btn.vr-btn {
-    background: linear-gradient(180deg, rgba(147, 51, 234, 0.45), rgba(88, 28, 135, 0.65));
-    border-color: #c084fc;
-    color: #fff;
-    box-shadow: 0 0 16px rgba(168, 85, 247, 0.45);
-  }
-
-  /* Quest 2 Controls Reference Card (Panel 8) */
-  .quest-controls-card {
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid var(--border-metal);
-    border-radius: 10px;
-    padding: 10px 16px;
-    max-width: 720px;
-    width: 100%;
-    margin-top: 4px;
-  }
-  .quest-controls-header {
-    font-size: 11px;
-    font-weight: 800;
+    font-size: 15px;
     letter-spacing: 2px;
-    color: var(--primary);
-    margin-bottom: 6px;
+    background: linear-gradient(180deg, #0284c7, #0369a1);
+    color: #fff;
+    border: 1px solid #38bdf8;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(2, 132, 199, 0.4);
+    transition: all 0.15s;
   }
-  .quest-controls-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    font-size: 10.5px;
-    font-weight: 700;
-    color: #cbd5e1;
+  .modal-close-btn:hover {
+    background: linear-gradient(180deg, #0369a1, #075985);
   }
-  @media (max-width: 600px) {
-    .quest-controls-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  .control-item span { color: var(--gold); }
 
   /* In-Game HUD matching Storyboard Panel 3 */
   #hud {
@@ -1102,7 +1135,6 @@
   </div>
 
   <!-- 3 Locations Grid matching Storyboard Panel 1 & 2 -->
-  <div class="locations-section-title">9 WAVES &bull; 3 LOCATIONS</div>
   <div class="locations-grid" id="lvl-select">
     <div class="location-card active" data-lvl="0">
       <div class="location-card-title">1. DOWNTOWN CITY</div>
@@ -1124,64 +1156,98 @@
     <button class="mode-pill-btn" data-mode="animals">&#128062; MUTANT ANIMALS</button>
   </div>
 
-  <!-- Gun Selection UI: Pick One Survival Gun Before Starting -->
-  <div class="gun-select-card">
-    <div class="gun-select-header">&#128299; SURVIVAL WEAPON (EQUIPPED FOR RUN)</div>
-    <div class="gun-select-grid" id="gun-select-grid">
-      <div class="gun-card active" data-gun="pistol">
-        <div class="gun-card-name">GLOCK 17</div>
-        <div class="gun-card-desc">MAG: 15 &bull; DMG: 42 &bull; FAST</div>
-      </div>
-      <div class="gun-card" data-gun="deagle">
-        <div class="gun-card-name">DESERT EAGLE</div>
-        <div class="gun-card-desc">MAG: 7 &bull; DMG: 105 &bull; HEAVY</div>
-      </div>
-      <div class="gun-card" data-gun="rifle">
-        <div class="gun-card-name">M4A1 CARBINE</div>
-        <div class="gun-card-desc">MAG: 30 &bull; DMG: 25 &bull; AUTO</div>
-      </div>
-      <div class="gun-card" data-gun="shotgun">
-        <div class="gun-card-name">M870 BREACHER</div>
-        <div class="gun-card-desc">MAG: 8 &bull; DMG: 20x8 &bull; PUMP</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mission Session Limit Selector -->
-  <div class="time-select-card">
-    <div class="time-select-header">&#9201; MISSION TIME LIMIT</div>
-    <div class="time-select-grid">
-      <button class="time-btn active" data-sec="0">UNLIMITED</button>
-      <button class="time-btn" data-sec="120">2 MIN</button>
-      <button class="time-btn" data-sec="300">5 MIN</button>
-      <button class="time-btn" data-sec="600">10 MIN</button>
-      <button class="time-btn" data-sec="900">15 MIN</button>
-    </div>
-  </div>
-
   <!-- Big Red Start Button matching Storyboard Panel 1 & 2 -->
-  <button class="btn-start-survival" id="btn-start-main">START SURVIVAL</button>
+  <button class="btn-start-survival" id="btn-start-main">&#9763; START SURVIVAL &#9763;</button>
+
+  <!-- Compact Loadout & Settings Bar (Clean & Uncluttered!) -->
+  <div class="compact-loadout-bar" id="btn-open-loadout">
+    <span class="loadout-label">&#9881;&#65039; LOADOUT:</span>
+    <span class="loadout-val" id="loadout-summary-weapon">GLOCK 17</span>
+    <span class="divider">&bull;</span>
+    <span class="loadout-label">&#9201; TIME:</span>
+    <span class="loadout-val" id="loadout-summary-timer">UNLIMITED</span>
+    <span class="loadout-edit-hint">[CUSTOMIZE &#9662;]</span>
+  </div>
 
   <!-- Platform Launch Row -->
   <div class="platform-row">
     <button class="platform-btn vr-btn" id="vr">&#129523; ENTER VR (QUEST 2)</button>
     <button class="platform-btn" id="pc">&#128421; PLAY (PC)</button>
     <button class="platform-btn" id="mob">&#128241; PLAY (MOBILE)</button>
-  </div>
-
-  <!-- Quest 2 Controls Guide Card (Storyboard Panel 8) -->
-  <div class="quest-controls-card">
-    <div class="quest-controls-header">&#129523; QUEST 2 &bull; PC CONTROLS GUIDE</div>
-    <div class="quest-controls-grid">
-      <div class="control-item">&#128377; LEFT STICK: <span>MOVE</span></div>
-      <div class="control-item">&#128377; RIGHT STICK: <span>TURN</span></div>
-      <div class="control-item">&#127919; TRIGGER / CLICK: <span>FIRE</span></div>
-      <div class="control-item">&#128296; A / X / P: <span>PAUSE</span></div>
-    </div>
+    <button class="platform-btn" id="btn-show-controls">&#127918; CONTROLS GUIDE</button>
   </div>
 </div>
 
-<!-- Pause / Retry / Quit Modal -->
+<!-- Modal: Loadout & Timer Settings -->
+<div class="sub-modal-ov" id="loadout-modal">
+  <div class="sub-modal-box">
+    <div class="sub-modal-title">&#9881;&#65039; SURVIVAL LOADOUT & TIMER</div>
+
+    <!-- Gun Selection UI (Pick One Weapon for Run) -->
+    <div class="gun-select-card">
+      <div class="gun-select-header">&#128299; CHOOSE SURVIVAL WEAPON</div>
+      <div class="gun-select-grid" id="gun-select-grid">
+        <div class="gun-card active" data-gun="pistol">
+          <div class="gun-card-name">GLOCK 17</div>
+          <div class="gun-card-desc">MAG: 15 &bull; DMG: 42 &bull; FAST</div>
+        </div>
+        <div class="gun-card" data-gun="deagle">
+          <div class="gun-card-name">DESERT EAGLE</div>
+          <div class="gun-card-desc">MAG: 7 &bull; DMG: 105 &bull; HEAVY</div>
+        </div>
+        <div class="gun-card" data-gun="rifle">
+          <div class="gun-card-name">M4A1 CARBINE</div>
+          <div class="gun-card-desc">MAG: 30 &bull; DMG: 25 &bull; AUTO</div>
+        </div>
+        <div class="gun-card" data-gun="shotgun">
+          <div class="gun-card-name">M870 BREACHER</div>
+          <div class="gun-card-desc">MAG: 8 &bull; DMG: 20x8 &bull; PUMP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mission Session Limit Selector -->
+    <div class="time-select-card">
+      <div class="time-select-header">&#9201; MISSION TIME LIMIT</div>
+      <div class="time-select-grid">
+        <button class="time-btn active" data-sec="0">UNLIMITED</button>
+        <button class="time-btn" data-sec="120">2 MIN</button>
+        <button class="time-btn" data-sec="300">5 MIN</button>
+        <button class="time-btn" data-sec="600">10 MIN</button>
+        <button class="time-btn" data-sec="900">15 MIN</button>
+      </div>
+    </div>
+
+    <button class="modal-close-btn" id="btn-close-loadout">CONFIRM LOADOUT</button>
+  </div>
+</div>
+
+<!-- Modal: Quest 2 & PC Controls Guide (Storyboard Panel 8) -->
+<div class="sub-modal-ov" id="controls-modal">
+  <div class="sub-modal-box">
+    <div class="sub-modal-title">&#127918; QUEST 2 &bull; PC CONTROLS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;color:#cbd5e1;text-align:left;margin-bottom:14px;">
+      <div style="background:rgba(30,41,59,0.7);padding:8px 12px;border-radius:6px;border:1px solid #334155;">
+        <span style="color:#38bdf8;font-weight:bold;">&#129523; QUEST 2 VR</span><br>
+        &#128377; Left Stick: <b style="color:var(--gold);">Move / Strafe</b><br>
+        &#128377; Right Stick: <b style="color:var(--gold);">Snap Turn</b><br>
+        &#127919; Trigger: <b style="color:var(--gold);">Fire Gun</b><br>
+        &#9994; Grip: <b style="color:var(--gold);">Reload</b><br>
+        &#128296; A / X Button: <b style="color:var(--gold);">Pause</b>
+      </div>
+      <div style="background:rgba(30,41,59,0.7);padding:8px 12px;border-radius:6px;border:1px solid #334155;">
+        <span style="color:#38bdf8;font-weight:bold;">&#128421; PC KEYBOARD/MOUSE</span><br>
+        &#9000; WASD: <b style="color:var(--gold);">Move / Strafe</b><br>
+        &#128431; Mouse: <b style="color:var(--gold);">Aim Crosshair</b><br>
+        &#127919; Left Click: <b style="color:var(--gold);">Shoot</b><br>
+        &#128260; R Key: <b style="color:var(--gold);">Reload</b><br>
+        &#9208; P / Esc: <b style="color:var(--gold);">Pause Menu</b>
+      </div>
+    </div>
+    <button class="modal-close-btn" id="btn-close-controls">CLOSE</button>
+  </div>
+</div>
+
 <!-- Storyboard Multi-Modal (Pause, Survival Results, Death) -->
 <div id="modal-ov">
   <div class="storyboard-modal-box">
@@ -1201,6 +1267,15 @@
 </div>
 
 <div id="hud">
+  <!-- Top Left Mission Timer (Storyboard Panel 3) -->
+  <div id="hud-timer-badge">&#9201; 00:00</div>
+
+  <!-- Top Center Boss Health Bar (Storyboard Panel 4) -->
+  <div id="boss-hud" style="display:none;">
+    <div id="boss-name-lbl">THE WARDEN</div>
+    <div class="boss-bar-bg"><div id="boss-bar-fill"></div></div>
+  </div>
+
   <div id="top-bar">
     <span id="hud-lvl" class="badge">CITY</span>
     <span>|</span>
@@ -1363,6 +1438,7 @@ document.querySelectorAll('.gun-card').forEach(card => {
     document.querySelectorAll('.gun-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
     chosenWeapon = card.dataset.gun;
+    if ($('loadout-summary-weapon')) $('loadout-summary-weapon').textContent = (W[chosenWeapon] ? W[chosenWeapon].n : 'GLOCK 17');
   });
 });
 
@@ -1373,6 +1449,7 @@ document.querySelectorAll('.time-btn').forEach(btn => {
     document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     sessionDurationLimit = parseInt(btn.dataset.sec, 10) || 0;
+    if ($('loadout-summary-timer')) $('loadout-summary-timer').textContent = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit/60)} MIN` : 'UNLIMITED';
   });
 });
 
@@ -2469,7 +2546,7 @@ function setW(n) {
   SND.click();
   updateHUD();
 }
-const cyc = d => setW(NAMES[(NAMES.indexOf(cur) + d + NAMES.length) % NAMES.length]);
+const cyc = d => { /* Single weapon equipped for survival run */ };
 
 buildGun(cur);
 attachGun(camera, gunBase);
@@ -2744,6 +2821,11 @@ function spawn(type) {
   if (type === 'boss') {
     const bName = LEVELS[selectedLevel].waves[wave - 1].bossName || 'THE ABOMINATION';
     say(bName + ' APPROACHES', 'Aim for the head for 2.5x critical damage!', 4);
+    if ($('boss-hud')) {
+      $('boss-hud').style.display = 'block';
+      if ($('boss-name-lbl')) $('boss-name-lbl').textContent = bName;
+      if ($('boss-bar-fill')) $('boss-bar-fill').style.width = '100%';
+    }
   }
 }
 
@@ -2773,9 +2855,15 @@ function dmgZ(z, d, pt, head) {
   cx.classList.add('hit');
   setTimeout(() => cx.classList.remove('hit'), 90);
 
+  if (z.type === 'boss') {
+    const pct = Math.max(0, Math.min(100, (z.hp / z.T.hp) * 100));
+    if ($('boss-bar-fill')) $('boss-bar-fill').style.width = `${pct}%`;
+  }
+
   if (z.hp <= 0) {
     z.dead = true;
     z.dt = 0;
+    if (z.type === 'boss' && $('boss-hud')) $('boss-hud').style.display = 'none';
     score += z.T.pts + (head ? 75 : 0);
     kills++;
     SND.vocal(z.g.position, z.type === 'giant' || z.type === 'boss', z.isAnimal);
@@ -2848,25 +2936,7 @@ function showPauseModal(title, sub, canResume = true) {
 }
 
 
-// Modal Button Handlers
-$('modal-btn-primary').onclick = () => {
-  if (state === 'win') {
-    // Next Location
-    $('modal-ov').style.display = 'none';
-    if (selectedLevel < LEVELS.length - 1) {
-      selectedLevel++;
-      wave = 0;
-      applyLevelTheme(selectedLevel);
-      startWave();
-    } else {
-      quitToMenu();
-    }
-  } else {
-    togglePause();
-  }
-};
-$('modal-btn-retry').onclick = retryGame;
-$('modal-btn-quit').onclick = quitToMenu;
+// Modal Button Handlers bound below in bindClick
 
 function togglePause() {
   if (state === 'play') {
@@ -2903,14 +2973,55 @@ function retryGame() {
   if (!mobileMode && !xr()) dom.requestPointerLock();
 }
 
-// Bind HUD & Modal System Buttons
-$('hud-pause').onclick = e => { e.stopPropagation(); togglePause(); };
-$('hud-retry').onclick = e => { e.stopPropagation(); retryGame(); };
-$('hud-quit').onclick  = e => { e.stopPropagation(); quitToMenu(); };
+// Safe DOM Event Binding Helper
+const bindClick = (id, fn) => {
+  const el = $(id);
+  if (el) el.onclick = fn;
+};
 
-$('btn-resume').onclick      = () => togglePause();
-$('btn-modal-retry').onclick = () => retryGame();
-$('btn-modal-quit').onclick  = () => quitToMenu();
+// Bind HUD Buttons
+bindClick('hud-pause', e => { e.stopPropagation(); togglePause(); });
+bindClick('hud-retry', e => { e.stopPropagation(); retryGame(); });
+bindClick('hud-quit',  e => { e.stopPropagation(); quitToMenu(); });
+
+// Bind Modal Handlers
+bindClick('modal-btn-primary', () => {
+  if (state === 'win') {
+    $('modal-ov').style.display = 'none';
+    if (selectedLevel < LEVELS.length - 1) {
+      selectedLevel++;
+      wave = 0;
+      applyLevelTheme(selectedLevel);
+      startWave();
+    } else {
+      quitToMenu();
+    }
+  } else {
+    togglePause();
+  }
+});
+bindClick('modal-btn-retry', retryGame);
+bindClick('modal-btn-quit', quitToMenu);
+
+// Loadout & Controls Sub-Modals Handlers
+bindClick('btn-open-loadout', () => {
+  const m = $('loadout-modal');
+  if (m) m.style.display = 'flex';
+});
+bindClick('btn-close-loadout', () => {
+  const m = $('loadout-modal');
+  if (m) m.style.display = 'none';
+  if ($('loadout-summary-weapon')) $('loadout-summary-weapon').textContent = (W[chosenWeapon] ? W[chosenWeapon].n : 'GLOCK 17');
+  if ($('loadout-summary-timer')) $('loadout-summary-timer').textContent = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit/60)} MIN` : 'UNLIMITED';
+});
+bindClick('btn-show-controls', () => {
+  const m = $('controls-modal');
+  if (m) m.style.display = 'flex';
+});
+bindClick('btn-close-controls', () => {
+  const m = $('controls-modal');
+  if (m) m.style.display = 'none';
+});
 
 function startWave() {
   if ($('boss-hud')) $('boss-hud').style.display = 'none';
@@ -2970,7 +3081,7 @@ function startGame() {
     rifle:   { mag: 30, res: 150 },
     shotgun: { mag: 8,  res: 40 }
   };
-  cur = 'pistol';
+  cur = chosenWeapon || 'pistol';
   buildGun(cur);
   reloading = 0;
   state = 'play';
@@ -3178,11 +3289,11 @@ $('vr').onclick = async () => {
     camera.position.y = 0;
     startGame();
   } catch (e) {
-    $('note').textContent = 'VR unavailable in this browser. Select PC or Mobile above.';
+    if ($('device-detect-badge')) $('device-detect-badge').textContent = 'VR unavailable. Running PC mode.';
   }
 };
 if (!navigator.xr) {
-  $('note').textContent = 'Select a location, choose Zombies or Animals, then tap PLAY.';
+  // Note element replaced by sleek device badge
 }
 
 function reload() {
@@ -3393,6 +3504,27 @@ function update(dt) {
   cd -= dt;
 
   if (state === 'play') {
+    sessionTimeElapsed += dt;
+    const timerBadge = $('hud-timer-badge');
+    if (timerBadge) {
+      if (sessionDurationLimit > 0) {
+        const remaining = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
+        const m = Math.floor(remaining / 60);
+        const s = Math.floor(remaining % 60);
+        timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        if (remaining <= 0) {
+          state = 'session_over';
+          if (document.pointerLockElement === dom) document.exitPointerLock();
+          showStoryModal('SESSION EXPIRED', 'Designated survival mission time has ended!', false, true, false);
+          return;
+        }
+      } else {
+        const m = Math.floor(sessionTimeElapsed / 60);
+        const s = Math.floor(sessionTimeElapsed % 60);
+        timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      }
+    }
+
     if (trig && (w.auto || !c0)) fire();
     c0 = trig;
 
