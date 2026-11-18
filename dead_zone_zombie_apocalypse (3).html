@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#06090e">
-<meta name="description" content="Dead Zone: Zombie Apocalypse - 3D Survival Shooter for PC, Mobile, and Oculus / Meta Quest 2 WebXR">
 <title>DEAD ZONE: ZOMBIE APOCALYPSE</title>
 <link rel="manifest" href="manifest.json">
 <style>
@@ -15,9 +14,7 @@
     --bg-dark: #06090e;
     --panel: rgba(12, 16, 24, 0.88);
     --gold: #facc15;
-    --gold-glow: rgba(250, 204, 21, 0.45);
     --cyan: #38bdf8;
-    --green: #22c55e;
   }
   * {
     box-sizing: border-box;
@@ -60,151 +57,82 @@
     backdrop-filter: blur(8px);
     overflow-y: auto;
   }
-  .logo-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 2px;
-  }
   h1 {
-    font-size: clamp(38px, 8vw, 82px);
+    font-size: clamp(40px, 8.5vw, 88px);
     margin: 0;
     color: var(--primary);
     text-shadow: 0 0 35px var(--primary-glow), 0 4px 0 #4a0404;
-    line-height: 0.95;
-  }
-  h1 span.zone-txt {
-    color: #e2e8f0;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
-    display: inline-flex;
-    align-items: center;
+    line-height: 1;
   }
   h2 {
-    margin: 4px 0 8px;
-    letter-spacing: 5px;
+    margin: 4px 0 10px;
+    letter-spacing: 6px;
     color: #cbd5e1;
-    font-size: clamp(12px, 2.2vw, 18px);
-    font-weight: 800;
+    font-size: clamp(13px, 2.4vw, 19px);
+    font-weight: 700;
   }
   .campaign-tag {
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 2.5px;
     color: var(--gold);
-    margin-bottom: 10px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    margin-bottom: 8px;
   }
 
-  /* Device Auto-Detect Pill */
+  /* Auto Device Detection Badge */
   #device-detect-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 16px;
+    padding: 5px 16px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 800;
     letter-spacing: 1.5px;
     margin-bottom: 12px;
-    backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-    animation: pulse-glow 2.5s infinite;
   }
-  #device-detect-badge.vr-mode {
-    background: rgba(147, 51, 234, 0.25);
-    border-color: #c084fc;
-    color: #e9d5ff;
-  }
-  #device-detect-badge.mobile-mode {
-    background: rgba(34, 197, 94, 0.22);
-    border-color: #4ade80;
-    color: #bbf7d0;
-  }
-  #device-detect-badge.pc-mode {
-    background: rgba(56, 189, 248, 0.22);
-    border-color: #38bdf8;
-    color: #bae6fd;
-  }
-  @keyframes pulse-glow {
-    0%, 100% { transform: scale(1); opacity: 0.95; }
-    50% { transform: scale(1.02); opacity: 1; }
-  }
+  #device-detect-badge.vr-mode { background: rgba(147, 51, 234, 0.25); border-color: #c084fc; color: #e9d5ff; }
+  #device-detect-badge.mobile-mode { background: rgba(34, 197, 94, 0.22); border-color: #4ade80; color: #bbf7d0; }
+  #device-detect-badge.pc-mode { background: rgba(56, 189, 248, 0.22); border-color: #38bdf8; color: #bae6fd; }
 
-  /* 3 Locations Cards */
+  /* 3 Level Location Cards */
   .level-select {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 12px;
-    max-width: 740px;
+    max-width: 680px;
     width: 100%;
   }
-  .lvl-card {
-    flex: 1 1 180px;
-    max-width: 220px;
-    background: rgba(15, 23, 42, 0.92);
-    border: 2px solid #334155;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    padding: 0;
+  .lvl-btn {
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    background: rgba(30, 41, 59, 0.85);
     color: #cbd5e1;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
   }
-  .lvl-card:hover {
-    transform: translateY(-2px);
-    border-color: #64748b;
-  }
-  .lvl-card.active {
-    border-color: var(--gold);
-    box-shadow: 0 0 20px var(--gold-glow);
-    transform: translateY(-3px) scale(1.02);
+  .lvl-btn.active {
+    background: rgba(217, 30, 24, 0.28);
+    border-color: var(--primary);
     color: #fff;
-  }
-  .lvl-art {
-    width: 100%;
-    height: 70px;
-    position: relative;
-    overflow: hidden;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .lvl-art svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .lvl-info {
-    padding: 6px 8px;
-  }
-  .lvl-title {
-    font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 14px;
-    letter-spacing: 1.5px;
-    line-height: 1.1;
-  }
-  .lvl-waves {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--gold);
-    letter-spacing: 1px;
-    margin-top: 3px;
+    box-shadow: 0 0 16px var(--primary-glow);
   }
 
   /* Mode Select (Zombies vs Animals) */
   .mode-select {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: center;
     margin-bottom: 12px;
   }
   .mode-btn {
-    padding: 8px 18px;
+    padding: 9px 22px;
     font-size: 14px;
     font-family: Impact, 'Arial Black', sans-serif;
     letter-spacing: 1.5px;
@@ -214,40 +142,89 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
   }
   .mode-btn.active {
-    background: linear-gradient(180deg, rgba(220, 38, 38, 0.45), rgba(127, 29, 29, 0.65));
+    background: rgba(217, 30, 24, 0.32);
     border-color: #f87171;
     color: #fff;
     box-shadow: 0 0 16px var(--primary-glow);
-    transform: scale(1.03);
   }
 
-  /* Session Duration Setter */
+  /* Gun Selection UI (Pick One Weapon for Game) */
+  .gun-select-card {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    max-width: 680px;
+    width: 100%;
+  }
+  .gun-select-header {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .gun-select-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  @media (max-width: 640px) {
+    .gun-select-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .gun-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 2px solid #334155;
+    border-radius: 8px;
+    padding: 8px 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .gun-card:hover {
+    border-color: #64748b;
+  }
+  .gun-card.active {
+    background: rgba(217, 30, 24, 0.25);
+    border-color: #f87171;
+    box-shadow: 0 0 14px var(--primary-glow);
+    transform: scale(1.02);
+  }
+  .gun-card-name {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .gun-card-desc {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-top: 3px;
+  }
+
+  /* Session Duration Time Limit Setter */
   .session-card {
     background: rgba(15, 23, 42, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 12px;
-    padding: 8px 16px;
+    border-radius: 10px;
+    padding: 8px 14px;
     margin-bottom: 14px;
-    max-width: 620px;
+    max-width: 600px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
   }
-  .session-header {
+  .session-title {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 2px;
-    color: #facc15;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    color: var(--gold);
   }
   .time-btn-group {
     display: flex;
@@ -256,10 +233,9 @@
     justify-content: center;
   }
   .time-btn {
-    padding: 6px 12px;
-    font-size: 12px;
+    padding: 5px 12px;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 1px;
     background: rgba(30, 41, 59, 0.8);
     color: #94a3b8;
     border: 1px solid #475569;
@@ -274,16 +250,16 @@
     box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
   }
 
-  /* Main Action Buttons */
+  /* Play Buttons */
   .btn-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
   .play-btn {
-    padding: 12px 26px;
+    padding: 12px 28px;
     font-size: 18px;
     font-family: Impact, 'Arial Black', sans-serif;
     letter-spacing: 2px;
@@ -295,17 +271,12 @@
     box-shadow: 0 6px 20px rgba(185, 28, 28, 0.45);
     transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
   }
-  .play-btn:hover {
-    filter: brightness(1.15);
-    transform: translateY(-2px);
-  }
-  .play-btn:active {
-    transform: translateY(1px);
-  }
+  .play-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
+  .play-btn:active { transform: translateY(1px); }
   .play-btn.featured {
     box-shadow: 0 0 25px rgba(239, 68, 68, 0.7), 0 6px 20px rgba(185, 28, 28, 0.5);
     border-color: #fca5a5;
-    transform: scale(1.04);
+    transform: scale(1.03);
   }
   .play-btn.secondary {
     background: linear-gradient(180deg, #1e293b, #0f172a);
@@ -314,24 +285,18 @@
   }
 
   .controls-hint {
-    margin-top: 6px;
-    font-size: 11.5px;
+    font-size: 11px;
     color: #94a3b8;
-    background: rgba(12, 16, 24, 0.8);
+    background: var(--panel);
     padding: 7px 14px;
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.08);
     max-width: 620px;
     line-height: 1.4;
   }
-  #note {
-    font-size: 12px;
-    color: #38bdf8;
-    margin-top: 6px;
-    max-width: 500px;
-  }
+  #note { font-size: 11.5px; color: var(--cyan); margin-top: 6px; }
 
-  /* HUD */
+  /* In-Game HUD */
   #hud {
     position: fixed;
     inset: 0;
@@ -347,7 +312,7 @@
     left: max(16px, env(safe-area-inset-left));
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: var(--panel);
     padding: 7px 14px;
     border-radius: 12px;
@@ -356,28 +321,13 @@
     backdrop-filter: blur(8px);
     pointer-events: auto;
   }
-  .timer-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #facc15;
-  }
-  .timer-content {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-  }
-  .timer-title {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    color: #94a3b8;
-  }
+  .timer-content { display: flex; flex-direction: column; text-align: left; }
+  .timer-title { font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; color: #94a3b8; }
   .timer-digits {
     font-family: Impact, 'Arial Black', sans-serif;
     font-size: 20px;
     letter-spacing: 1.5px;
-    color: #facc15;
+    color: var(--gold);
     line-height: 1;
   }
   .timer-digits.warning {
@@ -389,7 +339,6 @@
     50% { opacity: 0.35; text-shadow: none; }
   }
 
-  /* Top Center Stats Bar */
   #top-bar {
     position: absolute;
     top: max(14px, env(safe-area-inset-top));
@@ -399,11 +348,11 @@
     gap: 12px;
     align-items: center;
     background: var(--panel);
-    padding: 7px 18px;
+    padding: 8px 18px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     font-weight: 800;
-    font-size: clamp(12px, 2vw, 15px);
+    font-size: clamp(12px, 2.2vw, 16px);
     letter-spacing: 1.5px;
     white-space: nowrap;
     box-shadow: 0 4px 16px rgba(0,0,0,0.6);
@@ -428,81 +377,43 @@
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 8px;
     cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition: background 0.15s, transform 0.1s;
+    backdrop-filter: blur(4px);
+    transition: background 0.15s;
   }
   .sys-btn:hover { background: rgba(51, 65, 85, 0.95); border-color: #fff; }
   .sys-btn.danger:hover { background: rgba(185, 28, 28, 0.9); border-color: #fca5a5; }
 
-  /* Boss Bar */
-  #boss-hud {
-    position: absolute;
-    top: max(65px, calc(env(safe-area-inset-top) + 52px));
-    left: 50%;
-    transform: translateX(-50%);
-    width: clamp(260px, 45vw, 480px);
-    text-align: center;
-    display: none;
-    z-index: 12;
-  }
-  #boss-name-lbl {
-    font-family: Impact, 'Arial Black', sans-serif;
-    font-size: 14px;
-    letter-spacing: 2.5px;
-    color: #f87171;
-    margin-bottom: 4px;
-    text-shadow: 0 0 12px rgba(248, 113, 113, 0.8);
-  }
-  #boss-bar-bg {
-    width: 100%;
-    height: 12px;
-    background: rgba(15, 23, 42, 0.9);
-    border: 2px solid #ef4444;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
-  }
-  #boss-bar-fill {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #dc2626, #f87171);
-    transition: width 0.15s;
-  }
-
-  /* Crosshair */
+  /* Crosshair: Authentic '+' Style (NO CIRCLE) */
   #cx {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 22px;
-    height: 22px;
-    margin: -11px 0 0 -11px;
-    border: 2px solid rgba(255, 255, 255, 0.75);
-    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
     pointer-events: none;
-    transition: transform 0.08s ease-out, border-color 0.08s;
+    transition: transform 0.08s ease-out;
   }
   #cx::before, #cx::after {
     content: '';
     position: absolute;
     background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 4px #000;
   }
-  #cx::before { left: 8px; top: -4px; width: 2px; height: 26px; }
-  #cx::after { top: 8px; left: -4px; width: 26px; height: 2px; }
-  #cx.hit { border-color: #ef4444; transform: scale(1.3); }
-  #cx.hit::before, #cx.hit::after { background: #ef4444; }
+  #cx::before { left: 9px; top: 0; width: 2px; height: 20px; }
+  #cx::after { top: 9px; left: 0; width: 20px; height: 2px; }
+  #cx.hit::before, #cx.hit::after { background: #ef4444; transform: scale(1.35); }
 
-  /* Message Banners */
   #msg {
     position: absolute;
-    bottom: 22%;
+    top: 24%;
     width: 100%;
     text-align: center;
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: clamp(26px, 5.5vw, 48px);
-    color: #ef4444;
+    font-size: clamp(28px, 6vw, 50px);
+    color: #f87171;
     letter-spacing: 3px;
-    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.95);
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
     padding: 0 16px;
     pointer-events: none;
   }
@@ -511,40 +422,27 @@
     font-size: clamp(14px, 2.5vw, 20px);
     color: var(--gold);
     letter-spacing: 2px;
-    margin-top: 4px;
+    margin-top: 6px;
     text-shadow: 0 2px 10px #000;
   }
 
-  /* Bottom Health & Ammo Status */
+  /* Bottom Status */
   #status-left {
     position: absolute;
     left: max(16px, env(safe-area-inset-left));
     bottom: max(16px, env(safe-area-inset-bottom));
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    width: clamp(150px, 26vw, 230px);
     background: var(--panel);
-    padding: 10px 16px;
+    padding: 10px 14px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(8px);
-  }
-  .med-cross {
-    width: 34px;
-    height: 34px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .hp-col {
-    width: clamp(125px, 20vw, 190px);
   }
   .stat-lbl {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    color: #e2e8f0;
+    color: #cbd5e1;
     margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
@@ -567,9 +465,6 @@
     position: absolute;
     right: max(16px, env(safe-area-inset-right));
     bottom: max(16px, env(safe-area-inset-bottom));
-    display: flex;
-    align-items: center;
-    gap: 12px;
     text-align: right;
     background: var(--panel);
     padding: 10px 16px;
@@ -577,26 +472,40 @@
     border: 1px solid rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(8px);
   }
-  .gun-icon {
-    width: 38px;
-    height: 28px;
-    opacity: 0.9;
-  }
   #w-name {
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 2px;
-    color: #cbd5e1;
+    color: #f59e0b;
   }
   #ammo-txt {
     font-family: Impact, 'Arial Black', sans-serif;
-    font-size: clamp(22px, 3.8vw, 32px);
+    font-size: clamp(22px, 4vw, 32px);
     letter-spacing: 1px;
     color: #fff;
     line-height: 1.05;
   }
 
-  /* Mobile Touch UI */
+  /* Realistic Player Bloodshed Canvas Overlay */
+  #player-blood-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 6;
+  }
+  #blood-vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    background: radial-gradient(circle at center, transparent 35%, rgba(130, 0, 0, 0.5) 85%, rgba(60, 0, 0, 0.9) 100%);
+  }
+
+  /* Mobile Touch Controls */
   #mobile-ui {
     position: fixed;
     inset: 0;
@@ -655,12 +564,8 @@
     background: rgba(220, 38, 38, 0.55);
     border: 3px solid rgba(248, 113, 113, 0.85);
     font-size: 16px;
-    letter-spacing: 1px;
   }
-  #btn-fire:active, #btn-fire.pressed {
-    background: rgba(220, 38, 38, 0.9);
-    transform: scale(0.93);
-  }
+  #btn-fire:active, #btn-fire.pressed { background: rgba(220, 38, 38, 0.9); transform: scale(0.93); }
   #btn-reload {
     right: 122px;
     bottom: 85px;
@@ -669,16 +574,6 @@
     background: rgba(30, 41, 59, 0.7);
     border: 2px solid rgba(148, 163, 184, 0.6);
     font-size: 12px;
-  }
-  #btn-swap {
-    right: 28px;
-    bottom: 192px;
-    width: 54px;
-    height: 54px;
-    background: rgba(30, 41, 59, 0.7);
-    border: 2px solid rgba(245, 158, 11, 0.7);
-    font-size: 11px;
-    color: #fcd34d;
   }
   #btn-sprint {
     left: 162px;
@@ -690,12 +585,9 @@
     font-size: 11px;
     color: #7dd3fc;
   }
-  #btn-sprint.active {
-    background: rgba(2, 132, 199, 0.7);
-    border-color: #fff;
-  }
+  #btn-sprint.active { background: rgba(2, 132, 199, 0.7); border-color: #fff; }
 
-  /* Modals: Pause, Death, Victory, Session Over */
+  /* Modals */
   #pause-ov {
     position: fixed;
     inset: 0;
@@ -710,95 +602,50 @@
     padding: 20px;
   }
   .modal-card {
-    background: rgba(15, 23, 42, 0.96);
+    background: rgba(15, 23, 42, 0.95);
     border: 2px solid #334155;
     border-radius: 16px;
-    padding: 28px 24px;
-    max-width: 480px;
+    padding: 26px;
+    max-width: 460px;
     width: 100%;
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.8);
   }
   #pause-title {
-    font-size: clamp(32px, 7vw, 56px);
+    font-size: clamp(34px, 7vw, 60px);
     color: #f87171;
     margin: 0;
     text-shadow: 0 0 25px rgba(248, 113, 113, 0.5);
-    line-height: 1;
   }
-  #pause-title.victory {
-    color: #facc15;
-    text-shadow: 0 0 25px rgba(250, 204, 21, 0.6);
-  }
-  #stars-row {
-    display: none;
-    justify-content: center;
-    gap: 10px;
-    font-size: 36px;
-    color: #facc15;
-    margin: 6px 0 10px;
-    text-shadow: 0 0 15px rgba(250, 204, 21, 0.6);
-  }
+  #pause-title.victory { color: var(--gold); text-shadow: 0 0 25px rgba(250, 204, 21, 0.6); }
   #pause-sub {
-    color: #e2e8f0;
-    font-size: 16px;
+    color: #cbd5e1;
+    font-size: 15px;
     font-weight: 700;
+    margin: 10px 0 20px;
     line-height: 1.6;
-    margin-bottom: 20px;
     white-space: pre-line;
   }
-  .modal-btn-col {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-  .modal-btn-col .play-btn {
-    width: 100%;
-    padding: 12px 20px;
-    font-size: 17px;
-  }
-  .badge { color: #f87171; }
-
-  /* Screen Damage & Blood Splatter Overlay */
-  #blood-screen-overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 6;
-    opacity: 0;
-    transition: opacity 0.15s ease-out;
-    background: radial-gradient(circle at center, transparent 30%, rgba(139, 0, 0, 0.55) 85%, rgba(68, 0, 0, 0.85) 100%);
-  }
+  .modal-btn-col { display: flex; flex-direction: column; gap: 10px; }
+  .modal-btn-col .play-btn { width: 100%; padding: 12px; font-size: 17px; }
 
   #vig {
     position: fixed;
     inset: 0;
     pointer-events: none;
     box-shadow: inset 0 0 130px 30px rgba(0, 0, 0, 0.88);
-    z-index: 5;
+    z-index: 4;
   }
-  body.is-mobile #status-left,
-  body.is-mobile #status-right {
-    bottom: 14px;
-    padding: 6px 12px;
-  }
-  body.is-mobile #joy-zone {
-    bottom: 75px;
-  }
+  body.is-mobile #status-left, body.is-mobile #status-right { bottom: 14px; padding: 6px 12px; }
+  body.is-mobile #joy-zone { bottom: 75px; }
 </style>
 </head>
 <body>
 
 <!-- Startup & Main Menu Overlay -->
 <div id="ov">
-  <div class="logo-wrap">
-    <h1 class="title-font">DEAD <span class="zone-txt">Z<svg width="0.72em" height="0.78em" viewBox="0 0 64 64" style="margin:0 1px;"><circle cx="32" cy="34" r="27" fill="#e2e8f0"/><path d="M23 48c-2-5-3-11-3-16 0-2 2-3 3-1v10h2V21c0-2 3-2 3 0v18h2V18c0-2 3-2 3 0v21h2V21c0-2 3-2 3 0v19h2V27c0-2 3-2 3 0v16c0 6-4 11-10 11h-4c-3 0-5-2-6-6z" fill="#090d14"/></svg>NE</span></h1>
-  </div>
+  <h1 class="title-font">DEAD ZONE</h1>
   <h2>SURVIVAL APOCALYPSE</h2>
-  <div class="campaign-tag">CONTINUOUS CAMPAIGN &bull; 3 LOCATIONS &bull; 9 WAVES</div>
+  <div class="campaign-tag">CONTINUOUS CAMPAIGN &bull; 3 LOCATIONS &bull; 9 INTENSE WAVES</div>
 
   <!-- Automatic Device Detection Badge -->
   <div id="device-detect-badge" class="pc-mode">
@@ -808,78 +655,43 @@
 
   <!-- 3 Distinct Campaign Locations -->
   <div class="level-select" id="lvl-select">
-    <button class="lvl-card active" data-lvl="0">
-      <div class="lvl-art">
-        <svg viewBox="0 0 220 85" preserveAspectRatio="none">
-          <defs><linearGradient id="gCity" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#7c2d12"/></linearGradient></defs>
-          <rect width="220" height="85" fill="url(#gCity)"/>
-          <rect x="14" y="22" width="28" height="63" fill="#0f172a"/><rect x="48" y="10" width="34" height="75" fill="#1e293b"/>
-          <rect x="92" y="28" width="26" height="57" fill="#0f172a"/><rect x="130" y="14" width="38" height="71" fill="#1e293b"/>
-          <rect x="174" y="26" width="32" height="59" fill="#0f172a"/>
-          <rect x="54" y="18" width="5" height="6" fill="#facc15"/><rect x="66" y="32" width="5" height="6" fill="#facc15"/>
-          <rect x="138" y="24" width="6" height="6" fill="#38bdf8"/><rect x="152" y="40" width="6" height="6" fill="#facc15"/>
-          <circle cx="110" cy="75" r="18" fill="#ea580c" opacity="0.45"/>
-        </svg>
-      </div>
-      <div class="lvl-info">
-        <div class="lvl-title">1. DOWNTOWN CITY</div>
-        <div class="lvl-waves">WAVES: 1-3 &bull; BOSS: THE WARDEN</div>
-      </div>
-    </button>
-
-    <button class="lvl-card" data-lvl="1">
-      <div class="lvl-art">
-        <svg viewBox="0 0 220 85" preserveAspectRatio="none">
-          <defs><linearGradient id="gFor" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#022c22"/></linearGradient></defs>
-          <rect width="220" height="85" fill="url(#gFor)"/>
-          <circle cx="110" cy="24" r="14" fill="#a7f3d0" opacity="0.5"/>
-          <polygon points="30,14 10,85 50,85" fill="#065f46"/><polygon points="72,8 48,85 96,85" fill="#047857"/>
-          <polygon points="118,16 94,85 142,85" fill="#065f46"/><polygon points="162,10 136,85 188,85" fill="#047857"/>
-          <polygon points="196,20 176,85 216,85" fill="#065f46"/>
-        </svg>
-      </div>
-      <div class="lvl-info">
-        <div class="lvl-title">2. DARK PINE FOREST</div>
-        <div class="lvl-waves">WAVES: 4-6 &bull; BOSS: ALPHA BEHEMOTH</div>
-      </div>
-    </button>
-
-    <button class="lvl-card" data-lvl="2">
-      <div class="lvl-art">
-        <svg viewBox="0 0 220 85" preserveAspectRatio="none">
-          <defs><linearGradient id="gLab" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#31102f"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs>
-          <rect width="220" height="85" fill="url(#gLab)"/>
-          <rect x="24" y="24" width="60" height="61" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
-          <rect x="96" y="14" width="44" height="71" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
-          <rect x="104" y="22" width="28" height="48" fill="#10b981" opacity="0.55"/>
-          <rect x="152" y="28" width="48" height="57" rx="4" fill="#1e293b" stroke="#f43f5e" stroke-width="1.5"/>
-        </svg>
-      </div>
-      <div class="lvl-info">
-        <div class="lvl-title">3. BIO-LAB COMPOUND</div>
-        <div class="lvl-waves">WAVES: 7-9 &bull; BOSS: OMEGA APEX</div>
-      </div>
-    </button>
+    <button class="lvl-btn active" data-lvl="0">1. DOWNTOWN CITY</button>
+    <button class="lvl-btn" data-lvl="1">2. DARK PINE FOREST</button>
+    <button class="lvl-btn" data-lvl="2">3. BIO-LAB COMPOUND</button>
   </div>
 
   <!-- Mode Toggle (Zombies vs Mutant Animals) -->
   <div class="mode-select" id="mode-select">
-    <button class="mode-btn active" data-mode="zombies">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9 9 0 0 0-9 9c0 3.3 1.8 6.2 4.5 7.7V21a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-2.3A9 9 0 0 0 21 11a9 9 0 0 0-9-9zm-3 11a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>
-      ZOMBIES
-    </button>
-    <button class="mode-btn" data-mode="animals">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="6.5" cy="9.5" r="2.2"/><circle cx="10" cy="6" r="2.2"/><circle cx="14" cy="6" r="2.2"/><circle cx="17.5" cy="9.5" r="2.2"/><path d="M12 11c-3.2 0-6 2.3-6 5.2 0 1.7 1.3 2.8 3 2.8 1.2 0 2-.5 3-.5s1.8.5 3 .5c1.7 0 3-1.1 3-2.8 0-2.9-2.8-5.2-6-5.2z"/></svg>
-      MUTANT ANIMALS
-    </button>
+    <button class="mode-btn active" data-mode="zombies">A. ZOMBIES</button>
+    <button class="mode-btn" data-mode="animals">B. MUTANT ANIMALS</button>
+  </div>
+
+  <!-- Gun Selection UI: Choose Single Weapon Before Playing -->
+  <div class="gun-select-card">
+    <div class="gun-select-header">&#128299; CHOOSE SURVIVAL WEAPON (EQUIPPED FOR RUN)</div>
+    <div class="gun-select-grid" id="gun-select-grid">
+      <div class="gun-card active" data-gun="pistol">
+        <div class="gun-card-name">GLOCK 17</div>
+        <div class="gun-card-desc">MAG: 15 &bull; DMG: 42 &bull; FAST</div>
+      </div>
+      <div class="gun-card" data-gun="deagle">
+        <div class="gun-card-name">DESERT EAGLE</div>
+        <div class="gun-card-desc">MAG: 7 &bull; DMG: 105 &bull; HEAVY</div>
+      </div>
+      <div class="gun-card" data-gun="rifle">
+        <div class="gun-card-name">M4A1 CARBINE</div>
+        <div class="gun-card-desc">MAG: 30 &bull; DMG: 25 &bull; AUTO</div>
+      </div>
+      <div class="gun-card" data-gun="shotgun">
+        <div class="gun-card-name">M870 BREACHER</div>
+        <div class="gun-card-desc">MAG: 8 &bull; DMG: 20x8 &bull; PUMP</div>
+      </div>
+    </div>
   </div>
 
   <!-- Session Time Limit Setter -->
   <div class="session-card">
-    <div class="session-header">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm.5-13h-1.5v6l5.2 3.1.8-1.3-4.5-2.7z"/></svg>
-      SESSION TIME LIMIT (AUTO EVACUATION)
-    </div>
+    <div class="session-title">&#9201; SESSION TIME LIMIT (AUTO-EVACUATION)</div>
     <div class="time-btn-group" id="time-limit-select">
       <button class="time-btn active" data-sec="0">UNLIMITED</button>
       <button class="time-btn" data-sec="120">2 MIN</button>
@@ -889,15 +701,15 @@
     </div>
   </div>
 
-  <!-- Primary Play Launch Buttons -->
-  <div class="btn-group" id="play-btn-group">
+  <!-- Play Buttons -->
+  <div class="btn-group">
     <button class="play-btn featured" id="pc">PLAY (PC)</button>
     <button class="play-btn" id="mob">PLAY (MOBILE)</button>
-    <button class="play-btn secondary" id="vr">ENTER VR (QUEST 2)</button>
+    <button class="play-btn secondary" id="vr">PLAY (VR)</button>
   </div>
 
   <div class="controls-hint" id="controls-hint-box">
-    <b>PC Controls:</b> WASD Move &bull; Shift Sprint &bull; Mouse Aim &bull; Left Click Fire &bull; R Reload &bull; 1&ndash;4 Guns &bull; P Pause
+    <b>PC Controls:</b> WASD Move &bull; Shift Sprint &bull; Mouse Aim &bull; Left Click Fire &bull; R Reload &bull; P Pause
   </div>
   <p id="note"></p>
 </div>
@@ -905,13 +717,11 @@
 <!-- Pause / Results / Death / Session Over Modal -->
 <div id="pause-ov">
   <div class="modal-card">
-    <h2 id="pause-title" class="title-font">PAUSED</h2>
-    <div id="stars-row">&#9733;&#9733;&#9733;</div>
+    <h2 id="pause-title" class="title-font">GAME PAUSED</h2>
     <div id="pause-sub">Take a breather or choose an action below</div>
     <div class="modal-btn-col">
-      <button class="play-btn" id="btn-next-loc" style="display:none;">CONTINUE CAMPAIGN</button>
       <button class="play-btn" id="btn-resume">RESUME</button>
-      <button class="play-btn secondary" id="btn-modal-retry">RESTART</button>
+      <button class="play-btn secondary" id="btn-modal-retry">RETRY</button>
       <button class="play-btn secondary" id="btn-modal-quit">QUIT TO MENU</button>
     </div>
   </div>
@@ -921,83 +731,57 @@
 <div id="hud">
   <!-- Top Left Mission / Session Timer -->
   <div id="hud-timer-badge">
-    <div class="timer-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm.5-13h-1.5v6l5.2 3.1.8-1.3-4.5-2.7z"/>
-      </svg>
-    </div>
     <div class="timer-content">
-      <span id="hud-timer-title" class="timer-title">MISSION TIME</span>
+      <span id="hud-timer-title" class="timer-title">SURVIVAL TIME</span>
       <span id="hud-timer-val" class="timer-digits">00:00</span>
     </div>
   </div>
 
-  <div id="sys-controls">
-    <button class="sys-btn" id="hud-pause">PAUSE</button>
-    <button class="sys-btn" id="hud-retry">RESTART</button>
-    <button class="sys-btn danger" id="hud-quit">QUIT</button>
-  </div>
-
   <div id="top-bar">
-    <span id="hud-lvl" class="badge">CITY</span>
+    <span id="hud-lvl" style="color:#f87171;">CITY</span>
     <span>|</span>
     <span id="hud-wave">WAVE 1 OF 9</span>
     <span>|</span>
     <span id="hud-score">SCORE 0</span>
   </div>
 
-  <!-- Boss Health Bar -->
-  <div id="boss-hud">
-    <div id="boss-name-lbl">THE WARDEN</div>
-    <div id="boss-bar-bg"><div id="boss-bar-fill"></div></div>
+  <div id="sys-controls">
+    <button class="sys-btn" id="hud-pause">PAUSE</button>
+    <button class="sys-btn" id="hud-retry">RETRY</button>
+    <button class="sys-btn danger" id="hud-quit">QUIT</button>
   </div>
 
+  <!-- Precise '+' Crosshair -->
   <div id="cx"></div>
+
   <div id="msg"><div id="main-msg"></div><div id="sub-msg"></div></div>
 
-  <!-- Bottom Left Health -->
   <div id="status-left">
-    <div class="med-cross">
-      <svg viewBox="0 0 36 36" width="30" height="30">
-        <path d="M13 3h10v10h10v10H23v10H13V23H3V13h10V3z" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
-      </svg>
-    </div>
-    <div class="hp-col">
-      <div class="stat-lbl"><span>HEALTH</span><span id="hp-num">100%</span></div>
-      <div id="hpb"><div id="hpf"></div></div>
-    </div>
+    <div class="stat-lbl"><span>ARMOR &amp; HEALTH</span><span id="hp-num">100%</span></div>
+    <div id="hpb"><div id="hpf"></div></div>
   </div>
 
-  <!-- Bottom Right Ammo -->
   <div id="status-right">
-    <div class="gun-icon">
-      <svg viewBox="0 0 48 32" width="38" height="26" fill="#facc15">
-        <path d="M4 14h24v-4h16v8h-4v8h-8v-4H20v6h-6v-6H4z"/>
-      </svg>
-    </div>
-    <div>
-      <div id="w-name">GLOCK 17</div>
-      <div id="ammo-txt">15 / 60</div>
-    </div>
+    <div id="w-name">GLOCK 17</div>
+    <div id="ammo-txt">15 / 60</div>
   </div>
 </div>
 
-<!-- Mobile Touch Controls -->
+<!-- Mobile Touch UI -->
 <div id="mobile-ui">
   <div id="look-zone"></div>
   <div id="joy-zone"><div id="joy-knob"></div></div>
   <div class="touch-btn" id="btn-sprint">RUN</div>
   <div class="touch-btn" id="btn-fire">FIRE</div>
   <div class="touch-btn" id="btn-reload">REL</div>
-  <div class="touch-btn" id="btn-swap">GUN</div>
 </div>
 
-<div id="blood-screen-overlay"></div>
+<!-- Realistic Player Bloodshed Visor & Drip Canvas -->
+<canvas id="player-blood-canvas"></canvas>
+<div id="blood-vignette"></div>
 <div id="vig"></div>
 
-<!-- Three.js r128 Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
 <script>
 const $ = id => document.getElementById(id);
 const R = (a, b) => a + Math.random() * (b - a);
@@ -1007,7 +791,7 @@ const V = THREE.Vector3;
 const LEVELS = [
   {
     id: 'city',
-    shortName: 'CITY',
+    shortName: 'DOWNTOWN CITY',
     name: 'LOCATION 1: DOWNTOWN CITY',
     sky: 0x09111e,
     fog: 0x09111e,
@@ -1018,14 +802,14 @@ const LEVELS = [
     moonInt: 0.8,
     lampCol: 0xff9e44,
     waves: [
-      { w: 6, r: 2, sp: 0, g: 0, b: 0, waveNum: 1 },
-      { w: 8, r: 4, sp: 2, g: 1, b: 0, waveNum: 2 },
-      { w: 6, r: 4, sp: 2, g: 1, b: 1, bossName: 'THE WARDEN', waveNum: 3 }
+      { w: 6, r: 2, sp: 0, g: 0, b: 0 },
+      { w: 8, r: 4, sp: 2, g: 1, b: 0 },
+      { w: 6, r: 4, sp: 2, g: 1, b: 1, bossName: 'THE WARDEN' }
     ]
   },
   {
     id: 'forest',
-    shortName: 'FOREST',
+    shortName: 'DARK FOREST',
     name: 'LOCATION 2: DARK PINE FOREST',
     sky: 0x07140d,
     fog: 0x0a1c13,
@@ -1036,9 +820,9 @@ const LEVELS = [
     moonInt: 0.75,
     lampCol: 0xfbbf24,
     waves: [
-      { w: 8, r: 5, sp: 2, g: 1, b: 0, waveNum: 4 },
-      { w: 10, r: 6, sp: 3, g: 2, b: 0, waveNum: 5 },
-      { w: 8, r: 6, sp: 4, g: 2, b: 1, bossName: 'ALPHA BEHEMOTH', waveNum: 6 }
+      { w: 8, r: 5, sp: 2, g: 1, b: 0 },
+      { w: 10, r: 6, sp: 3, g: 2, b: 0 },
+      { w: 8, r: 6, sp: 4, g: 2, b: 1, bossName: 'ALPHA BEHEMOTH' }
     ]
   },
   {
@@ -1054,16 +838,17 @@ const LEVELS = [
     moonInt: 0.85,
     lampCol: 0xef4444,
     waves: [
-      { w: 10, r: 7, sp: 4, g: 2, b: 0, waveNum: 7 },
-      { w: 12, r: 9, sp: 5, g: 3, b: 0, waveNum: 8 },
-      { w: 10, r: 8, sp: 5, g: 3, b: 1, bossName: 'OMEGA APEX', waveNum: 9 }
+      { w: 10, r: 7, sp: 4, g: 2, b: 0 },
+      { w: 12, r: 9, sp: 5, g: 3, b: 0 },
+      { w: 10, r: 8, sp: 5, g: 3, b: 1, bossName: 'OMEGA APEX' }
     ]
   }
 ];
 
 let selectedLevel = 0;
 let enemyCategory = 'zombies'; // 'zombies' | 'animals'
-let sessionDurationLimit = 0;   // 0 = unlimited, or seconds (120, 300, 600, 900)
+let chosenWeapon = 'pistol';   // Only one gun equipped for run
+let sessionDurationLimit = 0;  // 0 = unlimited, or seconds
 let sessionTimeElapsed = 0;
 let cityTransitionT = 0;
 
@@ -1073,7 +858,6 @@ function detectDevice() {
   const isQuestOrVR = /OculusBrowser|Quest|Pico|Vive|VR/i.test(ua) || (window.location.search.includes('mode=vr'));
   const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
   const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-  
   if (isQuestOrVR) return 'vr';
   if (isMobileUA || (isTouch && window.innerWidth <= 1024)) return 'mobile';
   return 'pc';
@@ -1100,35 +884,35 @@ function applyDeviceUI(dev) {
     icon.innerHTML = '&#129505;';
     text.textContent = 'DETECTED: OCULUS / META QUEST 2 (WEBXR)';
     vrBtn.classList.add('featured');
-    hintBox.innerHTML = '<b>Quest 2 Touch Controls:</b> Left Stick Move &bull; Right Stick Snap-Turn &bull; Right Trigger Fire &bull; Right Grip Reload &bull; Left Grip/Menu Pause';
-    $('note').textContent = 'Meta Quest Browser detected &bull; Tap ENTER VR to launch WebXR mode!';
+    hintBox.innerHTML = '<b>Quest 2 Touch Controls:</b> Left Stick Move &bull; Right Stick Snap-Turn &bull; Right Trigger Fire &bull; Right Grip Reload &bull; Left Menu Pause';
+    $('note').textContent = 'Meta Quest Browser detected &bull; Tap PLAY (VR) to enter WebXR!';
   } else if (dev === 'mobile') {
     icon.innerHTML = '&#128241;';
     text.textContent = 'DETECTED: MOBILE / TOUCHSCREEN DEVICE';
     mobBtn.classList.add('featured');
-    hintBox.innerHTML = '<b>Mobile Touch Controls:</b> Left Stick Move &bull; Right Half Drag Aim &bull; Red Button Fire &bull; REL Reload &bull; GUN Swap &bull; RUN Sprint';
+    hintBox.innerHTML = '<b>Mobile Touch Controls:</b> Left Stick Move &bull; Right Half Drag Aim &bull; Red Button Fire &bull; REL Reload &bull; RUN Sprint';
     $('note').textContent = 'Touchscreen detected &bull; On-screen dual analog controls active.';
   } else {
     icon.innerHTML = '&#128421;&#65039;';
     text.textContent = 'DETECTED: DESKTOP PC (KEYBOARD & MOUSE)';
     pcBtn.classList.add('featured');
-    hintBox.innerHTML = '<b>PC Controls:</b> WASD Move &bull; Shift Sprint &bull; Mouse Aim &bull; Left Click Fire &bull; R Reload &bull; 1&ndash;4 Guns &bull; P Pause';
-    $('note').textContent = 'Pointer lock active &bull; Left Click captures mouse cursor.';
+    hintBox.innerHTML = '<b>PC Controls:</b> WASD Move &bull; Shift Sprint &bull; Mouse Aim &bull; Left Click Fire &bull; R Reload &bull; P Pause';
+    $('note').textContent = 'Pointer lock active &bull; Left Click locks mouse aim.';
   }
 }
 applyDeviceUI(detectedDevice);
 
-// Level selection cards
-document.querySelectorAll('.lvl-card').forEach(btn => {
+// Level Buttons
+document.querySelectorAll('.lvl-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     SND.uiClick();
-    document.querySelectorAll('.lvl-card').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     selectedLevel = parseInt(btn.dataset.lvl, 10);
   });
 });
 
-// Mode buttons (Zombies vs Animals)
+// Mode Buttons
 document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     SND.uiClick();
@@ -1138,17 +922,27 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
   });
 });
 
+// Gun Selection UI: Pick One Gun for Entire Run
+document.querySelectorAll('.gun-card').forEach(card => {
+  card.addEventListener('click', () => {
+    SND.uiClick();
+    document.querySelectorAll('.gun-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    chosenWeapon = card.dataset.gun;
+  });
+});
+
 // Session Time Limit Selector
-document.querySelectorAll('.time-limit-btn, .time-btn').forEach(btn => {
+document.querySelectorAll('.time-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     SND.uiClick();
-    document.querySelectorAll('.time-limit-btn, .time-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     sessionDurationLimit = parseInt(btn.dataset.sec, 10) || 0;
   });
 });
 
-// ---------- THREE.JS WEBGL RENDERER & SCENE SETUP ----------
+// ---------- THREE.JS WEBGL SCENE SETUP ----------
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(innerWidth, innerHeight);
@@ -1171,6 +965,7 @@ addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  resizeBloodCanvas();
 });
 
 const xr = () => renderer.xr.isPresenting;
@@ -1181,7 +976,7 @@ const box = (w, h, d, x, y, z, m) => {
   return b;
 };
 
-// Lighting & Atmosphere
+// Lighting & Moon
 const hemiLight = new THREE.HemisphereLight(0x5c7cfa, 0x1e1b24, 0.8);
 scene.add(hemiLight);
 const moon = new THREE.DirectionalLight(0x8bb4ff, 0.8);
@@ -1195,7 +990,7 @@ const moonMesh = new THREE.Mesh(
 moonMesh.position.set(-70, 95, -80);
 scene.add(moonMesh);
 
-// Ground textures
+// ---------- PROCEDURAL GROUND TEXTURES ----------
 function createGroundTexture(type) {
   const c = document.createElement('canvas');
   c.width = c.height = 512;
@@ -1204,7 +999,7 @@ function createGroundTexture(type) {
   if (type === 'city') {
     g.fillStyle = '#1c1f24';
     g.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 6000; i++) {
+    for (let i = 0; i < 7000; i++) {
       const v = R(18, 52) | 0;
       g.fillStyle = `rgb(${v},${v},${v + 4})`;
       g.fillRect(R(0, 512), R(0, 512), R(1, 3), R(1, 3));
@@ -1221,107 +1016,227 @@ function createGroundTexture(type) {
   } else if (type === 'forest') {
     g.fillStyle = '#162819';
     g.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 7000; i++) {
-      const v = R(20, 65) | 0;
-      g.fillStyle = `rgb(${v >> 1},${v},${v >> 2})`;
-      g.fillRect(R(0, 512), R(0, 512), R(1, 4), R(1, 4));
+    for (let i = 0; i < 9000; i++) {
+      const r = R(15, 35) | 0, gr = R(32, 68) | 0, b = R(14, 30) | 0;
+      g.fillStyle = `rgb(${r},${gr},${b})`;
+      g.fillRect(R(0, 512), R(0, 512), R(2, 5), R(2, 5));
+    }
+    for (let i = 0; i < 18; i++) {
+      g.fillStyle = 'rgba(42, 32, 22, 0.35)';
+      g.beginPath();
+      g.ellipse(R(0, 512), R(0, 512), R(15, 50), R(15, 40), R(0, 3), 0, Math.PI * 2);
+      g.fill();
     }
   } else {
-    g.fillStyle = '#221919';
+    g.fillStyle = '#27292e';
     g.fillRect(0, 0, 512, 512);
-    g.strokeStyle = '#450a0a';
-    g.lineWidth = 2;
-    for (let i = 0; i <= 512; i += 64) {
-      g.beginPath(); g.moveTo(i, 0); g.lineTo(i, 512); g.stroke();
-      g.beginPath(); g.moveTo(0, i); g.lineTo(512, i); g.stroke();
+    g.strokeStyle = '#141518';
+    g.lineWidth = 3;
+    for (let x = 0; x <= 512; x += 64) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 512); g.stroke(); }
+    for (let y = 0; y <= 512; y += 64) { g.beginPath(); g.moveTo(0, y); g.lineTo(512, y); g.stroke(); }
+    for (let i = 0; i < 4000; i++) {
+      const v = R(28, 55) | 0;
+      g.fillStyle = `rgba(${v},${v},${v},0.35)`;
+      g.fillRect(R(0, 512), R(0, 512), 2, 2);
     }
   }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(40, 40);
-  return tex;
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(70, 70);
+  return t;
 }
 
-const groundGeo = new THREE.PlaneGeometry(240, 240);
-const groundMat = new THREE.MeshLambertMaterial({ map: createGroundTexture('city') });
-const ground = new THREE.Mesh(groundGeo, groundMat);
+const groundTexMap = {
+  city: createGroundTexture('city'),
+  forest: createGroundTexture('forest'),
+  lab: createGroundTexture('lab')
+};
+
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(500, 500),
+  new THREE.MeshLambertMaterial({ map: groundTexMap.city })
+);
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-// Procedural 3D Environment Builders
-let envGroup = new THREE.Group();
+// ---------- 100% ORIGINAL DETAILED BUILDING FACADE GENERATOR ----------
+function makeFacade(style) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 512;
+  const g = c.getContext('2d');
+  const baseCol = { brick: '#4e2720', conc: '#474a4f', glass: '#26323d', tan: '#5e5544' }[style];
+  g.fillStyle = baseCol;
+  g.fillRect(0, 0, 512, 512);
+
+  for (let i = 0; i < 1600; i++) {
+    const shade = R(0, 35) | 0;
+    g.fillStyle = `rgba(${shade},${shade},${shade},${R(0.05, 0.25)})`;
+    g.fillRect(R(0, 512), R(0, 512), R(3, 18), R(2, 8));
+  }
+
+  for (let r = 0; r < 4; r++) {
+    for (let q = 0; q < 4; q++) {
+      const x = q * 128 + 24, y = r * 128 + 20, w = 80, h = 88;
+      const u = Math.random();
+      g.fillStyle = style === 'glass' ? '#1e293b' : '#9e998c';
+      g.fillRect(x - 6, y - 6, w + 12, h + 12);
+
+      if (u < 0.14) {
+        g.fillStyle = '#eab308';
+        g.fillRect(x, y, w, h);
+      } else if (u < 0.24) {
+        g.fillStyle = Math.random() < 0.5 ? '#991b1b' : '#1d4ed8';
+        g.fillRect(x, y, w, h);
+      } else {
+        g.fillStyle = '#090d14';
+        g.fillRect(x, y, w, h);
+      }
+      if (u > 0.35 && u < 0.55) {
+        g.fillStyle = '#4a3520';
+        for (let b = 0; b < 3; b++) g.fillRect(x - 2, y + b * 28 + 6, w + 4, 16);
+      }
+      g.fillStyle = '#787367';
+      g.fillRect(x - 10, y + h + 6, w + 20, 8);
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.anisotropy = 4;
+  return t;
+}
+
+const FT = ['brick', 'conc', 'glass', 'tan'].map(makeFacade);
+const concMat = L(0x52555a);
+const neonColors = [0xff2a55, 0x00e5ff, 0xffaa00, 0x39ff14];
+
+// ---------- 100% ORIGINAL RICH 3D ENVIRONMENTS ----------
+const envGroup = new THREE.Group();
 scene.add(envGroup);
-const lamps = [];
-const lampBulbs = [];
+let lamps = [], lampBulbs = [];
 
 function buildEnvironment(locId) {
-  while (envGroup.children.length > 0) {
-    const obj = envGroup.children[0];
-    envGroup.remove(obj);
-  }
-  lamps.length = 0;
-  lampBulbs.length = 0;
-  groundMat.map = createGroundTexture(locId);
-  groundMat.needsUpdate = true;
+  while (envGroup.children.length > 0) envGroup.remove(envGroup.children[0]);
+  lamps = [];
+  lampBulbs = [];
+  ground.material.map = groundTexMap[locId];
+  ground.material.needsUpdate = true;
 
   if (locId === 'city') {
-    const bColors = [0x1c2430, 0x181e28, 0x221a1f, 0x1a211e, 0x242426];
-    for (let i = -3; i <= 3; i++) {
-      for (let j = -3; j <= 3; j++) {
-        if (i === 0 || j === 0) continue;
-        const cx = i * 26, cz = j * 26;
-        const w = R(14, 20), d = R(14, 20), h = R(24, 75);
-        const col = bColors[Math.floor(Math.random() * bColors.length)];
-        const b = box(w, h, d, cx, h / 2, cz, L(col));
-        envGroup.add(b);
+    // Road markings & crosswalks
+    const lineMat = L(0x9a8c46);
+    const whiteLineMat = L(0x88929b);
+    for (let i = -14; i <= 14; i++) {
+      if (Math.abs(i) > 1) {
+        envGroup.add(box(0.18, 0.02, 2.4, 0, 0.01, i * 7, lineMat));
+        envGroup.add(box(2.4, 0.02, 0.18, i * 7, 0.01, 0, lineMat));
+      }
+    }
+    for (let s = -5; s <= 5; s += 1.2) {
+      envGroup.add(box(0.6, 0.02, 2.2, s, 0.012, 7.5, whiteLineMat));
+      envGroup.add(box(0.6, 0.02, 2.2, s, 0.012, -7.5, whiteLineMat));
+      envGroup.add(box(2.2, 0.02, 0.6, 7.5, 0.012, s, whiteLineMat));
+      envGroup.add(box(2.2, 0.02, 0.6, -7.5, 0.012, s, whiteLineMat));
+    }
 
-        // Windows
-        const winGeo = new THREE.PlaneGeometry(0.8, 1.2);
-        const winMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
-        for (let y = 4; y < h - 4; y += 4.5) {
-          for (let x = -w / 2 + 2; x < w / 2 - 2; x += 3.2) {
-            if (Math.random() < 0.22) {
-              const win = new THREE.Mesh(winGeo, winMat);
-              win.position.set(cx + x, y, cz + d / 2 + 0.05);
-              envGroup.add(win);
-            }
-          }
+    // Skyscrapers & Sidewalks with Facades
+    for (let i = -3; i < 3; i++) {
+      for (let j = -3; j < 3; j++) {
+        const h = R(18, 52);
+        const t = FT[(Math.abs(i * 3 + j)) % FT.length].clone();
+        const cx = i * 36 + 18, cz = j * 36 + 18;
+        t.needsUpdate = true;
+        t.repeat.set(2, h / 13);
+
+        const b = new THREE.Mesh(
+          new THREE.BoxGeometry(22, h, 22),
+          new THREE.MeshLambertMaterial({ map: t, emissiveMap: t, emissive: 0x888888, emissiveIntensity: 0.45 })
+        );
+        b.position.set(cx, h / 2, cz);
+        envGroup.add(b);
+        envGroup.add(
+          box(23.4, 1.0, 23.4, cx, h + 0.5, cz, concMat),
+          box(27.5, 0.28, 27.5, cx, 0.14, cz, L(0x36393f))
+        );
+
+        if (Math.abs(i) <= 1 && Math.abs(j) <= 1 && Math.random() < 0.65) {
+          const nc = neonColors[Math.random() * neonColors.length | 0];
+          const sx = cx > 0 ? -11.3 : 11.3;
+          envGroup.add(box(0.25, 1.1, 5.5, cx + sx, 5.2, cz + R(-4, 4), new THREE.MeshBasicMaterial({ color: nc })));
         }
       }
     }
 
-    [[-12, -12], [12, -12], [-12, 12], [12, 12], [28, 0], [-28, 0], [0, 28], [0, -28]].forEach(([x, z]) => {
-      envGroup.add(box(0.2, 5.5, 0.2, x, 2.75, z, L(0x27272a)));
-      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff9e44 }));
-      bulb.position.set(x, 5.6, z);
+    // Street Lamps
+    [[6.5, -12], [-6.5, 12], [12, 6.5], [-14, -6.5], [6.5, 24], [-6.5, -24]].forEach(([x, z]) => {
+      envGroup.add(box(0.16, 5.4, 0.16, x, 2.7, z, L(0x1f242b)));
+      const bulb = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.18, 0.3), new THREE.MeshBasicMaterial({ color: 0xff9e44 }));
+      bulb.position.set(x - Math.sign(x) * 0.4, 5.32, z);
       envGroup.add(bulb);
       lampBulbs.push(bulb);
-      const l = new THREE.PointLight(0xff9e44, 1.4, 28);
-      l.position.set(x, 5.5, z);
+      const l = new THREE.PointLight(0xff9e44, 1.3, 28);
+      l.position.set(x - Math.sign(x) * 0.4, 5.0, z);
       envGroup.add(l);
       lamps.push(l);
     });
 
+    // Abandoned Cars
+    [[3.4, -10], [-3.4, -24], [-3.4, 15], [12, -3.4], [-16, 3.4]].forEach(([x, z], idx) => {
+      const g = new THREE.Group();
+      const bodyCol = L(idx % 2 === 0 ? 0x181c24 : 0x3d2922);
+      g.add(
+        box(1.95, 0.72, 4.5, 0, 0.66, 0, bodyCol),
+        box(1.72, 0.62, 2.35, 0, 1.28, -0.25, L(0x090d12)),
+        box(0.35, 0.18, 0.05, -0.65, 0.72, 2.26, new THREE.MeshBasicMaterial({ color: 0xfef08a })),
+        box(0.35, 0.18, 0.05, 0.65, 0.72, 2.26, new THREE.MeshBasicMaterial({ color: 0xfef08a }))
+      );
+      g.position.set(x, 0, z);
+      g.rotation.y = Math.abs(x) > Math.abs(z) ? Math.PI / 2 : 0;
+      envGroup.add(g);
+    });
+
   } else if (locId === 'forest') {
-    const trunkMat = L(0x3e2723);
-    const pineMat1 = L(0x064e3b);
-    const pineMat2 = L(0x022c22);
+    // Dirt Crossroads Path
+    envGroup.add(
+      box(11, 0.03, 190, 0, 0.015, 0, L(0x2e2318)),
+      box(190, 0.03, 11, 0, 0.015, 0, L(0x2e2318))
+    );
 
-    for (let i = 0; i < 110; i++) {
-      const x = R(-85, 85), z = R(-85, 85);
-      if (Math.abs(x) < 7 || Math.abs(z) < 7) continue;
-      const th = R(6.5, 12.5), tr = R(0.25, 0.45);
-      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(tr * 0.7, tr, th, 8), trunkMat);
-      trunk.position.set(x, th / 2, z);
-      envGroup.add(trunk);
+    // 160 Layered Pine Trees & Boulders
+    const trunkMat = L(0x3b2618);
+    const pineMat1 = L(0x143822);
+    const pineMat2 = L(0x1b472b);
+    const rockMat = L(0x475569);
 
-      for (let k = 0; k < 3; k++) {
-        const cone = new THREE.Mesh(new THREE.ConeGeometry(R(2.5, 4.2) * (1 - k * 0.22), R(3.5, 5.5), 8), k % 2 === 0 ? pineMat1 : pineMat2);
-        cone.position.set(x, th * 0.65 + k * 2.4, z);
-        envGroup.add(cone);
+    for (let i = 0; i < 160; i++) {
+      let tx = R(-85, 85), tz = R(-85, 85);
+      if (Math.abs(tx) < 8 || Math.abs(tz) < 8) continue;
+
+      const tree = new THREE.Group();
+      const scale = R(0.85, 1.65);
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.45, 3.2, 7), trunkMat);
+      trunk.position.y = 1.6;
+      tree.add(trunk);
+
+      for (let tier = 0; tier < 3; tier++) {
+        const cone = new THREE.Mesh(
+          new THREE.ConeGeometry(2.3 - tier * 0.48, 3.8 - tier * 0.4, 8),
+          tier % 2 === 0 ? pineMat1 : pineMat2
+        );
+        cone.position.y = 3.6 + tier * 2.1;
+        tree.add(cone);
+      }
+      tree.scale.setScalar(scale);
+      tree.position.set(tx, 0, tz);
+      envGroup.add(tree);
+
+      if (i % 4 === 0) {
+        const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(R(0.8, 1.8), 0), rockMat);
+        rock.position.set(tx + R(-2, 2), 0.5, tz + R(-2, 2));
+        envGroup.add(rock);
       }
     }
 
+    // Cabins
     [[-16, -16], [16, -16], [-16, 16], [16, 16]].forEach(([cx, cz]) => {
       const cabin = new THREE.Group();
       cabin.add(
@@ -1334,6 +1249,7 @@ function buildEnvironment(locId) {
       envGroup.add(cabin);
     });
 
+    // Lanterns
     [[6, -12], [-6, 12], [12, 6], [-12, -6]].forEach(([x, z]) => {
       envGroup.add(box(0.2, 3.2, 0.2, x, 1.6, z, trunkMat));
       const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshBasicMaterial({ color: 0xfbbf24 }));
@@ -1347,6 +1263,7 @@ function buildEnvironment(locId) {
     });
 
   } else if (locId === 'lab') {
+    // Hazard Stripes & Containment Silos
     const hazardMat = L(0xd97706);
     const steelMat = L(0x334155);
     const glassVatMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.55 });
@@ -1402,7 +1319,7 @@ function buildEnvironment(locId) {
 }
 buildEnvironment('city');
 
-// Explosive Red Fuel Barrels
+// Explosive Fuel Barrels
 const barrels = [];
 [[3.2, -14], [-4.2, -20], [2.5, 18], [-3.2, 26], [14, 3.2], [-18, -2.5], [24, -4.0], [-30, 3.2], [35, 2.5], [-2.5, 36]].forEach(([x, z]) => {
   const m = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.95, 14), L(0xb91c1c, 0x3f0000));
@@ -1415,7 +1332,7 @@ const barrels = [];
   barrels.push(b);
 });
 
-// Supply Drops (Health & Ammo Crates)
+// Supply Drops
 const drops = [];
 function spawnDrop(pos) {
   const isHealth = Math.random() < 0.45;
@@ -1429,9 +1346,9 @@ function spawnDrop(pos) {
   drops.push({ g, isHealth, life: 25, t: 0 });
 }
 
-// Atmospheric Ash Floating Particles
+// Atmospheric Ash Particles
 const ashGeo = new THREE.BufferGeometry();
-const ashCount = 450;
+const ashCount = 500;
 const ashPos = new Float32Array(ashCount * 3);
 for (let i = 0; i < ashCount * 3; i += 3) {
   ashPos[i] = R(-60, 60);
@@ -1444,97 +1361,123 @@ scene.add(new THREE.Points(ashGeo, ashMat));
 
 const inCorr = (x, z) => (Math.abs(x) < 6.2 || Math.abs(z) < 6.2) && Math.abs(x) < 92 && Math.abs(z) < 92;
 
-// ---------- REALISTIC BLOOD & GORE SYSTEM ----------
-// Procedural Blood Splatter Decal Texture
-function createBloodSplatterTexture() {
-  const c = document.createElement('canvas');
-  c.width = c.height = 128;
-  const g = c.getContext('2d');
-  
-  // Center deep dark pool
-  const radGrad = g.createRadialGradient(64, 64, 4, 64, 64, 55);
-  radGrad.addColorStop(0, '#3f0404');
-  radGrad.addColorStop(0.35, '#7f1d1d');
-  radGrad.addColorStop(0.7, '#991b1b');
-  radGrad.addColorStop(1, 'rgba(153, 27, 27, 0)');
-  g.fillStyle = radGrad;
-  g.beginPath();
-  g.arc(64, 64, 55, 0, Math.PI * 2);
-  g.fill();
+// ---------- REALISTIC PLAYER BLOODSHED & VISOR DRIP ENGINE ----------
+const bloodCanvas = $('player-blood-canvas');
+const bloodCtx = bloodCanvas.getContext('2d');
+const bloodVignette = $('blood-vignette');
+const screenSplats = [];
+const screenDrips = [];
 
-  // Organic irregular blood splatter droplets & drips
-  g.fillStyle = '#6b0808';
-  for (let i = 0; i < 24; i++) {
+function resizeBloodCanvas() {
+  bloodCanvas.width = window.innerWidth;
+  bloodCanvas.height = window.innerHeight;
+}
+resizeBloodCanvas();
+
+function triggerPlayerBloodShed(dmg) {
+  // 1. Organic arterial blood splatters across the screen/visor
+  const splatCount = Math.min(22, Math.max(8, Math.floor(dmg / 2.5)));
+  const cx = R(bloodCanvas.width * 0.15, bloodCanvas.width * 0.85);
+  const cy = R(bloodCanvas.height * 0.15, bloodCanvas.height * 0.85);
+
+  for (let i = 0; i < splatCount; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const dist = R(12, 58);
-    const rad = R(2, 7);
-    g.beginPath();
-    g.arc(64 + Math.cos(angle) * dist, 64 + Math.sin(angle) * dist, rad, 0, Math.PI * 2);
-    g.fill();
-  }
-  const tex = new THREE.CanvasTexture(c);
-  return tex;
-}
-const bloodDecalTexture = createBloodSplatterTexture();
-const bloodDecalGeo = new THREE.PlaneGeometry(1, 1);
-const bloodDecals = [];
-
-function spawnGroundBloodDecal(pos, scale = 1.0) {
-  if (bloodDecals.length > 40) {
-    const oldest = bloodDecals.shift();
-    scene.remove(oldest);
-  }
-  const mat = new THREE.MeshBasicMaterial({
-    map: bloodDecalTexture,
-    transparent: true,
-    opacity: R(0.75, 0.95),
-    depthWrite: false
-  });
-  const m = new THREE.Mesh(bloodDecalGeo, mat);
-  m.rotation.x = -Math.PI / 2;
-  m.rotation.z = Math.random() * Math.PI * 2;
-  m.position.set(pos.x + R(-0.2, 0.2), 0.012, pos.z + R(-0.2, 0.2));
-  const s = R(0.4, 0.9) * scale;
-  m.scale.set(s, s, 1);
-  scene.add(m);
-  bloodDecals.push(m);
-}
-
-// Dynamic Directional Blood Mist & Droplets
-const bloodParticles = [];
-const bloodDropletGeo = new THREE.SphereGeometry(0.04, 6, 6);
-const bloodColors = [0x450a0a, 0x7f1d1d, 0x991b1b, 0xb91c1c];
-const bloodMats = bloodColors.map(c => new THREE.MeshBasicMaterial({ color: c }));
-
-function realisticBloodBurst(pt, bulletDir, count = 25, isHeadshot = false) {
-  const n = isHeadshot ? count * 1.8 : count;
-  for (let i = 0; i < n; i++) {
-    const mat = bloodMats[Math.floor(Math.random() * bloodMats.length)];
-    const m = new THREE.Mesh(bloodDropletGeo, mat);
-    m.position.copy(pt);
-
-    // Directional velocity with forward bias along bullet trajectory + conical spray
-    const speed = R(2.0, isHeadshot ? 6.5 : 4.0);
-    const spread = isHeadshot ? 0.8 : 0.45;
-    const vx = bulletDir.x * speed * 0.5 + R(-spread, spread) * speed;
-    const vy = Math.max(0.4, bulletDir.y * speed * 0.3 + R(isHeadshot ? 1.5 : 0.6, isHeadshot ? 4.2 : 2.2));
-    const vz = bulletDir.z * speed * 0.5 + R(-spread, spread) * speed;
-
-    const scale = R(0.4, isHeadshot ? 1.6 : 1.1);
-    m.scale.setScalar(scale);
-    scene.add(m);
-
-    bloodParticles.push({
-      m,
-      v: new THREE.Vector3(vx, vy, vz),
-      life: R(0.8, 1.6),
-      isHeadshot
+    const dist = R(8, 140);
+    const rad = R(4, 20);
+    screenSplats.push({
+      x: cx + Math.cos(angle) * dist,
+      y: cy + Math.sin(angle) * dist,
+      r: rad,
+      color: Math.random() < 0.4 ? '#4a0404' : '#880808',
+      alpha: R(0.75, 0.95),
+      decay: R(0.12, 0.28)
     });
   }
+
+  // 2. Realistic dripping blood streams running downward with gravity
+  const dripCount = Math.floor(R(2, 5));
+  for (let d = 0; d < dripCount; d++) {
+    screenDrips.push({
+      x: cx + R(-60, 60),
+      y: cy + R(-30, 30),
+      length: 0,
+      targetLength: R(40, 160),
+      speed: R(65, 140),
+      width: R(2.5, 6),
+      alpha: R(0.8, 1.0),
+      decay: R(0.08, 0.18)
+    });
+  }
+
+  // 3. Low Health throbbing red vignette
+  bloodVignette.style.opacity = Math.min(0.9, Math.max(0.4, (100 - hp) / 100)).toFixed(2);
 }
 
-// ---------- REAL AUDIO ENGINE (Zombie Horror Package) ----------
-let AC, master, compressor, reverbNode;
+function updateBloodScreen(dt) {
+  bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
+
+  // Render & Fade Blood Splats
+  for (let i = screenSplats.length - 1; i >= 0; i--) {
+    const s = screenSplats[i];
+    s.alpha -= s.decay * dt;
+    if (s.alpha <= 0) {
+      screenSplats.splice(i, 1);
+      continue;
+    }
+    bloodCtx.save();
+    bloodCtx.globalAlpha = Math.max(0, s.alpha);
+    bloodCtx.fillStyle = s.color;
+    bloodCtx.beginPath();
+    bloodCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    bloodCtx.fill();
+
+    // Satellite micro-droplets
+    for (let k = 0; k < 3; k++) {
+      bloodCtx.beginPath();
+      bloodCtx.arc(s.x + Math.sin(k * 2) * (s.r + 4), s.y + Math.cos(k * 2) * (s.r + 4), s.r * 0.28, 0, Math.PI * 2);
+      bloodCtx.fill();
+    }
+    bloodCtx.restore();
+  }
+
+  // Render & Animate Flowing Blood Drips Down Screen
+  for (let i = screenDrips.length - 1; i >= 0; i--) {
+    const d = screenDrips[i];
+    if (d.length < d.targetLength) {
+      d.length += d.speed * dt;
+    } else {
+      d.alpha -= d.decay * dt;
+    }
+    if (d.alpha <= 0) {
+      screenDrips.splice(i, 1);
+      continue;
+    }
+    bloodCtx.save();
+    bloodCtx.globalAlpha = Math.max(0, d.alpha);
+    bloodCtx.strokeStyle = '#4a0404';
+    bloodCtx.lineWidth = d.width;
+    bloodCtx.lineCap = 'round';
+    bloodCtx.beginPath();
+    bloodCtx.moveTo(d.x, d.y);
+    bloodCtx.lineTo(d.x, d.y + d.length);
+    bloodCtx.stroke();
+
+    // Drip bulb at bottom tip
+    bloodCtx.fillStyle = '#680505';
+    bloodCtx.beginPath();
+    bloodCtx.arc(d.x, d.y + d.length, d.width * 1.15, 0, Math.PI * 2);
+    bloodCtx.fill();
+    bloodCtx.restore();
+  }
+
+  // Reset vignette if player is healthy
+  if (hp > 75 && screenSplats.length === 0) {
+    bloodVignette.style.opacity = '0';
+  }
+}
+
+// ---------- REAL AUDIO ENGINE (Zombie Horror Pack) ----------
+let AC, master, compressor, reverbNode, nb;
 const AUDIO_MANIFEST = {
   bite: [
     'sounds/Bite/Zombie_Attack_Bite_001.mp3',
@@ -1544,62 +1487,44 @@ const AUDIO_MANIFEST = {
   blood: [
     'sounds/Blood/Blood_Splash_A_001.mp3',
     'sounds/Blood/Blood_Splash_A_002.mp3',
-    'sounds/Blood/Blood_Splash_A_003.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/Blood/Blood_Splash_A_001.mp3'
+    'sounds/Blood/Blood_Splash_A_003.mp3'
   ],
   bodyFall: [
     'sounds/BodyFall/Foley_BodyFall_001.mp3',
     'sounds/BodyFall/Foley_BodyFall_002.mp3',
-    'sounds/BodyFall/Foley_BodyFall_003.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/BodyFall/Foley_BodyFall_001.mp3'
+    'sounds/BodyFall/Foley_BodyFall_003.mp3'
   ],
   fleshImpact: [
     'sounds/Impact/Impact_Flesh_001.mp3',
     'sounds/Impact/Impact_Flesh_002.mp3',
     'sounds/Impact/Impact_Flesh_003.mp3',
     'sounds/Impact/Impact_Flesh_Gory_Light_001.mp3',
-    'sounds/Impact/Impact_Flesh_Gory_Light_002.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/Impact/Impact_Flesh_001.mp3'
+    'sounds/Impact/Impact_Flesh_Gory_Light_002.mp3'
   ],
   footsteps: [
     'sounds/Footsteps/Footsteps_Zombie_concret_001.mp3',
     'sounds/Footsteps/Footsteps_Zombie_concret_002.mp3',
     'sounds/Footsteps/Footsteps_Zombie_concret_003.mp3',
-    'sounds/Footsteps/Footsteps_Zombie_concret_004.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/Footsteps/Footsteps_Zombie_concret_001.mp3'
-  ],
-  foleyMovement: [
-    'sounds/Foley/Foley_Movement_Clothes_A_001.mp3',
-    'sounds/Foley/Foley_Movement_Clothes_A_002.mp3',
-    'sounds/Foley/Foley_Movement_Clothes_A_003.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/Foley/Foley_Movement_Clothes_A_001.mp3'
+    'sounds/Footsteps/Footsteps_Zombie_concret_004.mp3'
   ],
   zombieAttack: [
     'sounds/VO/Zombie01/Zombie001_Attack_A_001.mp3',
     'sounds/VO/Zombie01/Zombie001_Attack_A_002.mp3',
     'sounds/VO/Zombie01/Zombie001_Attack_A_003.mp3',
     'sounds/VO/Zombie03/Zombie003_Attack_A_001.mp3',
-    'sounds/VO/Zombie03/Zombie003_Attack_A_002.mp3',
-    'sounds/VO/Zombie03/Zombie003_Attack_A_003.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/VO/Zombie01/Zombie001_Attack_A_001.mp3'
+    'sounds/VO/Zombie03/Zombie003_Attack_A_002.mp3'
   ],
   zombieHurt: [
     'sounds/VO/Zombie01/Zombie001_Hurt_A_001.mp3',
     'sounds/VO/Zombie01/Zombie001_Hurt_A_002.mp3',
-    'sounds/VO/Zombie01/Zombie001_Hurt_A_003.mp3',
     'sounds/VO/Zombie03/Zombie003_Hurt_A_001.mp3',
-    'sounds/VO/Zombie03/Zombie003_Hurt_A_002.mp3',
-    'sounds/VO/Zombie03/Zombie003_Hurt_A_003.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/VO/Zombie01/Zombie001_Hurt_A_001.mp3'
+    'sounds/VO/Zombie03/Zombie003_Hurt_A_002.mp3'
   ],
   zombieIdle: [
     'sounds/VO/Zombie01/Zombie001_Idle_A_001.mp3',
     'sounds/VO/Zombie01/Zombie001_Idle_A_002.mp3',
-    'sounds/VO/Zombie01/Zombie001_Idle_A_003.mp3',
     'sounds/VO/Zombie03/Zombie003_Idle_A_001.mp3',
-    'sounds/VO/Zombie03/Zombie003_Idle_A_002.mp3',
-    'sounds/VO/Zombie03/Zombie003_Idle_A_003.mp3',
-    'ZombieHorrorPackageFree/ZombieHorrorPackageFree/MP3/VO/Zombie01/Zombie001_Idle_A_001.mp3'
+    'sounds/VO/Zombie03/Zombie003_Idle_A_002.mp3'
   ]
 };
 
@@ -1609,7 +1534,7 @@ async function loadSampleBuffer(url) {
   if (audioBufferCache[url]) return audioBufferCache[url];
   try {
     const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) throw new Error();
     const buf = await res.arrayBuffer();
     const decoded = await AC.decodeAudioData(buf);
     audioBufferCache[url] = decoded;
@@ -1621,16 +1546,13 @@ async function loadSampleBuffer(url) {
 
 function preloadAllSounds() {
   if (!AC) return;
-  Object.values(AUDIO_MANIFEST).forEach(list => {
-    list.forEach(url => loadSampleBuffer(url));
-  });
+  Object.values(AUDIO_MANIFEST).forEach(list => list.forEach(url => loadSampleBuffer(url)));
 }
 
 function playSample(category, pos = null, vol = 1.0, pitchVar = 0.08) {
   if (!AC) return false;
   const list = AUDIO_MANIFEST[category];
   if (!list || !list.length) return false;
-
   const validLoaded = list.filter(u => audioBufferCache[u]);
   if (!validLoaded.length) return false;
 
@@ -1667,8 +1589,6 @@ function playSample(category, pos = null, vol = 1.0, pitchVar = 0.08) {
   return true;
 }
 
-// Procedural Fallback Acoustics
-let nb;
 function createReverbImpulse(ctx, duration = 1.4, decay = 3.2) {
   const len = ctx.sampleRate * duration;
   const imp = ctx.createBuffer(2, len, ctx.sampleRate);
@@ -1744,10 +1664,7 @@ function tone(type, f1, f2, dur, g0, out) {
 }
 
 const SND = {
-  uiClick() {
-    if (!AC) return;
-    tone('sine', 480, 240, 0.04, 0.2);
-  },
+  uiClick() { if (AC) tone('sine', 480, 240, 0.04, 0.2); },
   shot(w) {
     if (!AC) return;
     const crackDur = w === 'shotgun' ? 0.045 : w === 'deagle' ? 0.038 : 0.024;
@@ -1759,17 +1676,13 @@ const SND = {
     const subStart = { pistol: 210, deagle: 155, rifle: 185, shotgun: 115 }[w] || 210;
     tone('sine', subStart, 28, bodyDur * 0.85, bodyGain * 1.1, compressor);
   },
-  fleshImpact(pos, isGory) {
-    const played = playSample('fleshImpact', pos, 1.2, 0.12);
-    if (!played && AC) {
-      noise(0.06, 850, 0.45, 'lowpass');
-    }
+  fleshImpact(pos) {
+    const p = playSample('fleshImpact', pos, 1.2, 0.12);
+    if (!p && AC) noise(0.06, 850, 0.45, 'lowpass');
   },
   bloodSplash(pos) {
-    const played = playSample('blood', pos, 1.35, 0.15);
-    if (!played && AC) {
-      noise(0.08, 1200, 0.5, 'bandpass');
-    }
+    const p = playSample('blood', pos, 1.35, 0.15);
+    if (!p && AC) noise(0.08, 1200, 0.5, 'bandpass');
   },
   headshot(pos) {
     playSample('blood', pos, 1.5, 0.1);
@@ -1780,15 +1693,15 @@ const SND = {
     }
   },
   zombieHurt(pos) {
-    const played = playSample('zombieHurt', pos, 1.1, 0.15);
-    if (!played) playSample('zombieAttack', pos, 1.0);
+    const p = playSample('zombieHurt', pos, 1.1, 0.15);
+    if (!p) playSample('zombieAttack', pos, 1.0);
   },
   zombieDeath(pos) {
     playSample('zombieHurt', pos, 1.3, 0.2);
     playSample('bodyFall', pos, 1.2, 0.15);
   },
   zombieAttack(pos) {
-    const played = playSample('zombieAttack', pos, 1.2, 0.1);
+    playSample('zombieAttack', pos, 1.2, 0.1);
     playSample('bite', pos, 1.3, 0.08);
   },
   zombieIdle(pos) {
@@ -1799,12 +1712,8 @@ const SND = {
     noise(0.08, 2200, 0.25, 'bandpass');
     tone('sine', 440, 880, 0.12, 0.35);
   },
-  click() {
-    if (!AC) return;
-    noise(0.025, 4200, 0.35, 'bandpass', compressor, 4.0);
-  },
+  click() { if (AC) noise(0.025, 4200, 0.35, 'bandpass', compressor, 4.0); },
   reload(d) {
-    playSample('foleyMovement', null, 0.85);
     if (!AC) return;
     noise(0.04, 3200, 0.25, 'bandpass', compressor, 3.0);
     setTimeout(() => AC && state === 'play' && noise(0.06, 2400, 0.32, 'bandpass', compressor, 2.5), d * 450);
@@ -1817,17 +1726,16 @@ const SND = {
     noise(0.85, 1200, 0.75, 'bandpass', compressor, 1.0, true);
   },
   hurt() {
-    playSample('bite', null, 1.2);
-    playSample('fleshImpact', null, 1.1);
-    if (!AC) return;
-    tone('sine', 110, 32, 0.26, 0.85);
-    noise(0.18, 520, 0.5, 'lowpass');
+    playSample('bite', null, 1.3);
+    playSample('fleshImpact', null, 1.2);
+    if (AC) {
+      tone('sine', 110, 32, 0.26, 0.85);
+      noise(0.18, 520, 0.5, 'lowpass');
+    }
   },
   step() {
-    const played = playSample('footsteps', null, 0.45, 0.15);
-    if (!played && AC) {
-      noise(0.035, 320, 0.2, 'lowpass');
-    }
+    const p = playSample('footsteps', null, 0.45, 0.15);
+    if (!p && AC) noise(0.035, 320, 0.2, 'lowpass');
   },
   sessionOver() {
     if (!AC) return;
@@ -1860,10 +1768,9 @@ const W = {
   rifle:   { n: 'M4A1 CARBINE', mag: 30, dmg: 25, rate: 0.088, auto: 1, pel: 1, spr: 0.011, rel: 1.75 },
   shotgun: { n: 'M870 BREACHER', mag: 8, dmg: 20, rate: 0.8, auto: 0, pel: 8, spr: 0.068, rel: 2.2 }
 };
-const NAMES = Object.keys(W);
 let cur = 'pistol', ammo, cd = 0, reloading = 0, kick = 0, flash = 0;
 let hp = 100, score = 0, kills = 0, wave = 0, state = 'menu';
-let queue = [], spawnT = 0, breakT = 0, bossT = 0, msgT = 0, hurtA = 0, hudT = 0;
+let queue = [], spawnT = 0, breakT = 0, bossT = 0, msgT = 0, hurtA = 0, hudT = 0, stepT = 0;
 
 // VR Wrist / Gun HUD
 const hc = document.createElement('canvas');
@@ -1963,41 +1870,47 @@ function attachGun(parent, base) {
   hudP.visible = xr();
 }
 
-function setW(n) {
+function equipChosenGun(n) {
   cur = n;
   reloading = 0;
   buildGun(n);
-  SND.click();
   updateHUD();
 }
-const cyc = d => setW(NAMES[(NAMES.indexOf(cur) + d + NAMES.length) % NAMES.length]);
 
-buildGun(cur);
+buildGun(chosenWeapon);
 attachGun(camera, gunBase);
 
-// VR Controllers (Oculus Quest 2 Touch Integration)
+// VR Controllers
 const ctrls = [0, 1].map(i => {
   const c = renderer.xr.getController(i);
   c.userData = { prev: [], snap: 0 };
   c.addEventListener('connected', e => {
     c.userData.src = e.data;
-    const laser = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints([new V(0, 0, 0), new V(0, 0, -18)]),
-      new THREE.LineBasicMaterial({ color: 0xff2a2a, transparent: true, opacity: 0.65 })
-    );
-    c.add(laser);
-    if (e.data.handedness === 'left') {
-      c.add(box(0.04, 0.04, 0.12, 0, 0, 0.03, sil));
-    } else {
-      attachGun(c, new V());
-    }
+    if (e.data.handedness === 'left') c.add(box(0.04, 0.04, 0.12, 0, 0, 0.03, gm));
+    else attachGun(c, new V());
   });
   c.addEventListener('disconnected', () => c.userData.src = null);
   rig.add(c);
   return c;
 });
 
-// Explosions & Bullet Tracers
+// Particles, Tracers & Explosions
+const parts = [], pg = new THREE.BoxGeometry(0.075, 0.075, 0.075);
+const pm = {
+  blood: new THREE.MeshBasicMaterial({ color: 0x990a0a }),
+  acid:  new THREE.MeshBasicMaterial({ color: 0x4ade80 }),
+  fire:  new THREE.MeshBasicMaterial({ color: 0xff7a1a }),
+  smoke: new THREE.MeshBasicMaterial({ color: 0x222222 })
+};
+function burst(p, k, n, s, up) {
+  for (let i = 0; i < n; i++) {
+    const m = new THREE.Mesh(pg, pm[k]);
+    m.position.copy(p);
+    scene.add(m);
+    parts.push({ m, v: new V(R(-1, 1) * s, R(0.1, 1) * s * up, R(-1, 1) * s), l: R(0.4, 0.9) });
+  }
+}
+
 const tracers = [];
 function tracer(a, b) {
   const l = new THREE.Line(
@@ -2021,7 +1934,8 @@ function boom(b) {
   boomL.position.copy(p).setY(2.2);
   boomL.intensity = 12;
   boomT = 0.4;
-  realisticBloodBurst(p, new V(0, 1, 0), 35, false);
+  burst(p, 'fire', 45, 6.5, 1.6);
+  burst(p, 'smoke', 24, 3.2, 1.1);
   shake = 0.55;
 
   zombies.forEach(z => {
@@ -2037,22 +1951,26 @@ function boom(b) {
   });
 }
 
-// ---------- ENEMY SPAWNER ----------
+// ---------- 100% ORIGINAL RICH ZOMBIES & MUTANT ANIMAL SPAWNER ----------
 const zombies = [];
-let activeBoss = null;
 const TY = {
-  walker:  { hp: 65,   sp: 1.4, dm: 10, s: 1.0,  c: 0x5d7a52, pts: 100 },
-  runner:  { hp: 40,   sp: 3.7, dm: 8,  s: 0.95, c: 0x8a4a3c, pts: 150 },
-  spitter: { hp: 75,   sp: 1.6, dm: 12, s: 1.05, c: 0x3b6e52, pts: 200 },
-  giant:   { hp: 460,  sp: 1.15,dm: 28, s: 2.25, c: 0x45603f, pts: 500 },
-  boss:    { hp: 2800, sp: 1.75,dm: 38, s: 3.5,  c: 0x6a2f55, pts: 5000 }
+  walker:  { hp: 65,   sp: 1.45, dm: 10, s: 1.0,  c: 0x5c7a52, pts: 100 },
+  runner:  { hp: 40,   sp: 3.7,  dm: 8,  s: 0.95, c: 0x8f473a, pts: 150 },
+  spitter: { hp: 85,   sp: 1.7,  dm: 14, s: 1.05, c: 0x2d6a4f, pts: 220 },
+  giant:   { hp: 480,  sp: 1.15, dm: 28, s: 2.25, c: 0x435c3e, pts: 550 },
+  boss:    { hp: 3200, sp: 1.75, dm: 40, s: 3.5,  c: 0x6b214a, pts: 5000 }
 };
 
 function spawn(type) {
   const isAnimal = enemyCategory === 'animals';
-  const T = TY[type];
+  const T = { ...TY[type] };
+  if (isAnimal) T.sp *= 1.18;
+
   const g = new THREE.Group();
   g.rotation.order = 'YXZ';
+  const arms = [], legs = [];
+  const up = new THREE.Group();
+  g.add(up);
 
   const cy = (a, b, h, x, y, z, m) => {
     const o = new THREE.Mesh(new THREE.CylinderGeometry(a, b, h, 8), m);
@@ -2066,62 +1984,158 @@ function spawn(type) {
     return o;
   };
 
-  const arms = [], legs = [];
-  const up = new THREE.Group();
-  g.add(up);
-
   if (isAnimal) {
-    const fur = L(T.c);
-    const bodyM = sp(0.48, 0, 0.72, 0, fur, 1.4);
-    bodyM.rotation.x = Math.PI / 2;
-    up.add(bodyM);
-    const head = sp(0.32, 0, 0.92, -0.65, fur);
-    head.userData.head = true;
-    up.add(head);
-    const snout = cy(0.12, 0.18, 0.32, 0, 0.82, -0.92, L(0x18181b));
-    snout.rotation.x = Math.PI / 2;
-    snout.userData.head = true;
-    up.add(snout);
+    // Wild Mutant Animals (Wolves, Panthers, Swamp Hounds, Grizzly, Behemoth)
+    const furColors = {
+      walker:  0x475569,
+      runner:  0x18181b,
+      spitter: 0x3f6212,
+      giant:   0x451a03,
+      boss:    0x7f1d1d
+    };
+    const fur = L(furColors[type]);
+    const darkFur = L(0x0f172a);
+    const ey = new THREE.MeshBasicMaterial({ color: type === 'spitter' ? 0x4ade80 : 0xfacc15 });
+    const fat = (type === 'giant' || type === 'boss') ? 1.45 : 1.0;
 
-    [[-0.26, 0.65, -0.32], [0.26, 0.65, -0.32]].forEach(([x, y, z]) => {
-      const p = cy(0.1, 0.08, 0.65, x, y, z, fur);
-      g.add(p);
-      arms.push(p);
-    });
-    [[-0.26, 0.65, 0.32], [0.26, 0.65, 0.32]].forEach(([x, y, z]) => {
-      const p = cy(0.1, 0.08, 0.65, x, y, z, fur);
-      g.add(p);
-      legs.push(p);
-    });
-  } else {
-    const sm = L(T.c);
-    const cm = L(0x334155);
-    const torso = box(0.55, 0.75, 0.3, 0, 1.25, 0, cm);
+    up.position.y = 0.72 * fat;
+    const torso = box(0.46 * fat, 0.44 * fat, 1.15 * fat, 0, 0, 0, fur);
     up.add(torso);
-    const head = sp(0.2, 0, 1.82, 0, sm);
-    head.userData.head = true;
-    up.add(head);
 
-    [[-0.38, 1.45], [0.38, 1.45]].forEach(([x, y]) => {
-      const p = cy(0.08, 0.07, 0.72, x, y - 0.35, 0, sm);
+    const tail = box(0.08 * fat, 0.08 * fat, 0.45 * fat, 0, 0.12 * fat, -0.72 * fat, darkFur);
+    tail.rotation.x = 0.5;
+    up.add(tail);
+
+    const headGrp = new THREE.Group();
+    headGrp.position.set(0, 0.18 * fat, 0.68 * fat);
+    const skull = box(0.36 * fat, 0.34 * fat, 0.38 * fat, 0, 0, 0, fur);
+    skull.userData.head = true;
+    const snout = box(0.22 * fat, 0.18 * fat, 0.28 * fat, 0, -0.06 * fat, 0.28 * fat, darkFur);
+    snout.userData.head = true;
+    const earL = new THREE.Mesh(new THREE.ConeGeometry(0.07 * fat, 0.2 * fat, 4), darkFur);
+    earL.position.set(-0.12 * fat, 0.24 * fat, -0.05 * fat);
+    const earR = new THREE.Mesh(new THREE.ConeGeometry(0.07 * fat, 0.2 * fat, 4), darkFur);
+    earR.position.set(0.12 * fat, 0.24 * fat, -0.05 * fat);
+
+    headGrp.add(
+      skull, snout, earL, earR,
+      sp(0.035 * fat, -0.1 * fat, 0.06 * fat, 0.19 * fat, ey),
+      sp(0.035 * fat, 0.1 * fat, 0.06 * fat, 0.19 * fat, ey),
+      box(0.03 * fat, 0.07 * fat, 0.03 * fat, -0.06 * fat, -0.16 * fat, 0.38 * fat, L(0xffffff)),
+      box(0.03 * fat, 0.07 * fat, 0.03 * fat, 0.06 * fat, -0.16 * fat, 0.38 * fat, L(0xffffff))
+    );
+    up.add(headGrp);
+
+    if (type === 'spitter') {
+      up.add(sp(0.24, 0, 0.26, 0.1, new THREE.MeshBasicMaterial({ color: 0x22c55e })));
+    }
+    if (type === 'boss') {
+      for (let k = 0; k < 5; k++) {
+        const spk = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.45, 5), L(0xfef08a));
+        spk.position.set(0, 0.36 * fat, -0.4 + k * 0.22);
+        up.add(spk);
+      }
+    }
+
+    const legCoords = [
+      [-0.2 * fat, 0.65 * fat, 0.42 * fat, arms],
+      [0.2 * fat,  0.65 * fat, 0.42 * fat, arms],
+      [-0.2 * fat, 0.65 * fat, -0.42 * fat, legs],
+      [0.2 * fat,  0.65 * fat, -0.42 * fat, legs]
+    ];
+    legCoords.forEach(([lx, ly, lz, arr]) => {
+      const p = new THREE.Group();
+      p.position.set(lx, ly, lz);
+      p.add(
+        cy(0.075 * fat, 0.055 * fat, 0.62 * fat, 0, -0.31 * fat, 0, fur),
+        box(0.11 * fat, 0.08 * fat, 0.18 * fat, 0, -0.62 * fat, 0.04 * fat, darkFur)
+      );
+      g.add(p);
+      arr.push(p);
+    });
+
+    g.scale.setScalar(type === 'boss' ? 2.4 : type === 'giant' ? 1.75 : 1.05);
+
+  } else {
+    // Detailed Humanoid Zombies (Torn Fringes, Exposed Ribs, Rotting Mouth, Teeth, Blood)
+    const sc = new THREE.Color(T.c).offsetHSL(R(-0.03, 0.03), R(-0.12, 0.06), R(-0.04, 0.08));
+    const sk = L(sc.getHex());
+    const cl = L(type === 'runner' ? 0x451a22 : type === 'spitter' ? 0x134e4a : [0x2a3a55, 0x4a4a3a, 0x5a2a2a, 0x3a3f45, 0x6b6b60][Math.random() * 5 | 0]);
+    const pt = L([0x23262c, 0x2b3140, 0x3a3328][Math.random() * 3 | 0]);
+    const bl = L(0x7f0909);
+    const bn = L(0xd6ccb2);
+    const ey = new THREE.MeshBasicMaterial({ color: type === 'spitter' ? 0x4ade80 : type === 'boss' ? 0xff4500 : 0xe8ff80 });
+    const hr = L(0x1a1410);
+
+    const fat = (type === 'giant' || type === 'boss') ? 1.35 : 1;
+    up.position.y = 1;
+    up.rotation.x = type === 'runner' ? 0.45 : 0.25;
+
+    const tor = cy(0.24 * fat, 0.2 * fat, 0.72, 0, 0.3, 0, cl);
+    tor.scale.z = 0.65;
+    up.add(tor, cy(0.055, 0.065, 0.13, 0, 0.74, 0.03, sk));
+
+    for (let i = 0; i < 5; i++) {
+      up.add(box(0.06, R(0.05, 0.16), 0.04, -0.16 + i * 0.08, -0.08, 0, cl));
+    }
+    if (Math.random() < 0.7) {
+      up.add(box(0.26, 0.2, 0.02, 0, 0.38, 0.16 * fat, bl));
+      for (let k = 0; k < 3; k++) up.add(box(0.25, 0.02, 0.03, 0, 0.3 + k * 0.06, 0.175 * fat, bn));
+    }
+
+    if (type === 'spitter') up.add(sp(0.2, 0, 0.36, 0.16, new THREE.MeshBasicMaterial({ color: 0x22c55e })));
+    if (type === 'giant') up.add(sp(0.32, 0, 0.14, 0.12, cl));
+    if (type === 'boss') {
+      up.add(box(0.34, 0.34, 0.06, 0, 0.38, 0.21, new THREE.MeshBasicMaterial({ color: 0xff5500 })));
+      for (let k = 0; k < 6; k++) {
+        const s = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.38, 6), bn);
+        s.position.set(R(-0.16, 0.16), 0.1 + k * 0.1, -0.22);
+        s.rotation.x = -1.3;
+        up.add(s);
+      }
+    }
+
+    const hd = sp(0.175, 0, 0.95, 0.08, sk, 1.2);
+    hd.userData.head = true;
+    up.add(
+      hd,
+      sp(0.19, 0, 1.02, -0.03, hr, 1.05),
+      box(0.14, 0.05, 0.1, 0, 0.72, 0.15, sk),
+      box(0.12, 0.025, 0.02, 0, 0.76, 0.215, bn),
+      box(0.13, 0.05, 0.04, 0, 0.78, 0.2, L(0x1a0505)),
+      sp(0.04, -0.06, 0.98, 0.215, L(0x120808)),
+      sp(0.04, 0.06, 0.98, 0.215, L(0x120808)),
+      sp(0.03, -0.06, 0.98, 0.238, ey),
+      sp(0.03, 0.06, 0.98, 0.238, ey),
+      box(0.05, 0.1, 0.02, 0.11, 0.93, 0.17, bl)
+    );
+
+    [-1, 1].forEach(s => {
+      let p = new THREE.Group();
+      p.position.set(s * 0.3 * fat, 0.62, 0);
+      p.add(cy(0.055, 0.05, 0.32, 0, -0.16, 0, cl), cy(0.045, 0.04, 0.3, 0, -0.47, 0, sk), sp(0.05, 0, -0.64, 0, sk));
       p.rotation.x = -1.4;
       up.add(p);
       arms.push(p);
-    });
-    [[-0.18, 0.45], [0.18, 0.45]].forEach(([x, y]) => {
-      const p = cy(0.11, 0.09, 0.9, x, y, 0, cm);
+
+      p = new THREE.Group();
+      p.position.set(s * 0.13, 0.95, 0);
+      p.add(cy(0.085, 0.07, 0.5, 0, -0.25, 0, pt), cy(0.065, 0.055, 0.45, 0, -0.7, 0, pt), box(0.1, 0.07, 0.25, 0, -0.94, 0.06, L(0x111111)));
       g.add(p);
       legs.push(p);
     });
+
+    g.scale.setScalar(T.s);
   }
 
-  g.scale.setScalar(T.s);
-  const ax = Math.random() < 0.5, sd = Math.random() < 0.5 ? -1 : 1;
-  const d = type === 'boss' ? 44 : R(32, 48), l = R(-4.2, 4.2);
-  g.position.set(ax ? l : sd * d, 0, ax ? sd * d : l);
+  const ax = Math.random() < 0.5;
+  const sd = Math.random() < 0.5 ? -1 : 1;
+  const dist = type === 'boss' ? 42 : R(28, 46);
+  const lane = R(-4.2, 4.2);
+  g.position.set(ax ? lane : sd * dist, 0, ax ? sd * dist : lane);
 
   const z = {
-    g, T, type, isAnimal, hp: T.hp, maxHp: T.hp, cd: 0, spitCd: R(2, 4),
+    g, T, type, isAnimal, hp: T.hp, cd: 0, spitCd: R(2, 4),
     t: R(0, 6), gt: R(1, 5), dead: false, dt: 0, arms, legs, up
   };
   g.userData.owner = z;
@@ -2129,16 +2143,12 @@ function spawn(type) {
   zombies.push(z);
 
   if (type === 'boss') {
-    activeBoss = z;
-    const bName = LEVELS[selectedLevel].waves[wave - 1].bossName || 'THE WARDEN';
-    $('boss-name-lbl').textContent = bName;
-    $('boss-bar-fill').style.width = '100%';
-    $('boss-hud').style.display = 'block';
-    say('BOSS APPROACHING', 'AIM FOR THE HEAD &bull; 2.5X DAMAGE', 4.5);
+    const bName = LEVELS[selectedLevel].waves[wave - 1].bossName || 'THE APEX';
+    say(bName + ' APPROACHES', 'Aim for the head for 2.5x critical damage!', 4);
   }
 }
 
-// Acid Spitter Projectiles
+// Acid Spits
 const spits = [];
 const spitGeo = new THREE.SphereGeometry(0.18, 8, 8);
 const spitMat = new THREE.MeshBasicMaterial({ color: 0x4ade80 });
@@ -2151,21 +2161,16 @@ function shootSpit(from, target) {
   spits.push({ m, v: dir.multiplyScalar(14), life: 3 });
 }
 
-function dmgZ(z, d, pt, head, bulletDir = new V(0, 0, -1)) {
+function dmgZ(z, d, pt, head) {
   if (z.dead) return;
   if (head) {
     d *= 2.5;
     SND.headshot(pt);
   } else {
-    SND.fleshImpact(pt, false);
+    SND.fleshImpact(pt);
   }
   z.hp -= d;
-
-  // Realistic directional blood burst and ground puddles
-  realisticBloodBurst(pt, bulletDir, head ? 35 : 18, head);
-  if (Math.random() < (head ? 0.85 : 0.45)) {
-    spawnGroundBloodDecal(pt, head ? 1.4 : 0.9);
-  }
+  burst(pt, z.type === 'spitter' ? 'acid' : 'blood', head ? 18 : 8, 2.5, 1.2);
 
   const cx = $('cx');
   cx.classList.add('hit');
@@ -2174,48 +2179,34 @@ function dmgZ(z, d, pt, head, bulletDir = new V(0, 0, -1)) {
   if (z.hp <= 0) {
     z.dead = true;
     z.dt = 0;
-    if (z === activeBoss) {
-      activeBoss = null;
-      $('boss-hud').style.display = 'none';
-    }
     score += z.T.pts + (head ? 75 : 0);
     kills++;
     SND.zombieDeath(z.g.position);
-    spawnGroundBloodDecal(z.g.position, 1.3);
     if (Math.random() < (z.type === 'giant' || z.type === 'boss' ? 0.9 : 0.22)) {
       spawnDrop(z.g.position);
     }
   } else {
     if (Math.random() < 0.6) SND.zombieHurt(z.g.position);
-    if (z === activeBoss) {
-      $('boss-bar-fill').style.width = Math.max(0, (z.hp / z.maxHp) * 100) + '%';
-    }
   }
 }
 
 function hurt(d) {
   if (state !== 'play') return;
   hp -= d;
-  hurtA = 0.75;
+  hurtA = 0.65;
   SND.hurt();
-
-  // Screen blood splash effect
-  const bloodOverlay = $('blood-screen-overlay');
-  bloodOverlay.style.opacity = '1';
-  setTimeout(() => {
-    if (state === 'play') bloodOverlay.style.opacity = Math.max(0, (100 - hp) / 160).toFixed(2);
-  }, 220);
+  triggerPlayerBloodShed(d);
 
   if (hp <= 0) {
     hp = 0;
     state = 'dead';
     if (document.pointerLockElement === dom) document.exitPointerLock();
-    showPauseModal('YOU DIED', `SURVIVAL FAILED\nFINAL SCORE: ${score} &bull; KILLS: ${kills}`, false, false, false);
+    showPauseModal('YOU DIED', `SURVIVAL FAILED\nFINAL SCORE: ${score} &bull; KILLS: ${kills}`, false);
   }
   updateHUD();
 }
 
-// ---------- GAME FLOW & CONTINUOUS CAMPAIGN PROGRESSION ----------
+// ---------- FLOW, MODALS, CONTINUOUS CAMPAIGN ----------
 function applyLevelTheme(idx) {
   const lv = LEVELS[idx];
   scene.background.setHex(lv.sky);
@@ -2235,23 +2226,12 @@ function say(main, sub = '', sec = 3) {
   $('sub-msg').textContent = sub;
 }
 
-function showPauseModal(title, sub, canResume = true, isVictory = false, hasNextLoc = false) {
+function showPauseModal(title, sub, canResume = true, isVictory = false) {
   const tEl = $('pause-title');
   tEl.textContent = title;
   tEl.className = isVictory ? 'title-font victory' : 'title-font';
-
-  const starsEl = $('stars-row');
-  if (isVictory) {
-    const stars = hp >= 75 ? '★★★' : hp >= 35 ? '★★☆' : '★☆☆';
-    starsEl.textContent = stars;
-    starsEl.style.display = 'flex';
-  } else {
-    starsEl.style.display = 'none';
-  }
-
   $('pause-sub').textContent = sub;
   $('btn-resume').style.display = canResume ? 'inline-block' : 'none';
-  $('btn-next-loc').style.display = hasNextLoc ? 'inline-block' : 'none';
   $('btn-modal-retry').textContent = title === 'YOU DIED' ? 'RETRY' : 'RESTART';
   $('pause-ov').style.display = 'flex';
 }
@@ -2270,7 +2250,7 @@ function togglePause() {
     mouseDown = false;
     touchState.firing = false;
     if (document.pointerLockElement === dom) document.exitPointerLock();
-    showPauseModal('PAUSED', `${LEVELS[selectedLevel].shortName} &bull; ${enemyCategory.toUpperCase()} MODE`, true, false, false);
+    showPauseModal('GAME PAUSED', `${LEVELS[selectedLevel].shortName} &bull; ${enemyCategory.toUpperCase()}`, true);
     SND.uiClick();
   } else if (state === 'paused') {
     state = 'play';
@@ -2290,7 +2270,8 @@ function quitToMenu() {
   $('hud').style.display = 'none';
   $('mobile-ui').style.display = 'none';
   $('ov').style.display = 'flex';
-  $('blood-screen-overlay').style.opacity = '0';
+  bloodVignette.style.opacity = '0';
+  bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
 }
 
 function retryGame() {
@@ -2301,14 +2282,14 @@ function retryGame() {
 
 function startWave() {
   const lv = LEVELS[selectedLevel];
-  const curWaveCfg = lv.waves[wave - 1];
+  const curWave = lv.waves[wave - 1];
   const totalWaveNum = selectedLevel * 3 + wave;
   queue = [];
-  for (let i = 0; i < curWaveCfg.w; i++) queue.push('walker');
-  for (let i = 0; i < curWaveCfg.r; i++) queue.push('runner');
-  for (let i = 0; i < curWaveCfg.sp; i++) queue.push('spitter');
-  for (let i = 0; i < curWaveCfg.g; i++) queue.push('giant');
-  if (curWaveCfg.b) queue.push('boss');
+  for (let i = 0; i < curWave.w; i++) queue.push('walker');
+  for (let i = 0; i < curWave.r; i++) queue.push('runner');
+  for (let i = 0; i < curWave.sp; i++) queue.push('spitter');
+  for (let i = 0; i < curWave.g; i++) queue.push('giant');
+  if (curWave.b) queue.push('boss');
   queue.sort(() => Math.random() - 0.5);
 
   spawnT = 0.5;
@@ -2327,25 +2308,26 @@ function startGame(fromBeginning = true) {
   wave = 1;
   cityTransitionT = 0;
   breakT = 0;
-  activeBoss = null;
 
+  // Single chosen gun equipped for the run
+  const defaultMags = { pistol: 15, deagle: 7, rifle: 30, shotgun: 8 };
+  const defaultReserves = { pistol: 60, deagle: 28, rifle: 120, shotgun: 32 };
   ammo = {
-    pistol:  { mag: 15, res: 60 },
-    deagle:  { mag: 7,  res: 28 },
-    rifle:   { mag: 30, res: 120 },
-    shotgun: { mag: 8,  res: 32 }
+    [chosenWeapon]: { mag: defaultMags[chosenWeapon], res: defaultReserves[chosenWeapon] }
   };
-  setW('pistol');
+  equipChosenGun(chosenWeapon);
 
-  // Clear active entities
+  // Clear entities
   zombies.forEach(z => scene.remove(z.g));
   zombies.length = 0;
   drops.forEach(d => scene.remove(d.g));
   drops.length = 0;
   spits.forEach(s => scene.remove(s.m));
   spits.length = 0;
-  bloodParticles.forEach(p => scene.remove(p.m));
-  bloodParticles.length = 0;
+  parts.forEach(p => scene.remove(p.m));
+  parts.length = 0;
+  screenSplats.length = 0;
+  screenDrips.length = 0;
 
   applyLevelTheme(selectedLevel);
   rig.position.set(0, 0, 0);
@@ -2353,10 +2335,9 @@ function startGame(fromBeginning = true) {
 
   $('ov').style.display = 'none';
   $('pause-ov').style.display = 'none';
-  $('boss-hud').style.display = 'none';
   $('hud').style.display = 'block';
   $('mobile-ui').style.display = mobileMode ? 'block' : 'none';
-  $('blood-screen-overlay').style.opacity = '0';
+  bloodVignette.style.opacity = '0';
   document.body.classList.toggle('is-mobile', mobileMode);
 
   state = 'play';
@@ -2364,7 +2345,6 @@ function startGame(fromBeginning = true) {
   lockPointerSafe();
 }
 
-// Modal Next Location / Retry / Quit Button Bindings
 $('btn-resume').onclick = togglePause;
 $('btn-modal-retry').onclick = retryGame;
 $('btn-modal-quit').onclick = quitToMenu;
@@ -2372,7 +2352,7 @@ $('hud-pause').onclick = togglePause;
 $('hud-retry').onclick = retryGame;
 $('hud-quit').onclick = quitToMenu;
 
-// ---------- INPUT CONTROLS: PC, MOBILE & VR ----------
+// ---------- CONTROLS (NO IN-GAME GUN SWAPPING) ----------
 let mouseDown = false, trig = false, c0 = false;
 const keys = {};
 
@@ -2381,15 +2361,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'KeyP' || e.code === 'Escape') {
     if (state === 'play' || state === 'paused') togglePause();
   }
-  if (state === 'play') {
-    if (e.code === 'KeyR') reload();
-    if (e.code === 'Digit1') setW('pistol');
-    if (e.code === 'Digit2') setW('deagle');
-    if (e.code === 'Digit3') setW('rifle');
-    if (e.code === 'Digit4') setW('shotgun');
-    if (e.code === 'KeyQ') cyc(-1);
-    if (e.code === 'KeyE') cyc(1);
-  }
+  if (state === 'play' && e.code === 'KeyR') reload();
 });
 window.addEventListener('keyup', e => keys[e.code] = false);
 
@@ -2410,25 +2382,14 @@ dom.addEventListener('mousedown', e => {
   }
 });
 window.addEventListener('mouseup', e => { if (e.button === 0) mouseDown = false; });
-window.addEventListener('wheel', e => { if (state === 'play') cyc(Math.sign(e.deltaY)); });
 
-// Mobile Touch Joystick & Buttons
+// Mobile Touch
 const touchState = { joyX: 0, joyY: 0, firing: false, sprint: false, lookId: null, lookX: 0, lookY: 0 };
 const joyZone = $('joy-zone'), joyKnob = $('joy-knob'), lookZone = $('look-zone');
 
-joyZone.addEventListener('touchstart', e => {
-  e.preventDefault();
-  updateJoy(e.targetTouches[0]);
-});
-joyZone.addEventListener('touchmove', e => {
-  e.preventDefault();
-  updateJoy(e.targetTouches[0]);
-});
-const resetJoy = () => {
-  touchState.joyX = 0;
-  touchState.joyY = 0;
-  joyKnob.style.transform = 'translate(0px, 0px)';
-};
+joyZone.addEventListener('touchstart', e => { e.preventDefault(); updateJoy(e.targetTouches[0]); });
+joyZone.addEventListener('touchmove', e => { e.preventDefault(); updateJoy(e.targetTouches[0]); });
+const resetJoy = () => { touchState.joyX = 0; touchState.joyY = 0; joyKnob.style.transform = 'translate(0px, 0px)'; };
 joyZone.addEventListener('touchend', resetJoy);
 joyZone.addEventListener('touchcancel', resetJoy);
 
@@ -2479,28 +2440,15 @@ $('btn-fire').addEventListener('touchend', endFire);
 $('btn-fire').addEventListener('touchcancel', endFire);
 
 $('btn-reload').addEventListener('touchstart', e => { e.preventDefault(); reload(); });
-$('btn-swap').addEventListener('touchstart', e => { e.preventDefault(); cyc(1); });
 $('btn-sprint').addEventListener('touchstart', e => {
   e.preventDefault();
   touchState.sprint = !touchState.sprint;
   $('btn-sprint').classList.toggle('active', touchState.sprint);
 });
 
-// Primary Start Buttons
-$('pc').onclick = () => {
-  mobileMode = false;
-  initAudio();
-  SND.uiClick();
-  startGame(true);
-};
-
-$('mob').onclick = () => {
-  mobileMode = true;
-  initAudio();
-  SND.uiClick();
-  startGame(true);
-};
-
+// Launch Actions
+$('pc').onclick = () => { mobileMode = false; initAudio(); SND.uiClick(); startGame(true); };
+$('mob').onclick = () => { mobileMode = true; initAudio(); SND.uiClick(); startGame(true); };
 $('vr').onclick = async () => {
   try {
     mobileMode = false;
@@ -2518,7 +2466,7 @@ $('vr').onclick = async () => {
     camera.position.y = 0;
     startGame(true);
   } catch (e) {
-    $('note').textContent = 'WebXR unavailable in this 2D browser &bull; Open inside Meta Quest Browser for VR!';
+    $('note').textContent = 'WebXR unavailable in this 2D browser &bull; Open in Meta Quest Browser for VR!';
   }
 };
 
@@ -2548,10 +2496,7 @@ function pollVR(dt) {
     const dn = i => b[i] && b[i].pressed && !pv[i];
     const x = ax[2] || ax[0] || 0, y = ax[3] || ax[1] || 0;
 
-    // Left Menu / Grip button = Pause toggle
-    if (dn(4) && (state === 'play' || state === 'paused')) {
-      togglePause();
-    }
+    if (dn(4) && (state === 'play' || state === 'paused')) togglePause();
 
     if (left && state === 'play') {
       if (Math.hypot(x, y) > 0.15) {
@@ -2562,7 +2507,6 @@ function pollVR(dt) {
         const nz = rig.position.z + (P2.z * -y + P2.x * x) * 2.6 * dt;
         if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
       }
-      if (dn(3)) cyc(1);
     }
     if (!left) {
       if (Math.abs(x) > 0.7 && !c.userData.snap) {
@@ -2570,11 +2514,8 @@ function pollVR(dt) {
         c.userData.snap = 1;
       }
       if (Math.abs(x) < 0.3) c.userData.snap = 0;
-      if (dn(5)) cyc(1);
     }
-    // Grip button (index 1) = reload
     if (dn(1)) reload();
-    // Index Trigger (index 0) = shoot
     if (c === gun.parent && b[0] && b[0].pressed) trig = true;
     if (dn(0) && state !== 'play' && state !== 'menu' && state !== 'paused') startGame(true);
     b.forEach((q, i) => pv[i] = q.pressed);
@@ -2638,7 +2579,7 @@ function fire() {
       if (ob) {
         const t = ob.userData.owner;
         if (t.isBarrel) boom(t);
-        else dmgZ(t, w.dmg, h.point, !!h.object.userData.head, dir);
+        else dmgZ(t, w.dmg, h.point, !!h.object.userData.head);
       }
     }
     if (i < 3) tracer(mp.clone(), end);
@@ -2667,7 +2608,6 @@ function updateHUD() {
   $('w-name').textContent = w.n;
   $('ammo-txt').textContent = at;
 
-  // Update Top Left Mission / Session Timer
   const timerDigits = $('hud-timer-val');
   const timerTitle = $('hud-timer-title');
   if (sessionDurationLimit > 0) {
@@ -2681,7 +2621,6 @@ function updateHUD() {
     timerDigits.classList.remove('warning');
   }
 
-  // Update In-VR Wrist / Gun HUD
   if (xr()) {
     hx.fillStyle = 'rgba(5, 12, 20, 0.88)';
     hx.fillRect(0, 0, 256, 128);
@@ -2692,20 +2631,19 @@ function updateHUD() {
     hx.fillText(`HP ${Math.ceil(hp)}%`, 8, 56);
     hx.font = '16px monospace';
     hx.fillStyle = '#38bdf8';
-    hx.fillText(`WAVE ${totalWaveNum}/9 &bull; ${timerDigits.textContent}`, 8, 84);
+    hx.fillText(`W${totalWaveNum}/9 &bull; ${timerDigits.textContent}`, 8, 84);
     hx.fillStyle = '#f87171';
     hx.fillText($('main-msg').textContent.slice(0, 22), 8, 114);
     htex.needsUpdate = true;
   }
 }
 
-// ---------- MAIN GAME SIMULATION LOOP ----------
+// ---------- MAIN GAME LOOP ----------
 const clock = new THREE.Clock();
 
 function update(dt) {
   if (state === 'paused') return;
 
-  // Session Time Counter & Limit Enforcement
   if (state === 'play') {
     sessionTimeElapsed += dt;
     if (sessionDurationLimit > 0 && sessionTimeElapsed >= sessionDurationLimit) {
@@ -2714,22 +2652,22 @@ function update(dt) {
       SND.sessionOver();
       showPauseModal(
         'SESSION IS OVER',
-        `TIME LIMIT REACHED!\nFINAL SCORE: ${score} &bull; KILLS: ${kills}\nLOCATIONS SURVIVED: ${selectedLevel + 1}/3`,
+        `TIME LIMIT EXPIRED!\nFINAL SCORE: ${score} &bull; KILLS: ${kills}\nLOCATIONS CLEARED: ${selectedLevel + 1}/3`,
         false,
-        true,
-        false
+        true
       );
       return;
     }
   }
 
-  // Drift atmospheric ash particles
-  const posArr = ashGeo.attributes.position.array;
-  for (let i = 1; i < posArr.length; i += 3) {
-    posArr[i] -= 0.6 * dt;
-    if (posArr[i] < 0) posArr[i] = 28;
+  // Drift atmospheric ash
+  const posAttr = ashGeo.attributes.position;
+  for (let i = 0; i < ashCount * 3; i += 3) {
+    posAttr.array[i + 1] -= dt * 1.4;
+    posAttr.array[i] += Math.sin(performance.now() * 0.001 + i) * dt * 0.3;
+    if (posAttr.array[i + 1] < 0) posAttr.array[i + 1] = 28;
   }
-  ashGeo.attributes.position.needsUpdate = true;
+  posAttr.needsUpdate = true;
 
   const w = W[cur];
   const a = ammo ? ammo[cur] : { mag: 0, res: 0 };
@@ -2739,27 +2677,36 @@ function update(dt) {
   } else {
     trig = mobileMode ? touchState.firing : mouseDown;
     if (state === 'play') {
-      const fwd = mobileMode ? touchState.joyY : ((keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0));
-      const str = mobileMode ? touchState.joyX : ((keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0));
-      const sprinting = mobileMode ? touchState.sprint : !!keys.ShiftLeft;
-      const yaw = rig.rotation.y;
-      const speed = (sprinting ? 5.2 : 3.3) * dt;
-
-      if (Math.hypot(fwd, str) > 0.05) {
-        const nx = rig.position.x + (-Math.sin(yaw) * fwd + Math.cos(yaw) * str) * speed;
-        const nz = rig.position.z + (-Math.cos(yaw) * fwd - Math.sin(yaw) * str) * speed;
-        if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
-        camera.position.y = 1.7 + Math.sin(performance.now() * (sprinting ? 0.015 : 0.01)) * 0.035;
+      let f = 0, r = 0, sprinting = false;
+      if (mobileMode) {
+        f = touchState.joyY;
+        r = touchState.joyX;
+        sprinting = touchState.sprint;
       } else {
-        camera.position.y += (1.7 - camera.position.y) * 10 * dt;
+        f = (keys.KeyW ? 1 : 0) - (keys.KeyS ? 1 : 0);
+        r = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0);
+        sprinting = !!keys.ShiftLeft;
+      }
+
+      const moving = Math.hypot(f, r) > 0.1;
+      if (moving) {
+        const y = rig.rotation.y;
+        const sp = (sprinting ? 4.8 : 3.2) * dt;
+        const nx = rig.position.x + (-Math.sin(y) * f + Math.cos(y) * r) * sp;
+        const nz = rig.position.z + (-Math.cos(y) * f - Math.sin(y) * r) * sp;
+        if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
+
+        stepT -= dt * (sprinting ? 1.5 : 1);
+        if (stepT <= 0) {
+          stepT = 0.45;
+          SND.step();
+        }
       }
     }
     if (shake > 0) {
-      camera.position.x = R(-1, 1) * shake * 0.06;
-      camera.position.z = R(-1, 1) * shake * 0.06;
+      camera.position.set(R(-1, 1) * shake * 0.05, 1.7 + R(-1, 1) * shake * 0.05, 0);
     } else {
-      camera.position.x = 0;
-      camera.position.z = 0;
+      camera.position.set(0, 1.7, 0);
     }
   }
 
@@ -2777,6 +2724,7 @@ function update(dt) {
         const n = Math.min(w.mag - a.mag, a.res);
         a.mag += n;
         a.res -= n;
+        updateHUD();
       }
     }
 
@@ -2795,24 +2743,19 @@ function update(dt) {
       if (bossT <= 0) {
         bossT = 13;
         spawn('runner');
-        spawn('runner');
+        spawn('spitter');
       }
     }
 
-    // Continuous Campaign Progression (City 1 -> City 2 -> City 3 -> Victory)
+    // Continuous 9-Wave Campaign Progression Across All 3 Cities
     if (!queue.length && !alive) {
       if (wave === 3) {
-        // Current location fully cleared!
         if (selectedLevel < LEVELS.length - 1) {
-          // Advance directly to next location!
           if (!cityTransitionT) {
             cityTransitionT = 4.5;
             score += 1500;
-            hp = Math.min(100, hp + 50);
-            ammo.pistol.res += 45;
-            ammo.deagle.res += 21;
-            ammo.rifle.res += 120;
-            ammo.shotgun.res += 24;
+            hp = Math.min(100, hp + 45);
+            ammo[cur].res += cur === 'shotgun' ? 24 : cur === 'rifle' ? 90 : 45;
             updateHUD();
             SND.victorySector();
             const nextLoc = LEVELS[selectedLevel + 1];
@@ -2828,21 +2771,17 @@ function update(dt) {
             startWave();
           }
         } else {
-          // Entire 9-Wave Apocalypse Conquered!
           state = 'win';
           if (document.pointerLockElement === dom) document.exitPointerLock();
-          showPauseModal('APOCALYPSE CONQUERED!', `ALL 3 LOCATIONS SECURED!\nFINAL SCORE: ${score} &bull; KILLS: ${kills}`, false, true, false);
+          showPauseModal('APOCALYPSE SURVIVED!', `ALL 3 CITIES CONQUERED!\nFINAL SCORE: ${score} &bull; KILLS: ${kills}`, false, true);
         }
       } else {
-        // Wave transition inside same city
         if (!breakT) {
           breakT = 5.0;
-          say('WAVE CLEARED', 'Armor & Ammunition Replenished! Next wave incoming...', 4.0);
+          say('WAVE CLEARED', 'Resupplying Armor & Ammunition...', 4.0);
           hp = Math.min(100, hp + 35);
-          ammo.pistol.res += 30;
-          ammo.deagle.res += 14;
-          ammo.rifle.res += 90;
-          ammo.shotgun.res += 16;
+          ammo[cur].res += cur === 'shotgun' ? 16 : cur === 'rifle' ? 60 : 30;
+          updateHUD();
         }
         breakT -= dt;
         if (breakT <= 0) {
@@ -2857,42 +2796,60 @@ function update(dt) {
     for (let i = drops.length - 1; i >= 0; i--) {
       const dr = drops[i];
       dr.t += dt;
-      dr.g.rotation.y += 2 * dt;
+      dr.g.rotation.y += dt * 2;
       dr.g.position.y = 0.15 + Math.sin(dr.t * 4) * 0.08;
-      if (Math.hypot(pp.x - dr.g.position.x, pp.z - dr.g.position.z) < 1.6) {
+      dr.life -= dt;
+      if (dr.g.position.distanceTo(rig.position) < 1.6) {
         SND.pickup();
         if (dr.isHealth) {
           hp = Math.min(100, hp + 35);
-          say('+35 HEALTH', '', 1.8);
+          say('+35 HEALTH', '', 1.5);
         } else {
-          ammo.pistol.res += 30;
-          ammo.deagle.res += 14;
-          ammo.rifle.res += 60;
-          ammo.shotgun.res += 16;
-          say('AMMO RESUPPLIED', '', 1.8);
+          ammo[cur].res += cur === 'shotgun' ? 16 : cur === 'rifle' ? 60 : 30;
+          say('AMMO RESUPPLIED', '', 1.5);
         }
+        updateHUD();
         scene.remove(dr.g);
         drops.splice(i, 1);
-        continue;
+      } else if (dr.life <= 0) {
+        scene.remove(dr.g);
+        drops.splice(i, 1);
       }
-      if ((dr.life -= dt) <= 0) {
-        scene.remove(dr.g);
-        drops.splice(i, 1);
+    }
+
+    // Acid Spits
+    for (let i = spits.length - 1; i >= 0; i--) {
+      const sp = spits[i];
+      sp.v.y -= 4.5 * dt;
+      sp.m.position.addScaledVector(sp.v, dt);
+      sp.life -= dt;
+      if (sp.m.position.distanceTo(pp) < 1.1) {
+        hurt(12);
+        burst(sp.m.position, 'acid', 10, 2, 1);
+        scene.remove(sp.m);
+        spits.splice(i, 1);
+      } else if (sp.m.position.y <= 0.1 || sp.life <= 0) {
+        burst(sp.m.position, 'acid', 6, 1.5, 0.8);
+        scene.remove(sp.m);
+        spits.splice(i, 1);
       }
     }
 
     // Enemy AI & Pathing
     zombies.forEach(z => {
       if (z.dead) return;
-      const g = z.g, dx = pp.x - g.position.x, dz = pp.z - g.position.z;
-      const d = Math.hypot(dx, dz), rg = 1.15 * z.T.s;
+      const g = z.g;
+      const dx = pp.x - g.position.x;
+      const dz = pp.z - g.position.z;
+      const d = Math.hypot(dx, dz);
+      const rg = 1.15 * z.T.s;
       g.rotation.y = Math.atan2(dx, dz);
       z.t += dt;
 
-      if (z.type === 'spitter' && d < 18 && d > 5) {
+      if (z.type === 'spitter' && d < 22 && d > 5) {
         z.spitCd -= dt;
         if (z.spitCd <= 0) {
-          z.spitCd = R(3.2, 5.0);
+          z.spitCd = R(3.5, 5.5);
           shootSpit(g.position, pp);
         }
       }
@@ -2900,24 +2857,24 @@ function update(dt) {
       if (d > rg) {
         g.position.x += (dx / d) * z.T.sp * dt;
         g.position.z += (dz / d) * z.T.sp * dt;
-        const sw = Math.sin(z.t * z.T.sp * 3.4);
+        const sw = Math.sin(z.t * z.T.sp * (z.isAnimal ? 4.5 : 3.2));
         if (z.isAnimal) {
-          z.up.position.y = 0.62 + Math.abs(sw) * 0.05;
-          z.arms[0].rotation.x = sw * 0.65;
-          z.arms[1].rotation.x = -sw * 0.65;
-          z.legs[0].rotation.x = -sw * 0.65;
-          z.legs[1].rotation.x = sw * 0.65;
+          z.up.position.y = (0.72 + Math.abs(sw) * 0.08) * ((z.type === 'giant' || z.type === 'boss') ? 1.45 : 1);
+          z.arms[0].rotation.x = sw * 0.75;
+          z.arms[1].rotation.x = sw * 0.75;
+          z.legs[0].rotation.x = -sw * 0.75;
+          z.legs[1].rotation.x = -sw * 0.75;
         } else {
-          z.up.rotation.z = sw * 0.07;
-          z.legs[0].rotation.x = sw * 0.6;
-          z.legs[1].rotation.x = -sw * 0.6;
-          z.arms.forEach(r => r.rotation.x = -1.4 + Math.sin(z.t * 3) * 0.15);
+          z.up.rotation.z = sw * 0.08;
+          z.legs[0].rotation.x = sw * 0.65;
+          z.legs[1].rotation.x = -sw * 0.65;
+          z.arms.forEach(r => r.rotation.x = -1.4 + Math.sin(z.t * 3) * 0.16);
         }
       } else {
         if (z.isAnimal) {
-          z.up.position.y = 0.62 + Math.abs(Math.sin(z.t * 9)) * 0.12;
+          z.up.rotation.x = Math.sin(z.t * 14) * 0.25;
         } else {
-          z.arms.forEach((r, i) => r.rotation.x = -1.4 + Math.sin(z.t * 10 + i) * 0.5);
+          z.arms.forEach((r, i) => r.rotation.x = -1.4 + Math.sin(z.t * 10 + i) * 0.55);
         }
         z.cd -= dt;
         if (z.cd <= 0) {
@@ -2934,31 +2891,15 @@ function update(dt) {
       }
     });
 
-    // Acid Spits
-    for (let i = spits.length - 1; i >= 0; i--) {
-      const spObj = spits[i];
-      spObj.v.y -= 4.5 * dt;
-      spObj.m.position.addScaledVector(spObj.v, dt);
-      if (spObj.m.position.distanceTo(pp) < 1.1) {
-        hurt(14);
-        realisticBloodBurst(spObj.m.position, new V(0, 1, 0), 10, false);
-        scene.remove(spObj.m);
-        spits.splice(i, 1);
-        continue;
-      }
-      if (spObj.m.position.y <= 0.1 || (spObj.life -= dt) <= 0) {
-        scene.remove(spObj.m);
-        spits.splice(i, 1);
-      }
-    }
-
-    // Soft Collision Separation
+    // Separation
     for (let i = 0; i < zombies.length; i++) {
       for (let j = i + 1; j < zombies.length; j++) {
         const A = zombies[i], B = zombies[j];
         if (A.dead || B.dead) continue;
-        const dx = B.g.position.x - A.g.position.x, dz = B.g.position.z - A.g.position.z;
-        const d = Math.hypot(dx, dz), m = 0.75 * (A.T.s + B.T.s) / 2;
+        const dx = B.g.position.x - A.g.position.x;
+        const dz = B.g.position.z - A.g.position.z;
+        const d = Math.hypot(dx, dz);
+        const m = 0.72 * (A.T.s + B.T.s) / 2;
         if (d < m && d > 0.001) {
           const p = (m - d) * 0.5;
           A.g.position.x -= (dx / d) * p * dt * 4;
@@ -2975,8 +2916,7 @@ function update(dt) {
     const z = zombies[i];
     if (!z.dead) continue;
     z.dt += dt;
-    if (z.isAnimal) z.g.rotation.z = Math.min(z.dt * 3.5, 1.55);
-    else z.g.rotation.x = -Math.min(z.dt * 3, 1.5);
+    z.g.rotation.x = -Math.min(z.dt * 3, 1.5);
     if (z.dt > 2) z.g.position.y -= dt * 0.5;
     if (z.dt > 3.5) {
       scene.remove(z.g);
@@ -2984,11 +2924,11 @@ function update(dt) {
     }
   }
 
-  // Weapon Recoil & Muzzle Flash
-  kick = Math.max(0, kick - dt * 8.5);
+  // Gun Recoil & Muzzle Flash
+  kick = Math.max(0, kick - dt * 8);
   gun.position.set(gunBase.x, gunBase.y, gunBase.z + kick * 0.05);
-  gun.rotation.x = kick * 0.13 + (reloading ? 0.7 : 0);
-  if (slide) slide.position.z = (ammo && ammo[cur].mag === 0 ? 0.04 : kick * 0.04);
+  gun.rotation.x = kick * 0.13 + (reloading ? 0.72 : 0);
+  if (slide) slide.position.z = (ammo && ammo[cur] && ammo[cur].mag === 0 ? 0.04 : kick * 0.04);
   if (pump) pump.position.z = -0.35 + (cd > 0 ? Math.sin(Math.max(0, Math.min(1, 1 - cd / W[cur].rate)) * Math.PI) * 0.12 : 0);
 
   if (flash > 0) {
@@ -3000,51 +2940,35 @@ function update(dt) {
     boomL.intensity = Math.max(0, boomT * 30);
   }
 
-  // Flickering Street / Post Lights
+  // Flickering Lamps
   lamps.forEach((l, i) => {
-    const flick = Math.random() < 0.03 ? R(0.15, 0.5) : 1.3 + Math.sin(performance.now() / 320 + i) * 0.15;
-    l.intensity = flick;
-    if (lampBulbs[i]) lampBulbs[i].visible = flick > 0.3;
+    l.intensity = Math.random() < 0.035 ? R(0.15, 0.55) : 1.3 + Math.sin(performance.now() / 300 + i) * 0.15;
   });
 
-  // Dynamic Blood Particle Physics & Ground Splat Decaling
-  for (let i = bloodParticles.length - 1; i >= 0; i--) {
-    const p = bloodParticles[i];
-    p.v.y -= 13.5 * dt; // Gravity
-    p.v.x *= (1 - 0.9 * dt); // Air drag
-    p.v.z *= (1 - 0.9 * dt);
+  // Particles & Tracers
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.v.y -= 9.5 * dt;
     p.m.position.addScaledVector(p.v, dt);
-
-    if (p.m.position.y <= 0.02) {
-      // Hits ground: pool into ground decal!
-      spawnGroundBloodDecal(p.m.position, p.isHeadshot ? 1.2 : 0.7);
-      scene.remove(p.m);
-      bloodParticles.splice(i, 1);
-      continue;
-    }
-    if ((p.life -= dt) <= 0) {
-      scene.remove(p.m);
-      bloodParticles.splice(i, 1);
-    }
+    if (p.m.position.y < 0.03) { p.m.position.y = 0.03; p.v.set(0, 0, 0); }
+    if ((p.l -= dt) < 0) { scene.remove(p.m); parts.splice(i, 1); }
   }
-
-  // Bullet Tracers
   for (let i = tracers.length - 1; i >= 0; i--) {
     if ((tracers[i].t -= dt) < 0) { scene.remove(tracers[i].l); tracers.splice(i, 1); }
   }
 
   if (msgT > 0 && state === 'play') {
     msgT -= dt;
-    if (msgT <= 0) {
-      $('main-msg').textContent = '';
-      $('sub-msg').textContent = '';
-    }
+    if (msgT <= 0) { $('main-msg').textContent = ''; $('sub-msg').textContent = ''; }
   }
+
+  // Update Realistic Player Bloodshed (Splats & Running Drips)
+  updateBloodScreen(dt);
 
   updateAudioListener();
   hudT -= dt;
   if (hudT <= 0) {
-    hudT = 0.1;
+    hudT = 0.12;
     updateHUD();
   }
 }
