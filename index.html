@@ -675,7 +675,7 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      max-width: 820px;
+      max-width: 1040px;
       margin: auto;
       gap: 12px;
       z-index: 10;
@@ -711,21 +711,29 @@
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 16px rgba(255, 255, 255, 0.3);
     }
 
-    /* 3 Location Cards: Bigger, Crystal Clear HD, Vibrant Neon Glow */
+    /* 4 Location Cards: Bigger, Crystal Clear HD, Vibrant Neon Glow */
     .locations-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
       width: 100%;
-      max-width: 860px;
+      max-width: 980px;
       margin: 10px 0 16px 0;
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 900px) {
+      .locations-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        max-width: 540px;
+      }
+    }
+
+    @media (max-width: 520px) {
       .locations-grid {
         grid-template-columns: 1fr;
         gap: 10px;
-        max-width: 380px;
+        max-width: 320px;
       }
     }
 
@@ -1885,7 +1893,7 @@
         <div class="storyboard-subtitle">SURVIVAL APOCALYPSE</div>
       </div>
 
-      <!-- 3 Infiltration Sectors: Bigger, High-Definition, Neon Highlighted -->
+      <!-- 4 Infiltration Sectors: High-Definition, Neon Highlighted -->
       <div class="locations-grid" id="main-map-select">
         <div class="location-card active" data-lvl="0" id="map-card-0">
           <div class="card-thumb">
@@ -1904,6 +1912,12 @@
             <img src="map-biolab-hd.png" alt="Bio-Lab Compound" />
           </div>
           <div class="location-card-title">BIO-LAB COMPOUND</div>
+        </div>
+        <div class="location-card" data-lvl="3" id="map-card-3">
+          <div class="card-thumb">
+            <img src="map-cemetery-hd.png" alt="Gothic Cemetery" />
+          </div>
+          <div class="location-card-title">GOTHIC CEMETERY</div>
         </div>
       </div>
 
@@ -2039,6 +2053,11 @@
               <div class="dossier-waves">WAVES 7-9 &bull; BOSS: OMEGA APEX</div>
               <div class="dossier-desc">Subterranean facility with radioactive chemical vats. Omega Apex can summon
                 runner swarms and leap across the room.</div>
+            </div>
+            <div class="dossier-card">
+              <div class="dossier-name">SECTOR 4: GOTHIC CEMETERY</div>
+              <div class="dossier-waves">WAVES 10-12 &bull; BOSS: DREAD REAPER</div>
+              <div class="dossier-desc">Midnight burial grounds shrouded in spectral fog, ancient mausoleums, and iron crypts. Dread Reaper wields scythe claws and summons shadow hordes.</div>
             </div>
           </div>
         </div>
@@ -2320,6 +2339,24 @@
           { w: 10, r: 7, sp: 4, g: 2, b: 0 },
           { w: 12, r: 9, sp: 5, g: 3, b: 0 },
           { w: 10, r: 8, sp: 5, g: 3, b: 1, bossName: 'OMEGA APEX' }
+        ]
+      },
+      {
+        id: 'cemetery',
+        shortName: 'GOTHIC CEMETERY',
+        name: 'LOCATION 4: GOTHIC CEMETERY',
+        sky: 0x0c0f17,
+        fog: 0x11151c,
+        fogDens: 0.023,
+        hemiSky: 0x64dfdf,
+        hemiGnd: 0x1b1d24,
+        moonCol: 0x93c5fd,
+        moonInt: 0.7,
+        lampCol: 0x64dfdf,
+        waves: [
+          { w: 12, r: 8, sp: 5, g: 3, b: 0 },
+          { w: 14, r: 10, sp: 6, g: 4, b: 0 },
+          { w: 12, r: 10, sp: 6, g: 4, b: 1, bossName: 'DREAD REAPER', bossHp: 2500 }
         ]
       }
     ];
@@ -3015,6 +3052,27 @@
           g.ellipse(R(0, 512), R(0, 512), R(15, 50), R(15, 40), R(0, 3), 0, Math.PI * 2);
           g.fill();
         }
+      } else if (type === 'cemetery') {
+        // Eerie Gothic Cemetery Ground: Dark sodden earth, cracked tombstone gravel, ash and spectral mist flecks
+        g.fillStyle = '#11151c';
+        g.fillRect(0, 0, 512, 512);
+        for (let i = 0; i < 8000; i++) {
+          const v = R(16, 38) | 0;
+          g.fillStyle = `rgb(${v},${v + 2},${v + 5})`;
+          g.fillRect(R(0, 512), R(0, 512), R(1, 3), R(1, 3));
+        }
+        // Cracked stone pathway slabs & grave mounds
+        for (let i = 0; i < 24; i++) {
+          g.fillStyle = 'rgba(30, 41, 59, 0.45)';
+          g.fillRect(R(0, 480), R(0, 480), R(20, 55), R(12, 35));
+        }
+        // Spectral blue-cyan mist wisps
+        for (let i = 0; i < 15; i++) {
+          g.fillStyle = 'rgba(100, 223, 223, 0.08)';
+          g.beginPath();
+          g.ellipse(R(0, 512), R(0, 512), R(30, 75), R(15, 35), R(0, 3), 0, Math.PI * 2);
+          g.fill();
+        }
       } else {
         // Industrial Bio-Lab Concrete Tiles
         g.fillStyle = '#27292e';
@@ -3038,7 +3096,8 @@
     const groundTexMap = {
       city: createGroundTexture('city'),
       forest: createGroundTexture('forest'),
-      lab: createGroundTexture('lab')
+      lab: createGroundTexture('lab'),
+      cemetery: createGroundTexture('cemetery')
     };
 
     const ground = new THREE.Mesh(
@@ -3311,6 +3370,160 @@
           envGroup.add(l);
           lamps.push(l);
         });
+
+      } else if (locId === 'cemetery') {
+        // Gothic Cemetery: Midnight Crypts, Stone Mausoleums, Arched Tombstones, Twisted Horror Trees & Spectral Lanterns
+        const cryptMat = L(0x2f343e);
+        const stoneMat = L(0x3d4450);
+        const darkTombMat = L(0x1e222a);
+        const ironMat = L(0x13171e);
+        const cyanNeonMat = new THREE.MeshBasicMaterial({ color: 0x64dfdf });
+        const crimsonNeonMat = new THREE.MeshBasicMaterial({ color: 0xe63946 });
+
+        // Cracked stone flagstone paths intersecting the graveyard
+        envGroup.add(
+          box(9, 0.03, 190, 0, 0.015, 0, L(0x232730)),
+          box(190, 0.03, 9, 0, 0.015, 0, L(0x232730))
+        );
+
+        // 4 Monumental Gothic Mausoleums at corners
+        [[-22, -22], [22, -22], [-22, 22], [22, 22]].forEach(([mx, mz]) => {
+          const maus = new THREE.Group();
+          maus.add(
+            box(8.2, 5.0, 9.6, 0, 2.5, 0, cryptMat),
+            box(9.0, 0.6, 10.4, 0, 5.3, 0, darkTombMat),
+            box(6.5, 1.4, 8.0, 0, 6.2, 0, stoneMat),
+            box(2.8, 3.8, 0.2, 0, 1.9, 4.82, ironMat)
+          );
+          // Stone cross atop mausoleum
+          maus.add(
+            box(0.35, 2.0, 0.35, 0, 7.8, 0, stoneMat),
+            box(1.4, 0.35, 0.35, 0, 8.1, 0, stoneMat)
+          );
+          // Glowing crypt urns on both sides
+          [-3.6, 3.6].forEach(ux => {
+            const urn = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.25, 1.1, 8), stoneMat);
+            urn.position.set(ux, 0.55, 4.6);
+            const flame = new THREE.Mesh(new THREE.DodecahedronGeometry(0.22, 0), cyanNeonMat);
+            flame.position.set(ux, 1.25, 4.6);
+            maus.add(urn, flame);
+          });
+          maus.position.set(mx, 0, mz);
+          maus.lookAt(0, 0, 0);
+          envGroup.add(maus);
+        });
+
+        // Graveyard Plots: Detailed Arched Tombstones, Sarcophagi & Celtic Stone Crosses
+        for (let i = 0; i < 90; i++) {
+          let gx = R(-80, 80), gz = R(-80, 80);
+          if (Math.abs(gx) < 6.5 || Math.abs(gz) < 6.5) continue;
+
+          if (i % 3 === 0) {
+            // Arched Tombstone with rounded pediment
+            const tomb = new THREE.Group();
+            const bw = R(0.85, 1.3), bh = R(1.3, 1.8), bd = 0.38;
+            const base = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bd), stoneMat);
+            base.position.y = bh * 0.5;
+            const archTop = new THREE.Mesh(new THREE.CylinderGeometry(bw * 0.5, bw * 0.5, bd, 8), stoneMat);
+            archTop.rotation.x = Math.PI * 0.5;
+            archTop.position.y = bh;
+            tomb.add(base, archTop);
+
+            // Mounded grave soil
+            const mound = new THREE.Mesh(new THREE.BoxGeometry(bw * 1.15, 0.22, 2.4), L(0x191d24));
+            mound.position.set(0, 0.11, 1.2);
+            tomb.add(mound);
+
+            tomb.position.set(gx, 0, gz);
+            tomb.rotation.y = R(-0.35, 0.35);
+            envGroup.add(tomb);
+
+          } else if (i % 3 === 1) {
+            // Celtic Stone Cross
+            const cross = new THREE.Group();
+            const ch = R(1.6, 2.4);
+            cross.add(
+              box(0.3, ch, 0.3, 0, ch * 0.5, 0, darkTombMat),
+              box(1.1, 0.28, 0.28, 0, ch * 0.72, 0, darkTombMat),
+              new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.08, 6, 12), darkTombMat).translateY(ch * 0.72)
+            );
+            cross.position.set(gx, 0, gz);
+            cross.rotation.y = R(-0.25, 0.25);
+            cross.rotation.z = R(-0.06, 0.06);
+            envGroup.add(cross);
+
+          } else {
+            // Heavy Stone Sarcophagus
+            const sarc = new THREE.Group();
+            sarc.add(
+              box(1.5, 0.85, 3.2, 0, 0.425, 0, stoneMat),
+              box(1.65, 0.25, 3.35, 0.08, 0.95, 0.05, darkTombMat)
+            );
+            sarc.position.set(gx, 0, gz);
+            sarc.rotation.y = R(0, Math.PI);
+            envGroup.add(sarc);
+          }
+        }
+
+        // Twisted Horror Trees with Gnarled Branches
+        const deadTrunkMat = L(0x1b1e25);
+        const foliageMat = L(0x151c22);
+        for (let i = 0; i < 48; i++) {
+          let tx = R(-85, 85), tz = R(-85, 85);
+          if (Math.abs(tx) < 7 || Math.abs(tz) < 7) continue;
+
+          const tree = new THREE.Group();
+          const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.52, 7.8, 7), deadTrunkMat);
+          trunk.position.y = 3.9;
+          tree.add(trunk);
+
+          const b1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.16, 2.8, 5), deadTrunkMat);
+          b1.position.set(0.8, 4.6, 0);
+          b1.rotation.z = -0.85;
+          const b2 = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.14, 2.5, 5), deadTrunkMat);
+          b2.position.set(-0.7, 5.4, 0.4);
+          b2.rotation.z = 0.75;
+          tree.add(b1, b2);
+
+          for (let tier = 0; tier < 2; tier++) {
+            const cone = new THREE.Mesh(new THREE.ConeGeometry(2.1 - tier * 0.5, 2.8, 6), foliageMat);
+            cone.position.y = 5.2 + tier * 1.8;
+            tree.add(cone);
+          }
+
+          tree.position.set(tx, 0, tz);
+          tree.rotation.y = R(0, Math.PI * 2);
+          tree.scale.setScalar(R(0.9, 1.4));
+          envGroup.add(tree);
+        }
+
+        // Spectral Cyan & Crimson Lantern Posts
+        [[6.5, -12], [-6.5, 12], [12, 6.5], [-12, -6.5], [6.5, 22], [-6.5, -22]].forEach(([x, z], idx) => {
+          const isCyan = (idx % 2 === 0);
+          const col = isCyan ? 0x64dfdf : 0xe63946;
+          envGroup.add(box(0.18, 3.8, 0.18, x, 1.9, z, ironMat));
+          const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.42), new THREE.MeshBasicMaterial({ color: col }));
+          lantern.position.set(x, 3.9, z);
+          envGroup.add(lantern);
+          lampBulbs.push(lantern);
+          const l = new THREE.PointLight(col, 1.45, 28);
+          l.position.set(x, 3.9, z);
+          envGroup.add(l);
+          lamps.push(l);
+        });
+
+        // Perimeter Wrought Iron Fence Sections
+        for (let a = 0; a < 32; a++) {
+          const ang = (a / 32) * Math.PI * 2;
+          const fx = Math.cos(ang) * 92, fz = Math.sin(ang) * 92;
+          const post = new THREE.Mesh(new THREE.BoxGeometry(0.25, 2.4, 0.25), ironMat);
+          post.position.set(fx, 1.2, fz);
+          envGroup.add(post);
+          const rail = new THREE.Mesh(new THREE.BoxGeometry(16, 0.12, 0.12), ironMat);
+          rail.position.set(fx, 1.6, fz);
+          rail.rotation.y = -ang + Math.PI / 2;
+          envGroup.add(rail);
+        }
       }
     }
 
@@ -4329,10 +4542,15 @@
         vrx.fillStyle = '#f8fafc';
         vrx.fillText('SURVIVAL APOCALYPSE', 512, 92);
 
+        const count = LEVELS.length;
+        const bw = count === 4 ? 228 : 290;
+        const gap = count === 4 ? 14 : 32;
+        const totalW = count * bw + (count - 1) * gap;
+        const startX = (1024 - totalW) / 2;
+
         LEVELS.forEach((lv, i) => {
-          const bx = 45 + i * 322;
+          const bx = startX + i * (bw + gap);
           const by = 146;
-          const bw = 290;
           const bh = 88;
           const isActive = (selectedLevel === i);
           const isHov = (hoveredId === `lvl-${i}`);
@@ -4356,14 +4574,14 @@
           vrx.lineWidth = isActive ? 3 : 1.5;
           vrx.strokeRect(bx, by, bw, bh);
 
-          vrx.font = 'bold 19px Impact, "Arial Black", sans-serif';
+          vrx.font = count === 4 ? 'bold 16px Impact, "Arial Black", sans-serif' : 'bold 19px Impact, "Arial Black", sans-serif';
           vrx.fillStyle = isActive ? '#fbbf24' : '#e2e8f0';
           vrx.textAlign = 'left';
-          vrx.fillText(`${i + 1}. ${lv.name.toUpperCase()}`, bx + 12, by + 34);
+          vrx.fillText(`${i + 1}. ${(lv.shortName || lv.name).toUpperCase()}`, bx + 10, by + 34);
 
-          vrx.font = 'bold 13px sans-serif';
+          vrx.font = count === 4 ? 'bold 11px sans-serif' : 'bold 13px sans-serif';
           vrx.fillStyle = isActive ? '#fef08a' : '#94a3b8';
-          vrx.fillText(`WAVES: ${i * 3 + 1}-${i * 3 + 3}  •  ${lv.waves[2].bossName || 'BOSS'}`, bx + 12, by + 64);
+          vrx.fillText(`WAVES: ${i * 3 + 1}-${i * 3 + 3}  •  ${(lv.waves[2] && lv.waves[2].bossName) || 'BOSS'}`, bx + 10, by + 64);
         });
 
         const modes = [
