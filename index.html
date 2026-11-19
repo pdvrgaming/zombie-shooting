@@ -737,7 +737,6 @@
         max-width: 320px;
       }
     }
-
           .location-card {
             background: rgba(15, 23, 42, 0.88);
             border: 2px solid #334155;
@@ -4566,26 +4565,26 @@
               selectedLevel = initialSelectedLevel = i;
               applyLevelTheme(i);
               vrUI.draw(`lvl-${i}`);
-              document.querySelectorAll('.location-card').forEach((c, idx) => {
-                if (idx === i) c.classList.add('active'); else c.classList.remove('active');
+              document.querySelectorAll(".location-card").forEach((c, idx) => {
+                if (idx === i) c.classList.add("active"); else c.classList.remove("active");
               });
             }
           });
 
-          vrx.fillStyle = isActive ? 'rgba(30, 58, 138, 0.75)' : isHov ? 'rgba(51, 65, 85, 0.7)' : 'rgba(15, 23, 42, 0.65)';
+          vrx.fillStyle = isActive ? "rgba(30, 58, 138, 0.75)" : isHov ? "rgba(51, 65, 85, 0.7)" : "rgba(15, 23, 42, 0.65)";
           vrx.fillRect(bx, by, bw, bh);
-          vrx.strokeStyle = isActive ? '#fbbf24' : isHov ? '#38bdf8' : '#334155';
+          vrx.strokeStyle = isActive ? "#fbbf24" : isHov ? "#38bdf8" : "#334155";
           vrx.lineWidth = isActive ? 3 : 1.5;
           vrx.strokeRect(bx, by, bw, bh);
 
           vrx.font = count === 4 ? 'bold 16px Impact, "Arial Black", sans-serif' : 'bold 19px Impact, "Arial Black", sans-serif';
-          vrx.fillStyle = isActive ? '#fbbf24' : '#e2e8f0';
-          vrx.textAlign = 'left';
+          vrx.fillStyle = isActive ? "#fbbf24" : "#e2e8f0";
+          vrx.textAlign = "left";
           vrx.fillText(`${i + 1}. ${(lv.shortName || lv.name).toUpperCase()}`, bx + 10, by + 34);
 
-          vrx.font = count === 4 ? 'bold 11px sans-serif' : 'bold 13px sans-serif';
-          vrx.fillStyle = isActive ? '#fef08a' : '#94a3b8';
-          vrx.fillText(`WAVES: ${i * 3 + 1}-${i * 3 + 3}  •  ${(lv.waves[2] && lv.waves[2].bossName) || 'BOSS'}`, bx + 10, by + 64);
+          vrx.font = count === 4 ? "bold 11px sans-serif" : "bold 13px sans-serif";
+          vrx.fillStyle = isActive ? "#fef08a" : "#94a3b8";
+          vrx.fillText(`WAVES: ${i * 3 + 1}-${i * 3 + 3}  •  ${(lv.waves[2] && lv.waves[2].bossName) || "BOSS"}`, bx + 10, by + 64);
         });
 
         const modes = [
