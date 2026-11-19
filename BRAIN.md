@@ -152,28 +152,28 @@ stateDiagram-v2
 - Turns flashing red when mag is empty.
 
 ### 6.4 2D Oculus Browser / Desktop / Mobile Stepped Menu (`#ov`)
-To eliminate visual clutter on Meta Quest 2 and mobile screens, the monolithic home screen was decomposed into a **4-Step Storyboard Flow** adhering strictly to Panel 7 ("Game Flow") of `Dead Zone Survival Apocalypse VR Storyboard.png`:
+To eliminate visual clutter on Meta Quest 2 and mobile screens, the menu follows the **4-Step Storyboard Flow** adhering strictly to Panel 1 & Panel 7 of `Dead Zone Survival Apocalypse VR Storyboard.png`:
 - **Top Step Navigator Tabs (`.storyboard-nav-tabs`):**
-  - `[ 1. MAIN MENU ] ➔ [ 2. LOCATION & MODE ] ➔ [ 3. LOADOUT & TIME ] ➔ [ 4. CONTROLS ]`
-- **Step 1: Main Menu (`#panel-step-1`):**
-  - Mission summary chip bar (`#sum-step1-loc`, `#sum-step1-mode`, `#sum-step1-gun`, `#sum-step1-time`)
-  - Big Red Instant Launch CTA: `START SURVIVAL`
-  - 3 Action Navigation Cards jumping to Steps 2, 3, and 4
-  - Dedicated Platform Launch Row (Quest 2 VR, PC FPS, Mobile Touch, Install PWA)
-- **Step 2: Location & Mode (`#panel-step-2`):**
-  - Storyboard Panel 2: 3 Infiltration Sectors (Downtown City, Dark Pine Forest, Bio-Lab Compound)
-  - Enemy Mutation Select: Zombies (3D GLB) vs Mutant Animals
-  - Navigation action row with Back to Step 1, Start Survival, and Next to Step 3
+  - `[ 1. MAIN MENU ] ➔ [ 2. LOCATION INTEL ] ➔ [ 3. LOADOUT & TIME ] ➔ [ 4. CONTROLS ]`
+- **Step 1: Main Menu (`#panel-step-1`) — Direct Storyboard Panel 1 Replica:**
+  - **3 Locations Grid:** Downtown City (1-3), Dark Pine Forest (4-6), Bio-Lab Compound (7-9).
+  - **Mode Selection Pills:** `💀 ZOMBIES (3D GLB)` vs `🐾 MUTANT ANIMALS`.
+  - **Big Red Start Button:** `☣ START SURVIVAL ☣` (instant one-click launch).
+  - **Compact Quick Access Toolbar:** `[ 🥽 ENTER VR (QUEST 2) ]`, `[ ⚙️ ARMORY & TIMER ]`, `[ 🎮 CONTROLS ]`, `[ 💻 PC ]`, `[ 📱 MOBILE ]`, `[ 📱 INSTALL PWA ]`.
+- **Step 2: Location Intel (`#panel-step-2`) — Storyboard Panel 2:**
+  - Extended descriptions and boss previews for all 3 infiltration sectors.
+  - Mode selector pills and navigation row with Back, Start Survival, and Next to Loadout.
 - **Step 3: Loadout & Mission Time (`#panel-step-3`):**
-  - Armory Gun Selection Grid: Glock 17, Desert Eagle, M4A1 Carbine, M870 Breacher
-  - Session Time Limit: Unlimited, 2 Min, 5 Min, 10 Min, 15 Min
-  - Zombie 3D Model appearance selector (Option 2 3D GLB active by default, Option 1 procedural fallback)
-  - Navigation action row with Back to Step 2, Start Survival, and Next to Step 4
-- **Step 4: Controls & VR Guide (`#panel-step-4`):**
-  - Storyboard Panel 8: Quest 2 6DOF Touch dual controller diagram + PC Keyboard/Mouse & Mobile guide
-  - Navigation action row with Back to Step 3, Start Survival, and Return to Main Menu
-- **Touch Action & Responsiveness:** All buttons and cards have `touch-action: manipulation !important; pointer-events: auto !important;` to guarantee instantaneous click dispatch without 300ms delays or laser jitter dropouts.
-- **PWA Install Banner:** Positioned at `bottom: 14px` so it never obscures the header or navigation steps.
+  - Armory Gun Selection Grid: Glock 17, Desert Eagle, M4A1 Carbine, M870 Breacher.
+  - Session Time Limit: Unlimited, 2 Min, 5 Min, 10 Min, 15 Min.
+  - Zombie 3D Model appearance selector (Option 2 3D GLB active by default, Option 1 procedural fallback).
+  - Navigation action row with Back to Step 2, Start Survival, and Next to Step 4.
+- **Step 4: Controls & VR Guide (`#panel-step-4`) — Storyboard Panel 8:**
+  - Quest 2 6DOF Touch dual controller diagram + PC Keyboard/Mouse & Mobile guide.
+  - Navigation action row with Back to Step 3, Start Survival, and Return to Main Menu.
+- **State Invariants & Safety:**
+  - `WEAPON_NAMES` map declared upfront, completely eliminating Temporal Dead Zone `ReferenceError` on `W`.
+  - `sw.js` cache version bumped to `deadzone-vr-v4` with network-first HTML navigation for zero stale-cache delays.
 
 ---
 
