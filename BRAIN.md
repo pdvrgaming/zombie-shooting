@@ -210,6 +210,27 @@ Sector 3: BIO-LAB COMPOUND (Industrial Red Alarms, Toxic Hazards)
 - **Red Explosive Barrels:** Radius 7.5m, 260 damage to all nearby zombies/players.
 - **Acid Spitters:** Project green bile blobs dealing 12 damage + acid smoke particles.
 
+### 7.4 Ballistics, Raycast Distance & Tactical Laser Sight System
+- **Long-Range Ballistics Raycast:**
+  - `ray.far = 250`: Enables full-arena target acquisition without artificial distance falloff.
+  - Tracers fly up to 150m for missed shots.
+  - Ground impact calculations extend up to 160m with concrete sparks and debris.
+  - High-angle shots into the sky do not trigger spurious mid-air debris.
+- **Physical Tactical Laser Sight Module:**
+  - Every firearm (Glock 17, Desert Eagle, M4A1 Carbine, M870 Breacher) features an underbarrel/handguard tactical laser module: matte gunmetal housing, rail mount bracket, aluminum bezel ring, and an emissive glowing red glass diode lens (`0xff0033`).
+  - Dedicated `laserEmitter` Object3D attached to `gun` tracks weapon recoil, reload tilts, and hand motion.
+- **Tactical Red Laser Beam:**
+  - `CylinderGeometry(0.0022, 0.0022, 1, 8)` with `color: 0xff0828`, `THREE.AdditiveBlending`, `opacity: 0.82`.
+  - Real-time length scaling: truncates at the exact surface distance when striking zombies, barrels, or ground.
+- **Dynamic Laser Impact Dot:**
+  - High-intensity 2D radial gradient canvas texture (pure white-hot pinpoint core + vivid neon red halo).
+  - Billboard quad (`0.065m`) with distance-compensated scaling (`0.045m` to `0.24m`) to prevent subpixel drop-out on Meta Quest 2 VR lenses at 30-50m ranges.
+  - Lies flat on terrain (`-Math.PI / 2` pitch) when aiming down at the floor.
+- **Cross-Platform Aim Convergence:**
+  - **VR Mode (WebXR 6DOF):** Laser points directly along the physical firearm's boreline based on controller orientation.
+  - **PC / Mobile Mode:** Raycasts from first-person camera to center reticle target, converging the laser from the underbarrel emitter to the exact crosshair impact point.
+  - **Recoil Synchronization:** Calculated directly after weapon kick in `update(dt)`, ensuring the laser rises authentically during heavy gunfire recoil.
+
 ---
 
 ## 8. 3D GLB Character Model System & Skeletal Animation Architecture

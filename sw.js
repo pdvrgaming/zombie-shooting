@@ -1,5 +1,5 @@
 // Dead Zone: Survival Apocalypse - Service Worker (PWA & WebXR)
-const CACHE_NAME = 'deadzone-vr-v6';
+const CACHE_NAME = 'deadzone-vr-v7';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
