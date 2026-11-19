@@ -583,18 +583,21 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      background: linear-gradient(180deg, rgba(8, 12, 18, 0.70) 0%, rgba(4, 6, 10, 0.88) 100%), url('bg-dusk.png') center center / cover no-repeat;
+      justify-content: flex-start;
+      background: linear-gradient(180deg, rgba(8, 12, 18, 0.75) 0%, rgba(4, 6, 10, 0.92) 100%), url('bg-dusk.png') center center / cover no-repeat;
       text-align: center;
       z-index: 20;
-      padding: 16px 20px;
+      padding: 14px 16px 28px 16px;
       backdrop-filter: blur(2px);
-      overflow-y: auto;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y !important;
     }
 
     /* Storyboard Header */
     .storyboard-header {
-      margin-bottom: 14px;
+      margin-bottom: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1888,57 +1891,40 @@
     <!-- Storyboard Step Panels Container -->
     <div class="story-panel-wrap">
 
-      <!-- STEP 1: MAIN MENU (Storyboard Panel 1 & 7) -->
+      <!-- STEP 1: MAIN MENU (Storyboard Panel 1) -->
       <div class="story-panel active" id="panel-step-1">
-        <!-- Active Mission Summary Bar -->
-        <div class="mission-summary-bar">
-          <span>SECTOR:</span> <b id="sum-step1-loc">DOWNTOWN CITY</b> &bull;
-          <span>MODE:</span> <b id="sum-step1-mode">ZOMBIES (3D GLB)</b> &bull;
-          <span>GUN:</span> <b id="sum-step1-gun">GLOCK 17</b> &bull;
-          <span>TIME:</span> <b id="sum-step1-time">UNLIMITED</b>
+        <!-- 3 Locations Grid matching Storyboard Panel 1 -->
+        <div class="locations-grid">
+          <div class="location-card active" data-lvl="0">
+            <div class="location-card-title">1. DOWNTOWN CITY</div>
+            <div class="location-card-waves">WAVES: 1-3 &bull; THE WARDEN</div>
+          </div>
+          <div class="location-card" data-lvl="1">
+            <div class="location-card-title">2. DARK PINE FOREST</div>
+            <div class="location-card-waves">WAVES: 4-6 &bull; ALPHA BEHEMOTH</div>
+          </div>
+          <div class="location-card" data-lvl="2">
+            <div class="location-card-title">3. BIO-LAB COMPOUND</div>
+            <div class="location-card-waves">WAVES: 7-9 &bull; OMEGA APEX</div>
+          </div>
         </div>
 
-        <!-- Hero Start Survival CTA -->
+        <!-- Mode Toggle (Zombies vs Animals) matching Storyboard Panel 1 -->
+        <div class="mode-select-wrap">
+          <button class="mode-pill-btn active" data-mode="zombies">&#128128; ZOMBIES (3D GLB)</button>
+          <button class="mode-pill-btn" data-mode="animals">&#128062; MUTANT ANIMALS</button>
+        </div>
+
+        <!-- Big Red Start Button matching Storyboard Panel 1 -->
         <button class="btn-start-survival" id="btn-start-hero">&#9763; START SURVIVAL &#9763;</button>
 
-        <!-- Step Navigation Action Cards -->
-        <div class="step-action-grid">
-          <div class="step-action-card" id="btn-goto-sectors">
-            <div class="step-action-icon">&#128205;</div>
-            <div class="step-action-text">
-              <span class="step-action-title">STEP 2: SELECT SECTOR &amp; ENEMY MODE</span>
-              <span class="step-action-sub" id="sub-goto-sectors">Downtown City, Dark Pine Forest, Bio-Lab &bull;
-                Zombies (3D GLB) / Animals</span>
-            </div>
-            <div class="step-action-arr">&#10148;</div>
-          </div>
-
-          <div class="step-action-card" id="btn-goto-loadout">
-            <div class="step-action-icon">&#9881;&#65039;</div>
-            <div class="step-action-text">
-              <span class="step-action-title">STEP 3: WEAPONS ARMORY &amp; MISSION TIME</span>
-              <span class="step-action-sub" id="sub-goto-loadout">Glock 17, Deagle, M4A1, Breacher &bull; 3D GLB Models
-                &bull; Session Timer</span>
-            </div>
-            <div class="step-action-arr">&#10148;</div>
-          </div>
-
-          <div class="step-action-card" id="btn-goto-controls">
-            <div class="step-action-icon">&#127918;</div>
-            <div class="step-action-text">
-              <span class="step-action-title">STEP 4: QUEST 2 VR &amp; PC COMBAT CONTROLS</span>
-              <span class="step-action-sub">6DOF Dual Touch Controller Layout &bull; PC Keyboard &amp; Mouse
-                Bindings</span>
-            </div>
-            <div class="step-action-arr">&#10148;</div>
-          </div>
-        </div>
-
-        <!-- Platform Launch Row -->
+        <!-- Quick Access Navigation Row -->
         <div class="platform-row">
           <button class="platform-btn vr-btn" id="vr">&#129523; ENTER VR (QUEST 2)</button>
-          <button class="platform-btn" id="pc">&#128421; PLAY (PC)</button>
-          <button class="platform-btn" id="mob">&#128241; PLAY (MOBILE)</button>
+          <button class="platform-btn" id="btn-goto-loadout">&#9881;&#65039; ARMORY &amp; TIMER</button>
+          <button class="platform-btn" id="btn-goto-controls">&#127918; CONTROLS</button>
+          <button class="platform-btn" id="pc">&#128421; PC PLAY</button>
+          <button class="platform-btn" id="mob">&#128241; MOBILE</button>
           <button class="platform-btn" id="btn-pwa-install-manual">&#128242; INSTALL PWA</button>
         </div>
       </div>
@@ -2519,21 +2505,26 @@
       if ($(id)) bindUniversalClick(id, launchCurrentGameMode);
     });
 
+    // Weapons Name Catalog for UI Summaries (Safe from TDZ)
+    const WEAPON_NAMES = {
+      pistol: 'GLOCK 17',
+      deagle: 'DESERT EAGLE',
+      rifle: 'M4A1 CARBINE',
+      shotgun: 'M870 BREACHER'
+    };
+
     // Update Menu Mission Summaries across all panels
     function updateMenuSummaries() {
       const locNames = ['DOWNTOWN CITY', 'DARK PINE FOREST', 'BIO-LAB COMPOUND'];
       const locName = locNames[selectedLevel] || 'DOWNTOWN CITY';
       const modeName = enemyCategory === 'animals' ? 'MUTANT ANIMALS' : (zombieModelType === 'glb' ? 'ZOMBIES (3D GLB)' : 'ZOMBIES (PROC)');
-      const gunName = (typeof W !== 'undefined' && chosenWeapon && W[chosenWeapon]) ? W[chosenWeapon].n : (chosenWeapon ? chosenWeapon.toUpperCase() : 'GLOCK 17');
+      const gunName = WEAPON_NAMES[chosenWeapon] || 'GLOCK 17';
       const timeName = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit / 60)} MIN` : 'UNLIMITED';
 
       if ($('sum-step1-loc')) $('sum-step1-loc').textContent = locName;
       if ($('sum-step1-mode')) $('sum-step1-mode').textContent = modeName;
       if ($('sum-step1-gun')) $('sum-step1-gun').textContent = gunName;
       if ($('sum-step1-time')) $('sum-step1-time').textContent = timeName;
-
-      if ($('sub-goto-sectors')) $('sub-goto-sectors').textContent = `${locName} • ${modeName}`;
-      if ($('sub-goto-loadout')) $('sub-goto-loadout').textContent = `${gunName} • ${timeName} • ${zombieModelType === 'glb' ? '3D GLB Monsters' : 'Procedural'}`;
     }
 
     // Stepped Panel Switching (Storyboard Flow Steps 1-4)
@@ -2582,25 +2573,28 @@
     if ($('btn-step4-back')) bindUniversalClick('btn-step4-back', () => switchStep(3));
     if ($('btn-step4-home')) bindUniversalClick('btn-step4-home', () => switchStep(1));
 
-    // Location Cards Listeners
+    // Location Cards Listeners (Sync across Step 1 and Step 2)
     document.querySelectorAll('.location-card').forEach(card => {
       bindUniversalClick(card, () => {
         if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
-        document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        initialSelectedLevel = parseInt(card.dataset.lvl, 10) || 0;
-        selectedLevel = initialSelectedLevel;
+        const lvl = parseInt(card.dataset.lvl, 10) || 0;
+        initialSelectedLevel = lvl;
+        selectedLevel = lvl;
+        document.querySelectorAll('.location-card').forEach(c => {
+          c.classList.toggle('active', parseInt(c.dataset.lvl, 10) === lvl);
+        });
         updateMenuSummaries();
       });
     });
 
-    // Mode Pill Listeners
+    // Mode Pill Listeners (Sync across Step 1 and Step 2)
     document.querySelectorAll('.mode-pill-btn').forEach(btn => {
       bindUniversalClick(btn, () => {
         if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
-        document.querySelectorAll('.mode-pill-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
         enemyCategory = btn.dataset.mode;
+        document.querySelectorAll('.mode-pill-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.mode === enemyCategory);
+        });
         updateMenuSummaries();
       });
     });
