@@ -1,11 +1,14 @@
 // Dead Zone: Survival Apocalypse - Service Worker (PWA & WebXR)
-const CACHE_NAME = 'deadzone-vr-v4';
+const CACHE_NAME = 'deadzone-vr-v5';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon.png',
   './icon-192.png',
+  './map-city-thumb.png',
+  './map-forest-thumb.png',
+  './map-biolab-thumb.png',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
   'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js',
   'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js',

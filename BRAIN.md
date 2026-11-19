@@ -151,29 +151,28 @@ stateDiagram-v2
 - Displays glowing green OLED text: `[MAG / RESERVE]` (e.g. `15 / 75`).
 - Turns flashing red when mag is empty.
 
-### 6.4 2D Oculus Browser / Desktop / Mobile Stepped Menu (`#ov`)
-To eliminate visual clutter on Meta Quest 2 and mobile screens, the menu follows the **4-Step Storyboard Flow** adhering strictly to Panel 1 & Panel 7 of `Dead Zone Survival Apocalypse VR Storyboard.png`:
-- **Top Step Navigator Tabs (`.storyboard-nav-tabs`):**
-  - `[ 1. MAIN MENU ] ➔ [ 2. LOCATION INTEL ] ➔ [ 3. LOADOUT & TIME ] ➔ [ 4. CONTROLS ]`
-- **Step 1: Main Menu (`#panel-step-1`) — Direct Storyboard Panel 1 Replica:**
-  - **3 Locations Grid:** Downtown City (1-3), Dark Pine Forest (4-6), Bio-Lab Compound (7-9).
-  - **Mode Selection Pills:** `💀 ZOMBIES (3D GLB)` vs `🐾 MUTANT ANIMALS`.
-  - **Big Red Start Button:** `☣ START SURVIVAL ☣` (instant one-click launch).
-  - **Compact Quick Access Toolbar:** `[ 🥽 ENTER VR (QUEST 2) ]`, `[ ⚙️ ARMORY & TIMER ]`, `[ 🎮 CONTROLS ]`, `[ 💻 PC ]`, `[ 📱 MOBILE ]`, `[ 📱 INSTALL PWA ]`.
-- **Step 2: Location Intel (`#panel-step-2`) — Storyboard Panel 2:**
-  - Extended descriptions and boss previews for all 3 infiltration sectors.
-  - Mode selector pills and navigation row with Back, Start Survival, and Next to Loadout.
-- **Step 3: Loadout & Mission Time (`#panel-step-3`):**
-  - Armory Gun Selection Grid: Glock 17, Desert Eagle, M4A1 Carbine, M870 Breacher.
-  - Session Time Limit: Unlimited, 2 Min, 5 Min, 10 Min, 15 Min.
-  - Zombie 3D Model appearance selector (Option 2 3D GLB active by default, Option 1 procedural fallback).
-  - Navigation action row with Back to Step 2, Start Survival, and Next to Step 4.
-- **Step 4: Controls & VR Guide (`#panel-step-4`) — Storyboard Panel 8:**
-  - Quest 2 6DOF Touch dual controller diagram + PC Keyboard/Mouse & Mobile guide.
-  - Navigation action row with Back to Step 3, Start Survival, and Return to Main Menu.
+### 6.4 2D Oculus Browser / Desktop / Mobile Menu (`#ov`)
+To achieve zero visual clutter and match **Reference Image 3** (`media_1795063485805_fe144d6c.jpg`), all extra badges, device detection tags, and top step navigation bars have been removed from the main screen:
+- **Clean Main Screen (Direct Reference Image 3 Replica):**
+  - **Game Title Only:** Bold apocalyptic distressed red `DEAD ZONE` with zombie hand silhouette inside `ZONE`, and clean white `SURVIVAL APOCALYPSE` subtitle.
+  - **3 Highlighted Map Cards:**
+    - `Downtown City` (`map-city-thumb.png`)
+    - `Dark Pine Forest` (`map-forest-thumb.png`)
+    - `Bio-Lab Compound` (`map-biolab-thumb.png`)
+    - Active map is vividly highlighted with a bright cyan neon glow (`border: 2.5px solid #38bdf8`, `box-shadow: 0 0 25px rgba(56, 189, 248, 0.75)`).
+  - **Mode Selector Pills:** `[ 💀 ZOMBIES ]` (active red glowing pill) vs `[ 🐾 MUTANT ANIMALS ]` (dark outline pill).
+  - **Hero CTA Button:** Glowing crimson red `START SURVIVAL` button (triggers `launchCurrentGameMode()`, auto-entering VR if WebXR is supported or PC/Mobile).
+  - **Top Actions Bar:** Minimalist top header with `[ 🥽 ENTER VR ]` (1-click WebXR launch) and `[ ⚙️ SETTINGS ]`.
+- **Settings & Options Modal (`#modal-settings`):**
+  - Accessible via the top-right `⚙️ SETTINGS` button.
+  - **Tab 1: Armory & Loadout:** Starting weapon selection (Glock 17, Desert Eagle, M4A1 Carbine, M870 Breacher) and Zombie 3D model toggle (`💀 3D GLB MONSTERS` vs `⚙️ BASIC PROCEDURAL`).
+  - **Tab 2: Mission Time:** Session duration limit selector (`UNLIMITED`, `2 MIN`, `5 MIN`, `10 MIN`, `15 MIN`).
+  - **Tab 3: Combat Controls:** Quest 2 VR Touch 6DOF dual controller interactive diagram, PC Keyboard & Mouse bindings, and Mobile Touch guide.
+  - **Tab 4: Sector Intel:** Detailed lore, wave structures, and boss dossiers for Downtown City, Dark Pine Forest, and Bio-Lab Compound.
+  - **Tab 5: Platform / VR:** Direct launch buttons (`ENTER VR`, `PLAY PC`, `PLAY MOBILE`, `INSTALL PWA`).
 - **State Invariants & Safety:**
   - `WEAPON_NAMES` map declared upfront, completely eliminating Temporal Dead Zone `ReferenceError` on `W`.
-  - `sw.js` cache version bumped to `deadzone-vr-v4` with network-first HTML navigation for zero stale-cache delays.
+  - `sw.js` cache version bumped to `deadzone-vr-v5` precaching all map thumbnails with network-first HTML navigation for instant cache invalidation.
 
 ---
 
