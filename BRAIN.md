@@ -152,27 +152,26 @@ stateDiagram-v2
 - Turns flashing red when mag is empty.
 
 ### 6.4 2D Oculus Browser / Desktop / Mobile Menu (`#ov`)
-To achieve zero visual clutter and match **Reference Image 3** (`media_1795063485805_fe144d6c.jpg`), all extra badges, device detection tags, and top step navigation bars have been removed from the main screen:
-- **Clean Main Screen (Direct Reference Image 3 Replica):**
-  - **Game Title Only:** Bold apocalyptic distressed red `DEAD ZONE` with zombie hand silhouette inside `ZONE`, and clean white `SURVIVAL APOCALYPSE` subtitle.
-  - **3 Highlighted Map Cards:**
-    - `Downtown City` (`map-city-thumb.png`)
-    - `Dark Pine Forest` (`map-forest-thumb.png`)
-    - `Bio-Lab Compound` (`map-biolab-thumb.png`)
-    - Active map is vividly highlighted with a bright cyan neon glow (`border: 2.5px solid #38bdf8`, `box-shadow: 0 0 25px rgba(56, 189, 248, 0.75)`).
-  - **Mode Selector Pills:** `[ 💀 ZOMBIES ]` (active red glowing pill) vs `[ 🐾 MUTANT ANIMALS ]` (dark outline pill).
-  - **Hero CTA Button:** Glowing crimson red `START SURVIVAL` button (triggers `launchCurrentGameMode()`, auto-entering VR if WebXR is supported or PC/Mobile).
+To achieve zero visual clutter and match the exact title image and Reference Image 3:
+- **Clean Main Screen (Direct Visual Replica):**
+  - **Exact Title Banner Image:** High-resolution transparent PNG banner `dead-zone-title.png` featuring 3D embossed blood-red distressed `DEAD` and weathered metallic steel `ZONE` with mutated zombie hand silhouette in the `O`, paired with bold white `SURVIVAL APOCALYPSE` subtitle.
+  - **3 Enlarged, Crystal-Clear HD Map Cards:**
+    - `Downtown City` (`map-city-hd.png` - 1376x768 widescreen concept art)
+    - `Dark Pine Forest` (`map-forest-hd.png` - 1376x768 widescreen concept art)
+    - `Bio-Lab Compound` (`map-biolab-hd.png` - 1376x768 widescreen concept art)
+    - Cards enlarged to `max-width: 860px`, featuring vibrant cyan neon glow (`border: 2.5px solid #38bdf8`, `box-shadow: 0 0 30px rgba(56, 189, 248, 0.85)`).
+  - **Hero CTA Button:** Glowing crimson red `START SURVIVAL` button directly below the cards (triggers `launchCurrentGameMode()`, auto-entering VR if WebXR is supported or PC/Mobile).
   - **Top Actions Bar:** Minimalist top header with `[ 🥽 ENTER VR ]` (1-click WebXR launch) and `[ ⚙️ SETTINGS ]`.
 - **Settings & Options Modal (`#modal-settings`):**
   - Accessible via the top-right `⚙️ SETTINGS` button.
-  - **Tab 1: Armory & Loadout:** Starting weapon selection (Glock 17, Desert Eagle, M4A1 Carbine, M870 Breacher) and Zombie 3D model toggle (`💀 3D GLB MONSTERS` vs `⚙️ BASIC PROCEDURAL`).
+  - **Tab 1: Armory & Enemies:** Starting weapon selection (Glock 17, Desert Eagle, M4A1, Breacher), enemy mutation selector (`💀 ZOMBIES` vs `🐾 MUTANT ANIMALS`), and Zombie 3D model toggle (`💀 3D GLB MONSTERS` vs `⚙️ BASIC PROCEDURAL`).
   - **Tab 2: Mission Time:** Session duration limit selector (`UNLIMITED`, `2 MIN`, `5 MIN`, `10 MIN`, `15 MIN`).
   - **Tab 3: Combat Controls:** Quest 2 VR Touch 6DOF dual controller interactive diagram, PC Keyboard & Mouse bindings, and Mobile Touch guide.
   - **Tab 4: Sector Intel:** Detailed lore, wave structures, and boss dossiers for Downtown City, Dark Pine Forest, and Bio-Lab Compound.
   - **Tab 5: Platform / VR:** Direct launch buttons (`ENTER VR`, `PLAY PC`, `PLAY MOBILE`, `INSTALL PWA`).
 - **State Invariants & Safety:**
   - `WEAPON_NAMES` map declared upfront, completely eliminating Temporal Dead Zone `ReferenceError` on `W`.
-  - `sw.js` cache version bumped to `deadzone-vr-v5` precaching all map thumbnails with network-first HTML navigation for instant cache invalidation.
+  - `sw.js` cache version bumped to `deadzone-vr-v6` precaching title and all HD map assets with network-first HTML navigation for instant cache invalidation.
 
 ---
 

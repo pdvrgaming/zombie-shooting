@@ -681,106 +681,92 @@
       z-index: 10;
     }
 
-    /* Storyboard Header (Only Dead Zone Title) */
+    /* Storyboard Header (Exact Dead Zone Title Image) */
     .storyboard-header {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 100%;
     }
 
-    h1.storyboard-title {
-      font-family: Impact, 'Arial Black', sans-serif;
-      font-size: clamp(38px, 6.5vw, 68px);
-      margin: 0;
-      color: #ef4444;
-      text-shadow: 0 0 35px rgba(239, 68, 68, 0.85), 0 4px 0 #450a0a;
-      letter-spacing: 4px;
-      line-height: 1.05;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    h1.storyboard-title .zone-txt {
-      color: #ef4444;
-      text-shadow: 0 0 35px rgba(239, 68, 68, 0.85), 0 4px 0 #450a0a;
-      position: relative;
-    }
-
-    h1.storyboard-title .handprint-icon {
-      display: inline-block;
-      color: #111827;
-      transform: scale(0.9) rotate(-8deg);
-      text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+    .storyboard-title-img {
+      width: 100%;
+      max-width: 580px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.8)) drop-shadow(0 4px 16px rgba(0,0,0,0.95));
+      user-select: none;
+      pointer-events: none;
     }
 
     .storyboard-subtitle {
-      font-size: clamp(12px, 1.8vw, 16px);
+      font-family: Impact, 'Arial Black', sans-serif;
+      font-size: clamp(14px, 2vw, 19px);
       font-weight: 800;
-      letter-spacing: 5px;
+      letter-spacing: 6px;
       color: #ffffff;
-      margin-top: 4px;
-      text-shadow: 0 2px 10px #000;
+      margin-top: 5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 16px rgba(255, 255, 255, 0.3);
     }
 
-    /* 3 Location Cards: Side by Side, Highlighted Active State */
+    /* 3 Location Cards: Bigger, Crystal Clear HD, Vibrant Neon Glow */
     .locations-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      gap: 16px;
       width: 100%;
-      max-width: 720px;
-      margin: 4px 0 8px 0;
+      max-width: 860px;
+      margin: 10px 0 16px 0;
     }
 
-    @media (max-width: 580px) {
+    @media (max-width: 680px) {
       .locations-grid {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 10px;
+        max-width: 380px;
       }
     }
 
     .location-card {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       border: 2px solid #334155;
-      border-radius: 12px;
-      padding: 8px 8px 10px 8px;
+      border-radius: 14px;
+      padding: 10px 10px 14px 10px;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
       display: flex;
       flex-direction: column;
       align-items: center;
       overflow: hidden;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
       touch-action: manipulation !important;
       user-select: none;
     }
 
     .location-card:hover {
       border-color: #64748b;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
     }
 
-    /* Highlighted active map */
+    /* Highlighted active map with vibrant cyan neon glow */
     .location-card.active {
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(15, 23, 42, 0.96);
       border: 2.5px solid #38bdf8;
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.75), inset 0 0 12px rgba(56, 189, 248, 0.35);
-      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.85), inset 0 0 16px rgba(56, 189, 248, 0.4);
+      transform: translateY(-6px) scale(1.04);
     }
 
     .location-card .card-thumb {
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
-      background: #0f172a;
-      margin-bottom: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #090d16;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
     }
 
     .location-card .card-thumb img {
@@ -788,7 +774,8 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.3s ease;
+      image-rendering: auto;
+      transition: transform 0.35s ease;
     }
 
     .location-card:hover .card-thumb img,
@@ -798,16 +785,16 @@
 
     .location-card-title {
       font-family: Impact, 'Arial Black', sans-serif;
-      font-size: clamp(12px, 1.4vw, 15px);
+      font-size: clamp(14px, 1.6vw, 18px);
       color: #f1f5f9;
-      letter-spacing: 1.5px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      letter-spacing: 2px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
       transition: color 0.2s ease;
     }
 
     .location-card.active .location-card-title {
       color: #38bdf8;
-      text-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
+      text-shadow: 0 0 14px rgba(56, 189, 248, 0.9);
     }
 
     /* Mode Selector Pills (Zombies vs Animals) */
@@ -1892,47 +1879,35 @@
 
     <!-- Main Screen Container (Matching Reference Image 3) -->
     <div class="main-hero-screen">
-      <!-- Title: ONLY Dead Zone Title (No extra labels) -->
+      <!-- Title: Exact Dead Zone Title Image Replica -->
       <div class="storyboard-header">
-        <h1 class="storyboard-title">
-          DEAD <span class="zone-txt">Z<span class="handprint-icon">✋</span>NE</span>
-        </h1>
+        <img src="dead-zone-title.png" alt="DEAD ZONE" class="storyboard-title-img" />
         <div class="storyboard-subtitle">SURVIVAL APOCALYPSE</div>
       </div>
 
-      <!-- 3 Infiltration Sectors: Highlighted with Artwork Thumbnails -->
+      <!-- 3 Infiltration Sectors: Bigger, High-Definition, Neon Highlighted -->
       <div class="locations-grid" id="main-map-select">
         <div class="location-card active" data-lvl="0" id="map-card-0">
           <div class="card-thumb">
-            <img src="map-city-thumb.png" alt="Downtown City" />
+            <img src="map-city-hd.png" alt="Downtown City" />
           </div>
           <div class="location-card-title">DOWNTOWN CITY</div>
         </div>
         <div class="location-card" data-lvl="1" id="map-card-1">
           <div class="card-thumb">
-            <img src="map-forest-thumb.png" alt="Dark Pine Forest" />
+            <img src="map-forest-hd.png" alt="Dark Pine Forest" />
           </div>
           <div class="location-card-title">DARK PINE FOREST</div>
         </div>
         <div class="location-card" data-lvl="2" id="map-card-2">
           <div class="card-thumb">
-            <img src="map-biolab-thumb.png" alt="Bio-Lab Compound" />
+            <img src="map-biolab-hd.png" alt="Bio-Lab Compound" />
           </div>
           <div class="location-card-title">BIO-LAB COMPOUND</div>
         </div>
       </div>
 
-      <!-- Mode Selector (Zombies vs Mutant Animals) -->
-      <div class="mode-select-wrap">
-        <button class="mode-pill-btn active" data-mode="zombies" id="btn-mode-zombies">
-          <span class="mode-ico">💀</span> ZOMBIES
-        </button>
-        <button class="mode-pill-btn" data-mode="animals" id="btn-mode-animals">
-          <span class="mode-ico">🐾</span> MUTANT ANIMALS
-        </button>
-      </div>
-
-      <!-- Hero Start Survival CTA Button -->
+      <!-- Hero Start Survival CTA Button (Directly below cards) -->
       <button class="btn-start-survival hero-btn" id="btn-start-hero">
         START SURVIVAL
       </button>
@@ -1977,6 +1952,16 @@
               <div class="gun-card-name">M870 BREACHER</div>
               <div class="gun-card-desc">MAG: 8 &bull; DMG: 20x8 &bull; PUMP SPREAD</div>
             </div>
+          </div>
+
+          <div class="settings-sec-title" style="margin-top:14px;">☠ ENEMY MUTATION TYPE</div>
+          <div class="mode-select-wrap" style="max-width:100%;margin-bottom:12px;">
+            <button class="mode-pill-btn active" data-mode="zombies" id="btn-mode-zombies">
+              <span class="mode-ico">💀</span> ZOMBIES
+            </button>
+            <button class="mode-pill-btn" data-mode="animals" id="btn-mode-animals">
+              <span class="mode-ico">🐾</span> MUTANT ANIMALS
+            </button>
           </div>
 
           <div class="settings-sec-title" style="margin-top:14px;">🧟 ZOMBIE 3D MODEL TYPE</div>
