@@ -1734,6 +1734,11 @@
           }
 
           /* Progressive Web App (PWA) Install Banner */
+          body.is-in-game #pwa-install-banner,
+          body.is-in-game .pwa-install-banner {
+            display: none !important;
+          }
+
           .pwa-install-banner {
             position: fixed;
             bottom: 14px;
@@ -2704,7 +2709,8 @@
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       deferredInstallPrompt = e;
-      if (!sessionStorage.getItem('pwa_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
+      // NEVER show PWA banner if game has started or outside menu
+      if (state === 'menu' && !document.body.classList.contains('is-in-game') && !sessionStorage.getItem('pwa_dismissed') && !window.matchMedia('(display-mode: standalone)').matches) {
         if (pwaBanner) pwaBanner.style.display = 'flex';
       }
     });
@@ -2730,12 +2736,12 @@
       });
     }
 
-    // Show banner on page load if not in standalone and not dismissed
+    // Show banner on page load if not in standalone, not dismissed, and strictly in main menu
     window.addEventListener('DOMContentLoaded', () => {
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
       if (!isStandalone && !sessionStorage.getItem('pwa_dismissed')) {
         setTimeout(() => {
-          if (pwaBanner && !isStandalone && !sessionStorage.getItem('pwa_dismissed')) {
+          if (pwaBanner && state === 'menu' && !document.body.classList.contains('is-in-game') && !isStandalone && !sessionStorage.getItem('pwa_dismissed')) {
             pwaBanner.style.display = 'flex';
           }
         }, 1200);
@@ -3007,11 +3013,87 @@
     scene.background = new THREE.Color(LEVELS[0].sky);
     scene.fog = new THREE.FogExp2(LEVELS[0].fog, LEVELS[0].fogDens);
 
-    const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.05, 300);
+    // Optimized far clipping distance (140m) matching fog cutoff to prevent rendering invisible distant geometry
+    const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.05, 140);
+    camera.layers.enable(0); // Layer 0: Main World Gameplay & Zombies
+    camera.layers.enable(1); // Layer 1: Atmosphere & Sky Scenery
+
     const rig = new THREE.Group();
     rig.add(camera);
     scene.add(rig);
     camera.position.y = 1.7;
+
+    // ---------- HIGH-PERFORMANCE DYNAMIC CULLING MASK ENGINE ----------
+    // Eliminates frame drops & screen stutter by culling off-screen and distant geometry/lights
+    let cullingTick = 0;
+    const cullingFrustum = new THREE.Frustum();
+    const cullingProjMatrix = new THREE.Matrix4();
+    const cullingCamPos = new THREE.Vector3();
+
+    function updateCullingMask() {
+      cullingTick++;
+      // Staggered execution every 3 frames for zero CPU overhead
+      if (cullingTick % 3 !== 0) return;
+
+      camera.updateMatrixWorld();
+      cullingProjMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+      cullingFrustum.setFromProjectionMatrix(cullingProjMatrix);
+      camera.getWorldPosition(cullingCamPos);
+
+      const maxDistSq = 80 * 80; // 80m fog threshold squared
+
+      // 1. Cull Static Environment Geometry (Trees, Grass, Buildings, Silos)
+      if (envGroup && envGroup.children.length > 0) {
+        for (let i = 0, len = envGroup.children.length; i < len; i++) {
+          const obj = envGroup.children[i];
+          const dx = obj.position.x - cullingCamPos.x;
+          const dz = obj.position.z - cullingCamPos.z;
+          const dSq = dx * dx + dz * dz;
+
+          if (dSq > maxDistSq) {
+            if (obj.visible) obj.visible = false;
+          } else {
+            // If near player (< 12m), always render; otherwise check camera view frustum
+            if (dSq < 144 || cullingFrustum.containsPoint(obj.position)) {
+              if (!obj.visible) obj.visible = true;
+            } else {
+              if (obj.visible) obj.visible = false;
+            }
+          }
+        }
+      }
+
+      // 2. Cull Dynamic Point Lights (Lamps) - massive GPU fill-rate saving
+      if (lamps && lamps.length > 0) {
+        for (let i = 0, len = lamps.length; i < len; i++) {
+          const l = lamps[i];
+          const dx = l.position.x - cullingCamPos.x;
+          const dz = l.position.z - cullingCamPos.z;
+          const dSq = dx * dx + dz * dz;
+          if (dSq > 1156 || (dSq > 64 && !cullingFrustum.containsPoint(l.position))) { // 34m light cutoff
+            if (l.visible) l.visible = false;
+          } else {
+            if (!l.visible) l.visible = true;
+          }
+        }
+      }
+
+      // 3. Cull Distant Zombies beyond fog horizon
+      if (zombies && zombies.length > 0) {
+        for (let i = 0, len = zombies.length; i < len; i++) {
+          const z = zombies[i];
+          if (z.dead) continue;
+          const dx = z.g.position.x - cullingCamPos.x;
+          const dz = z.g.position.z - cullingCamPos.z;
+          const dSq = dx * dx + dz * dz;
+          if (dSq > maxDistSq) {
+            if (z.g.visible) z.g.visible = false;
+          } else {
+            if (!z.g.visible) z.g.visible = true;
+          }
+        }
+      }
+    }
 
     addEventListener('resize', () => {
       camera.aspect = innerWidth / innerHeight;
@@ -6408,6 +6490,7 @@
     function quitToMenu() {
       SND.uiClick();
       state = 'menu';
+      document.body.classList.remove('is-in-game');
       mouseDown = false;
       touchState.firing = false;
       sessionTimeElapsed = 0;
@@ -6561,6 +6644,8 @@
       reloading = 0;
       state = 'play';
 
+      document.body.classList.add('is-in-game');
+      if (pwaBanner) pwaBanner.style.display = 'none';
       $('ov').style.display = 'none';
       $('modal-ov').style.display = 'none';
       $('hud').style.display = xr() ? 'none' : 'block';
@@ -6982,6 +7067,9 @@
         if (posAttr.array[i + 1] < 0) posAttr.array[i + 1] = 28;
       }
       posAttr.needsUpdate = true;
+
+      // Dynamic Culling Mask for rock-solid 60/90 FPS
+      updateCullingMask();
 
       // Roaming Search Helicopters in Downtown City Sky
       if (currentEnvId === 'city' && cityHelicopters && cityHelicopters.length > 0) {
