@@ -231,6 +231,24 @@ Sector 3: BIO-LAB COMPOUND (Industrial Red Alarms, Toxic Hazards)
   - **PC / Mobile Mode:** Raycasts from first-person camera to center reticle target, converging the laser from the underbarrel emitter to the exact crosshair impact point.
   - **Recoil Synchronization:** Calculated directly after weapon kick in `update(dt)`, ensuring the laser rises authentically during heavy gunfire recoil.
 
+### 7.5 Boss Encounter Architecture & 3D Floating Health Bar
+- **Compound Collision Hitboxes for 100% Raycast Registration:**
+  - Three.js `SkinnedMesh.raycast` tests against unskinned bind-pose geometry. On animated, charging bosses, rays can pass through if the dynamic pose displaces vertices outside the bind pose.
+  - Resolved by attaching a compound invisible collision hierarchy directly to `g`: torso cylinder (`0.7m × 2.0m`), chest/shoulder box (`1.6m × 0.9m × 1.0m`), headshot sphere (`0.48m` radius with `userData.head = true`), and legs cylinder.
+  - Recursive `g.traverse(c => { if (c.isMesh) c.userData.owner = z; })` guarantees that any ray striking any mesh component registers an immediate bullet hit on the boss.
+- **Boss HP & Difficulty Rebalancing:**
+  - Base HP adjusted from 3200 (which required 76+ Glock shots) to progressive sector boss limits:
+    - Sector 1 (Downtown City): **The Warden** — 1,200 HP (~28 Glock hits / ~11 headshots).
+    - Sector 2 (Dark Pine Forest): **Alpha Behemoth** — 1,600 HP (~38 Glock hits / ~15 headshots).
+    - Sector 3 (Bio-Lab Compound): **Omega Apex** — 2,000 HP (~47 Glock hits / ~19 headshots).
+  - Outdated placeholder `bossCore` red sphere removed.
+- **3D Floating World-Space Health Bar Billboard:**
+  - `PlaneGeometry(3.2m, 0.7m)` mesh floating directly above the boss's head (`yOffset = 1.55 * scale.y + 0.2m`).
+  - Constantly faces the player's eyes in WebXR and PC (`quaternion.copy(camera.quaternion)`).
+  - High-res dynamic canvas displays boss skull icon, boss name (`☠ THE WARDEN [BOSS] ☠`), health track bar, percentage, and exact numeric HP (`1050 / 1200 (88%)`).
+  - **Instant Visual Hit Feedback:** On every bullet impact (`dmgZ`), `bossHitFlashTimer = 0.25` triggers a bright neon yellow/white flash on the health bar, providing unmistakable hit confirmation in the Meta Quest 2 headset.
+  - Dual support: Synchronized with the 2D top screen `#boss-hud` bar for desktop players.
+
 ---
 
 ## 8. 3D GLB Character Model System & Skeletal Animation Architecture

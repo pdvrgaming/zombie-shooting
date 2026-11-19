@@ -2926,7 +2926,7 @@
             let mobileMode = false;
 
             // ---------- THREE.JS SCENE SETUP ----------
-            const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+            const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
             renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
             renderer.setSize(innerWidth, innerHeight);
             renderer.xr.enabled = true;
@@ -3822,6 +3822,26 @@
             buildGun(cur);
             attachGun(camera, gunBase);
 
+            // Test helper for boss inspection and screenshots
+            window.spawnBossTest = function() {
+              if (state !== 'play') {
+                const btn = document.getElementById('btn-start-hero');
+                if (btn) btn.click();
+                else if (typeof launchCurrentGameMode === 'function') launchCurrentGameMode();
+                else if (typeof startGame === 'function') startGame();
+              }
+              zombies.forEach(z => { z.dead = true; scene.remove(z.g); });
+              zombies.length = 0;
+              spawn('boss');
+              const b = zombies.find(z => z.type === 'boss' && !z.dead);
+              if (b) {
+                b.g.position.set(0, 0, -8.5);
+                b.g.lookAt(camera.position.x, 0, camera.position.z);
+                updateBossHealthBar(b, 0.016);
+              }
+              return b;
+            };
+
             // ============================================================================
             // META QUEST 2 DEDICATED WEBXR SPATIAL 3D UI & INTERACTION SYSTEM
             // ============================================================================
@@ -3980,6 +4000,104 @@
               }
 
               wristTex.needsUpdate = true;
+            }
+
+            // 2.5 Floating 3D Boss Health Bar Billboard (Visible in both Meta Quest 2 VR & PC/Mobile)
+            const bossHpCanvas = document.createElement('canvas');
+            bossHpCanvas.width = 512;
+            bossHpCanvas.height = 112;
+            const bhx = bossHpCanvas.getContext('2d');
+            const bossHpTex = new THREE.CanvasTexture(bossHpCanvas);
+            const bossHpMat = new THREE.MeshBasicMaterial({
+              map: bossHpTex,
+              transparent: true,
+              depthWrite: false,
+              depthTest: false,
+              side: THREE.DoubleSide
+            });
+            const bossHpMesh = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.7), bossHpMat);
+            bossHpMesh.visible = false;
+            bossHpMesh.renderOrder = 9999;
+            scene.add(bossHpMesh);
+
+            let lastBossHpPct = -1;
+            let bossHitFlashTimer = 0;
+
+            function updateBossHealthBar(boss, dt) {
+              if (!boss || boss.dead || boss.hp <= 0 || state !== 'play') {
+                bossHpMesh.visible = false;
+                lastBossHpPct = -1;
+                return;
+              }
+
+              bossHpMesh.visible = true;
+              const yOffset = (boss.isAnimal ? 1.25 : 1.55) * (boss.g.scale.y || 1) + 0.2;
+              bossHpMesh.position.set(boss.g.position.x, boss.g.position.y + yOffset, boss.g.position.z);
+              bossHpMesh.quaternion.copy(camera.quaternion);
+
+              if (bossHitFlashTimer > 0) bossHitFlashTimer -= dt;
+
+              const pct = Math.max(0, Math.min(100, (boss.hp / boss.T.hp) * 100));
+              if (Math.abs(pct - lastBossHpPct) > 0.05 || bossHitFlashTimer > 0) {
+                lastBossHpPct = pct;
+                const bName = boss.bName || (LEVELS[selectedLevel].waves[wave - 1] && LEVELS[selectedLevel].waves[wave - 1].bossName) || 'THE WARDEN';
+                const isFlashing = bossHitFlashTimer > 0;
+
+                bhx.clearRect(0, 0, 512, 112);
+
+                // Dark tactical background plate
+                bhx.fillStyle = 'rgba(10, 15, 26, 0.90)';
+                bhx.beginPath();
+                bhx.roundRect(4, 4, 504, 104, 14);
+                bhx.fill();
+
+                // Border: glowing red or bright white/yellow when hit
+                bhx.lineWidth = isFlashing ? 5 : 3;
+                bhx.strokeStyle = isFlashing ? '#fef08a' : '#ef4444';
+                bhx.stroke();
+
+                // Boss Name + Threat Level
+                bhx.font = "bold 23px Impact, 'Arial Black', sans-serif";
+                bhx.fillStyle = isFlashing ? '#ffffff' : '#f87171';
+                bhx.textAlign = 'left';
+                bhx.fillText(`☠  ${bName}  [BOSS]`, 20, 36);
+
+                // Numeric HP readout
+                bhx.font = "bold 20px 'Segoe UI', Arial, sans-serif";
+                bhx.textAlign = 'right';
+                bhx.fillStyle = isFlashing ? '#fef08a' : '#fca5a5';
+                bhx.fillText(`${Math.max(0, Math.ceil(boss.hp))} / ${boss.T.hp} (${Math.ceil(pct)}%)`, 492, 36);
+
+                // Health Bar Background Track
+                bhx.fillStyle = 'rgba(30, 41, 59, 0.95)';
+                bhx.beginPath();
+                bhx.roundRect(20, 50, 472, 40, 8);
+                bhx.fill();
+                bhx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+                bhx.lineWidth = 1;
+                bhx.stroke();
+
+                // Health Bar Fill (Gradient Red -> Orange -> Yellow)
+                if (pct > 0) {
+                  const fillW = Math.max(10, (pct / 100) * 472);
+                  const grad = bhx.createLinearGradient(20, 0, 492, 0);
+                  if (isFlashing) {
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.4, '#fef08a');
+                    grad.addColorStop(1, '#f97316');
+                  } else {
+                    grad.addColorStop(0, '#b91c1c');
+                    grad.addColorStop(0.55, '#ef4444');
+                    grad.addColorStop(1, '#f97316');
+                  }
+                  bhx.fillStyle = grad;
+                  bhx.beginPath();
+                  bhx.roundRect(20, 50, fillW, 40, 8);
+                  bhx.fill();
+                }
+
+                bossHpTex.needsUpdate = true;
+              }
             }
 
             // 3. Tactical Red Laser Sight Beam & Dynamic Target Dot (Storyboard Panel 3)
@@ -4854,8 +4972,8 @@
               walker: { hp: 65, sp: 1.45, dm: 10, s: 1.0, c: 0x5c7a52, pts: 100 },
               runner: { hp: 40, sp: 3.7, dm: 8, s: 0.95, c: 0x8f473a, pts: 150 },
               spitter: { hp: 85, sp: 1.7, dm: 14, s: 1.05, c: 0x2d6a4f, pts: 220 },
-              giant: { hp: 480, sp: 1.15, dm: 28, s: 2.25, c: 0x435c3e, pts: 550 },
-              boss: { hp: 3200, sp: 1.75, dm: 40, s: 3.5, c: 0x6b214a, pts: 5000 }
+              giant: { hp: 480, sp: 1.15, dm: 28, s: 1.8, c: 0x435c3e, pts: 550 },
+              boss: { hp: 1200, sp: 1.65, dm: 36, s: 1.0, c: 0x6b214a, pts: 5000 }
             };
 
             function spawn(type) {
@@ -5021,29 +5139,46 @@
                       else if (type === 'boss') animAction.timeScale = 0.85;
                       else animAction.timeScale = 1.05;
 
-                      const scaleMult = (type === 'boss' ? 2.5 : type === 'giant' ? 1.75 : type === 'runner' ? 0.95 : 1.05);
+                      const scaleMult = (type === 'boss' ? 2.6 : type === 'giant' ? 1.75 : type === 'runner' ? 0.95 : 1.05);
                       g.scale.setScalar(T.s * scaleMult);
-                      headYThreshold = 1.3 * (T.s * scaleMult);
+                      headYThreshold = 1.35 * (T.s * scaleMult);
 
                       // Precision head hitbox sphere
-                      const headRadius = (type === 'boss' ? 0.42 : type === 'giant' ? 0.32 : 0.22);
-                      const headHeight = (type === 'boss' ? 3.6 : type === 'giant' ? 2.45 : 1.45);
+                      const headRadius = (type === 'boss' ? 0.48 : type === 'giant' ? 0.32 : 0.22);
+                      const headHeight = (type === 'boss' ? 2.35 : type === 'giant' ? 1.85 : 1.45);
                       const headBox = new THREE.Mesh(
-                        new THREE.SphereGeometry(headRadius, 8, 8),
-                        new THREE.MeshBasicMaterial({ visible: false })
+                        new THREE.SphereGeometry(headRadius, 10, 10),
+                        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
                       );
                       headBox.position.set(0, headHeight, 0.28);
                       headBox.userData.head = true;
                       g.add(headBox);
 
-                      // Boss ominous crimson core
+                      // Solid Compound Hitboxes for 100% Guaranteed Raycast Registration
+                      const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
                       if (type === 'boss') {
-                        const bossCore = new THREE.Mesh(
-                          new THREE.SphereGeometry(0.38, 12, 10),
-                          new THREE.MeshBasicMaterial({ color: 0xff2200 })
-                        );
-                        bossCore.position.set(0, 2.2, 0.15);
-                        g.add(bossCore);
+                        // Boss Torso Cylinder Hitbox
+                        const torsoHit = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.6, 2.0, 10), hitMat);
+                        torsoHit.position.set(0, 1.15, 0.08);
+                        g.add(torsoHit);
+
+                        // Boss Wide Chest & Shoulders Box Hitbox
+                        const chestHit = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.9, 1.0), hitMat);
+                        chestHit.position.set(0, 1.65, 0.15);
+                        g.add(chestHit);
+
+                        // Boss Base / Legs Hitbox
+                        const legsHit = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.75, 1.1, 8), hitMat);
+                        legsHit.position.set(0, 0.55, 0);
+                        g.add(legsHit);
+                      } else if (type === 'giant') {
+                        const giantHit = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 1.6, 8), hitMat);
+                        giantHit.position.set(0, 0.95, 0);
+                        g.add(giantHit);
+                      } else {
+                        const bodyHit = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.26, 1.35, 8), hitMat);
+                        bodyHit.position.set(0, 0.75, 0);
+                        g.add(bodyHit);
                       }
                     }
 
@@ -5130,23 +5265,32 @@
               const lane = R(-4.2, 4.2);
               g.position.set(ax ? lane : sd * dist, 0, ax ? sd * dist : lane);
 
+              if (type === 'boss') {
+                const wCfg = LEVELS[selectedLevel] && LEVELS[selectedLevel].waves[wave - 1];
+                T.hp = (wCfg && wCfg.bossHp) || (selectedLevel === 0 ? 1200 : selectedLevel === 1 ? 1600 : 2000);
+              }
+
               const z = {
                 g, T, type, isAnimal, isGLB, hp: T.hp, cd: 0, spitCd: R(2, 4),
                 t: R(0, 6), gt: R(1, 5), dead: false, dt: 0, arms, legs, up,
-                mixer, animAction, attackAction, fallAction, headYThreshold
+                mixer, animAction, attackAction, fallAction, headYThreshold,
+                bName: type === 'boss' ? ((LEVELS[selectedLevel].waves[wave - 1] && LEVELS[selectedLevel].waves[wave - 1].bossName) || 'THE WARDEN') : ''
               };
               g.userData.owner = z;
+              // Ensure every child mesh under g references owner for 100% raycast hits
+              g.traverse(c => { if (c.isMesh) c.userData.owner = z; });
               scene.add(g);
               zombies.push(z);
 
               if (type === 'boss') {
-                const bName = LEVELS[selectedLevel].waves[wave - 1].bossName || 'THE ABOMINATION';
+                const bName = z.bName;
                 say(bName + ' APPROACHES', 'Aim for the head for 2.5x critical damage!', 4);
                 if ($('boss-hud')) {
                   $('boss-hud').style.display = 'block';
                   if ($('boss-name-lbl')) $('boss-name-lbl').textContent = bName;
                   if ($('boss-bar-fill')) $('boss-bar-fill').style.width = '100%';
                 }
+                updateBossHealthBar(z, 0.016);
               }
             }
 
@@ -5186,8 +5330,10 @@
               setTimeout(() => cx.classList.remove('hit'), 90);
 
               if (z.type === 'boss') {
+                bossHitFlashTimer = 0.25; // Trigger bright hit flash on floating 3D health bar
                 const pct = Math.max(0, Math.min(100, (z.hp / z.T.hp) * 100));
                 if ($('boss-bar-fill')) $('boss-bar-fill').style.width = `${pct}%`;
+                updateBossHealthBar(z, 0);
               }
 
               if (z.hp <= 0) {
@@ -5993,7 +6139,10 @@
                   spawnT = 1.15;
                 }
 
-                if (zombies.some(z => z.type === 'boss' && !z.dead)) {
+                const activeBoss = zombies.find(z => z.type === 'boss' && !z.dead);
+                updateBossHealthBar(activeBoss, dt);
+
+                if (activeBoss) {
                   bossT -= dt;
                   if (bossT <= 0) {
                     bossT = 13;
@@ -6286,6 +6435,49 @@
               update(Math.min(clock.getDelta(), 0.05));
               renderer.render(scene, camera);
             });
+
+            // URL Auto-Capture & Test Param Support
+            function sendScreenshot(name) {
+              try {
+                const dataUrl = renderer.domElement.toDataURL('image/png');
+                fetch('/save-screenshot', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name, image: dataUrl })
+                }).then(r => r.json()).then(res => {
+                  console.log('Saved:', res);
+                }).catch(e => console.error('Save error:', e));
+              } catch (err) {
+                console.error('Screenshot error:', err);
+              }
+            }
+
+            if (window.location.search.includes('saveShots=1')) {
+              console.log('[AUTO-SCREENSHOT]: Initiating automated capture sequence...');
+              // Step 1: Capture Main Menu
+              setTimeout(() => {
+                sendScreenshot('shot_menu.png');
+                // Step 2: Start Survival Gameplay with laser
+                setTimeout(() => {
+                  startSurvival();
+                  setTimeout(() => {
+                    sendScreenshot('shot_gameplay_laser.png');
+                    // Step 3: Spawn Boss with 3D Floating Health Bar
+                    setTimeout(() => {
+                      window.spawnBossTest();
+                      setTimeout(() => {
+                        sendScreenshot('shot_boss_healthbar.png');
+                        console.log('All screenshots saved!');
+                      }, 1800);
+                    }, 1400);
+                  }, 1600);
+                }, 1200);
+              }, 1200);
+            } else if (window.location.search.includes('boss=1')) {
+              setTimeout(() => { if (typeof window.spawnBossTest === 'function') window.spawnBossTest(); }, 600);
+            } else if (window.location.search.includes('play=1')) {
+              setTimeout(() => { if (typeof startSurvival === 'function') startSurvival(); }, 400);
+            }
           </script>
 </body>
 
