@@ -3190,6 +3190,7 @@
     scene.add(envGroup);
     let lamps = [], lampBulbs = [];
     let currentEnvId = 'city';
+    let cityHelicopters = [];
 
     function buildEnvironment(locId) {
       currentEnvId = locId;
@@ -3272,22 +3273,245 @@
           envGroup.add(g);
         });
 
-      } else if (locId === 'forest') {
-        // Dirt Forest Crossroads Path
-        envGroup.add(
-          box(11, 0.03, 190, 0, 0.015, 0, L(0x2e2318)),
-          box(190, 0.03, 11, 0, 0.015, 0, L(0x2e2318))
-        );
+        // Roaming Military / Survivor Search Helicopters in the City Sky
+        cityHelicopters = [];
+        [
+          { alt: 36, radius: 46, speed: 0.22, phase: 0 },
+          { alt: 48, radius: 64, speed: -0.18, phase: Math.PI }
+        ].forEach(cfg => {
+          const g = new THREE.Group();
+          const bodyMat = L(0x222a36);
+          const glassMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+          const darkMetal = L(0x111827);
+          const rotorMat = new THREE.MeshBasicMaterial({ color: 0x1e293b });
 
-        // Dense Realistic Pine Trees & Boulders outside corridors
+          // Fuselage & Nose
+          const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.8, 5.4), bodyMat);
+          cabin.position.y = 1.0;
+          const nose = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.4, 1.8), glassMat);
+          nose.position.set(0, 0.85, 2.9);
+          nose.rotation.x = 0.25;
+
+          // Tail Boom & Fin
+          const boom = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.5, 5.8), darkMetal);
+          boom.position.set(0, 1.3, -4.5);
+          const fin = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.6, 1.1), bodyMat);
+          fin.position.set(0, 2.0, -7.2);
+          fin.rotation.x = -0.35;
+
+          // Landing Skids
+          [-0.9, 0.9].forEach(sx => {
+            const skid = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 4.8), darkMetal);
+            skid.position.set(sx, 0.08, 0.2);
+            const s1 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.85, 0.08), darkMetal);
+            s1.position.set(sx, 0.48, 1.2);
+            const s2 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.85, 0.08), darkMetal);
+            s2.position.set(sx, 0.48, -1.0);
+            g.add(skid, s1, s2);
+          });
+
+          // Main Rotor Mast & Blades
+          const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.6, 8), darkMetal);
+          mast.position.set(0, 2.1, 0.4);
+          const mainRotor = new THREE.Group();
+          mainRotor.position.set(0, 2.4, 0.4);
+          mainRotor.add(
+            new THREE.Mesh(new THREE.BoxGeometry(10.5, 0.05, 0.42), rotorMat),
+            new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.05, 10.5), rotorMat)
+          );
+
+          // Tail Rotor
+          const tailRotor = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.8, 0.22), rotorMat);
+          tailRotor.position.set(0.12, 2.2, -7.2);
+
+          // Downward Sweeping Spotlight
+          const spotLight = new THREE.SpotLight(0xfef08a, 2.8, 95, Math.PI / 5.5, 0.45);
+          spotLight.position.set(0, 0.5, 1.2);
+          const spotTarget = new THREE.Object3D();
+          spotTarget.position.set(0, -35, 12);
+          spotLight.target = spotTarget;
+
+          const lens = new THREE.Mesh(new THREE.SphereGeometry(0.24, 8, 8), new THREE.MeshBasicMaterial({ color: 0xfffbeb }));
+          lens.position.set(0, 0.45, 1.2);
+
+          // Navigation Strobe Lights
+          const portLight = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 6), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+          portLight.position.set(-1.1, 1.0, 0.5);
+          const stbdLight = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 6), new THREE.MeshBasicMaterial({ color: 0x22c55e }));
+          stbdLight.position.set(1.1, 1.0, 0.5);
+          const tailLight = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 6), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+          tailLight.position.set(0, 2.8, -7.3);
+
+          g.add(cabin, nose, boom, fin, mast, mainRotor, tailRotor, spotLight, spotTarget, lens, portLight, stbdLight, tailLight);
+          g.position.set(Math.cos(cfg.phase) * cfg.radius, cfg.alt, Math.sin(cfg.phase) * (cfg.radius * 0.85));
+          envGroup.add(g);
+          cityHelicopters.push({
+            g, cfg, mainRotor, tailRotor, spotLight, spotTarget,
+            angle: cfg.phase, alt: cfg.alt, radius: cfg.radius, speed: cfg.speed
+          });
+        });
+
+      } else if (locId === 'forest') {
+        // Roads: COMPLETELY REMOVED per user request to allow 100% free character movement!
+
+        // Overgrown 3D Wild Grass Tufts across forest floor
+        const grassMat1 = L(0x1e3a1f);
+        const grassMat2 = L(0x2d4f28);
+        for (let g = 0; g < 140; g++) {
+          let gx = R(-82, 82), gz = R(-82, 82);
+          if (Math.hypot(gx, gz) < 3.5) continue;
+          const tuft = new THREE.Group();
+          const blades = R(3, 6) | 0;
+          const sc = R(0.8, 1.45);
+          const gMat = Math.random() < 0.5 ? grassMat1 : grassMat2;
+          for (let b = 0; b < blades; b++) {
+            const blade = box(0.08, R(0.35, 0.65), 0.35, 0, 0.25, 0, gMat);
+            blade.rotation.y = (b / blades) * Math.PI;
+            blade.rotation.z = R(-0.25, 0.25);
+            tuft.add(blade);
+          }
+          tuft.position.set(gx, 0, gz);
+          tuft.scale.setScalar(sc);
+          envGroup.add(tuft);
+        }
+
+        // Procedural Forest Horror Graffiti Texture Generator
+        function makeForestGraffitiTex(headline, sub) {
+          const c = document.createElement('canvas');
+          c.width = 512;
+          c.height = 256;
+          const ctx = c.getContext('2d');
+
+          // Dark weathered timber wall base
+          ctx.fillStyle = '#261a10';
+          ctx.fillRect(0, 0, 512, 256);
+
+          // Wood grain lines
+          for (let i = 0; i < 20; i++) {
+            ctx.fillStyle = 'rgba(15, 10, 5, 0.35)';
+            ctx.fillRect(0, i * 13, 512, 2);
+          }
+          // Surface grit & moss speckles
+          for (let i = 0; i < 1200; i++) {
+            ctx.fillStyle = Math.random() < 0.35 ? 'rgba(35, 65, 25, 0.35)' : 'rgba(0, 0, 0, 0.4)';
+            ctx.fillRect(Math.random() * 512, Math.random() * 256, Math.random() * 3 + 1, Math.random() * 3 + 1);
+          }
+
+          // Dark blood stains & runs
+          for (let s = 0; s < 6; s++) {
+            const bx = 60 + Math.random() * 390, by = 40 + Math.random() * 140;
+            const grad = ctx.createRadialGradient(bx, by, 0, bx, by, 22);
+            grad.addColorStop(0, 'rgba(180, 15, 15, 0.9)');
+            grad.addColorStop(0.7, 'rgba(100, 5, 5, 0.6)');
+            grad.addColorStop(1, 'rgba(30, 0, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(bx, by, 22, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(160, 10, 10, 0.8)';
+            ctx.fillRect(bx - 1.5, by, 3, 20 + Math.random() * 50);
+          }
+
+          // Bloody handprints
+          function drawHand(hx, hy) {
+            ctx.save();
+            ctx.translate(hx, hy);
+            ctx.fillStyle = 'rgba(165, 14, 14, 0.75)';
+            ctx.beginPath(); ctx.ellipse(0, 0, 14, 18, 0.1, 0, Math.PI * 2); ctx.fill();
+            [-0.5, -0.2, 0.1, 0.35].forEach((a, idx) => {
+              ctx.beginPath(); ctx.ellipse(Math.sin(a) * 16, -14 - Math.cos(a) * 12, 4, [24, 28, 26, 20][idx] * 0.5, a, 0, Math.PI * 2); ctx.fill();
+            });
+            ctx.beginPath(); ctx.ellipse(-14, 2, 4, 12, -0.9, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+          }
+          drawHand(65, 100);
+          drawHand(420, 110);
+
+          // Headline distressed spray text
+          ctx.font = '900 46px Impact, Arial Black, sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#0a0000'; ctx.fillText(headline, 258, 107);
+          ctx.fillStyle = '#dc2626'; ctx.fillText(headline, 256, 104);
+
+          // Dripping paint lines
+          ctx.fillStyle = 'rgba(220, 38, 38, 0.75)';
+          for (let i = 0; i < 14; i++) {
+            ctx.fillRect(80 + i * 26, 124, 2.5, 15 + Math.random() * 35);
+          }
+          if (sub) {
+            ctx.font = '700 22px monospace';
+            ctx.fillStyle = '#fca5a5';
+            ctx.fillText(sub, 256, 175);
+          }
+          const t = new THREE.CanvasTexture(c);
+          t.wrapS = THREE.ClampToEdgeWrapping;
+          t.wrapT = THREE.ClampToEdgeWrapping;
+          return t;
+        }
+
+        // Small Cabins / Houses with Horror Graffiti
+        const forestCabins = [
+          { x: -28, z: -28, rot: Math.PI * 0.25, head: "THE TREES WATCH", sub: "NO ESCAPE" },
+          { x: 28, z: -28, rot: -Math.PI * 0.25, head: "DON'T LOOK BACK", sub: "THEY HUNT HERE" },
+          { x: -28, z: 28, rot: Math.PI * 0.75, head: "BLOOD CABIN", sub: "SAVE YOUR SOUL" },
+          { x: 28, z: 28, rot: -Math.PI * 0.75, head: "HELL IN WOODS", sub: "RUN" },
+          { x: 0, z: -40, rot: 0, head: "DEAD HUNTERS", sub: "ABANDON HOPE" },
+          { x: 0, z: 40, rot: Math.PI, head: "THE PACK AWAITS", sub: "THEY FEED AT NIGHT" }
+        ];
+
+        forestCabins.forEach(c => {
+          const cabin = new THREE.Group();
+          const woodMat = L(0x4a301d);
+          const roofMat = L(0x271910);
+          const grafTex = makeForestGraffitiTex(c.head, c.sub);
+          const grafMat = new THREE.MeshLambertMaterial({ map: grafTex });
+
+          // Log Cabin Structure
+          cabin.add(
+            box(7.5, 4.0, 6.5, 0, 2.0, 0, woodMat),
+            box(8.4, 0.5, 7.4, 0, 4.2, 0, roofMat),
+            box(8.0, 1.2, 0.4, 0, 4.8, 0, roofMat)
+          );
+
+          // Front Graffiti Wall Panel
+          const grafMesh = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 2.6), grafMat);
+          grafMesh.position.set(0, 2.4, 3.28);
+          cabin.add(grafMesh);
+
+          // Boarded Door
+          cabin.add(box(1.8, 2.6, 0.2, 0, 1.3, 3.3, L(0x19120c)));
+          for (let p = 0; p < 3; p++) {
+            const plank = box(2.2, 0.22, 0.1, 0, 0.8 + p * 0.65, 3.42, L(0x352014));
+            plank.rotation.z = (p % 2 === 0 ? 0.08 : -0.08);
+            cabin.add(plank);
+          }
+
+          // Lantern hanging near entrance
+          const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.35), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
+          lantern.position.set(2.4, 2.8, 3.45);
+          cabin.add(lantern);
+          lampBulbs.push(lantern);
+          const l = new THREE.PointLight(0xf59e0b, 1.4, 22);
+          l.position.set(2.4, 2.8, 3.6);
+          cabin.add(l);
+          lamps.push(l);
+
+          cabin.position.set(c.x, 0, c.z);
+          cabin.rotation.y = c.rot;
+          envGroup.add(cabin);
+        });
+
+        // Dense Realistic Pine Trees & Boulders (Clear center arena Math.hypot < 14 for free player movement)
         const trunkMat = L(0x3b2618);
         const pineMat1 = L(0x143822);
         const pineMat2 = L(0x1b472b);
         const rockMat = L(0x475569);
 
-        for (let i = 0; i < 160; i++) {
+        for (let i = 0; i < 150; i++) {
           let tx = R(-85, 85), tz = R(-85, 85);
-          if (Math.abs(tx) < 8 || Math.abs(tz) < 8) continue; // Keep paths clear
+          if (Math.hypot(tx, tz) < 14) continue; // Free center arena
+          if (Math.abs(tx) > 22 && Math.abs(tx) < 34 && Math.abs(tz) > 22 && Math.abs(tz) < 34) continue; // Cabins
+          if (Math.abs(tz) > 34 && Math.abs(tx) < 14) continue;
 
           const tree = new THREE.Group();
           const scale = R(0.85, 1.65);
@@ -3295,7 +3519,6 @@
           trunk.position.y = 1.6;
           tree.add(trunk);
 
-          // Layered pine cones
           for (let tier = 0; tier < 3; tier++) {
             const cone = new THREE.Mesh(
               new THREE.ConeGeometry(2.3 - tier * 0.48, 3.8 - tier * 0.4, 8),
@@ -3308,7 +3531,6 @@
           tree.position.set(tx, 0, tz);
           envGroup.add(tree);
 
-          // Occasional mossy boulders & fallen logs
           if (i % 4 === 0) {
             const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(R(0.8, 1.8), 0), rockMat);
             rock.position.set(tx + R(-2, 2), 0.5, tz + R(-2, 2));
@@ -3316,21 +3538,8 @@
           }
         }
 
-        // Ranger Outpost Cabins at corners
-        [[-16, -16], [16, -16], [-16, 16], [16, 16]].forEach(([cx, cz]) => {
-          const cabin = new THREE.Group();
-          cabin.add(
-            box(7, 3.8, 6, 0, 1.9, 0, L(0x4a301d)),
-            box(7.8, 0.4, 6.8, 0, 3.9, 0, L(0x271910)),
-            box(1.4, 1.2, 0.1, 0, 2.0, 3.02, new THREE.MeshBasicMaterial({ color: 0xf59e0b }))
-          );
-          cabin.position.set(cx, 0, cz);
-          cabin.lookAt(0, 0, 0);
-          envGroup.add(cabin);
-        });
-
-        // Campfire Lantern Posts along trail
-        [[6, -12], [-6, 12], [12, 6], [-12, -6]].forEach(([x, z]) => {
+        // Campfire Lantern Posts along perimeter
+        [[-16, -16], [16, -16], [-16, 16], [16, 16], [0, -26], [0, 26]].forEach(([x, z]) => {
           envGroup.add(box(0.2, 3.2, 0.2, x, 1.6, z, trunkMat));
           const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshBasicMaterial({ color: 0xfbbf24 }));
           lantern.position.set(x, 3.3, z);
@@ -3343,48 +3552,196 @@
         });
 
       } else if (locId === 'lab') {
-        // Industrial Bio-Lab Perimeter Walls, Hazard Stripes & Chemical Silos
-        const hazardMat = L(0xd97706);
+        // Roads & Corridor Borders: COMPLETELY REMOVED per user request to allow 100% free character movement!
         const steelMat = L(0x334155);
-        const glassVatMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.55 });
+        const darkLabMat = L(0x0f172a);
+        const chimMat = L(0x1e293b);
+        const glassVatMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.6 });
 
-        // Hazard corridor borders
-        for (let d = -80; d <= 80; d += 8) {
-          if (Math.abs(d) > 8) {
-            envGroup.add(box(0.4, 0.04, 3.5, 6.5, 0.02, d, hazardMat));
-            envGroup.add(box(0.4, 0.04, 3.5, -6.5, 0.02, d, hazardMat));
-            envGroup.add(box(3.5, 0.04, 0.4, d, 0.02, 6.5, hazardMat));
-            envGroup.add(box(3.5, 0.04, 0.4, d, 0.02, -6.5, hazardMat));
+        // Procedural Ghost Graffiti Texture Generator
+        function makeGhostGraffitiTex(headline, sub) {
+          const c = document.createElement('canvas');
+          c.width = 512;
+          c.height = 256;
+          const ctx = c.getContext('2d');
+
+          // Dark grimy industrial metal base
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(0, 0, 512, 256);
+
+          // Steel panel rivet lines & surface grit
+          for (let i = 0; i < 1500; i++) {
+            ctx.fillStyle = Math.random() < 0.5 ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.08)';
+            ctx.fillRect(Math.random() * 512, Math.random() * 256, Math.random() * 3 + 1, Math.random() * 3 + 1);
           }
+
+          // Ectoplasmic spectral glow stains
+          for (let s = 0; s < 7; s++) {
+            const bx = 60 + Math.random() * 390, by = 40 + Math.random() * 140;
+            const br = 18 + Math.random() * 28;
+            const grad = ctx.createRadialGradient(bx, by, 0, bx, by, br);
+            grad.addColorStop(0, 'rgba(34, 211, 238, 0.75)');
+            grad.addColorStop(0.6, 'rgba(16, 185, 129, 0.45)');
+            grad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(bx, by, br, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.65)';
+            ctx.fillRect(bx - 1.5, by, 3, 20 + Math.random() * 60);
+          }
+
+          // Screaming Ghost / Spectral Skull drawing
+          function drawGhostFace(gx, gy, scale = 1) {
+            ctx.save();
+            ctx.translate(gx, gy);
+            ctx.scale(scale, scale);
+            const glow = ctx.createRadialGradient(0, 0, 10, 0, 0, 45);
+            glow.addColorStop(0, 'rgba(167, 243, 208, 0.85)');
+            glow.addColorStop(0.5, 'rgba(56, 189, 248, 0.5)');
+            glow.addColorStop(1, 'rgba(15, 23, 42, 0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath(); ctx.arc(0, 0, 45, 0, Math.PI * 2); ctx.fill();
+
+            // Skull contour
+            ctx.fillStyle = 'rgba(240, 253, 250, 0.9)';
+            ctx.beginPath(); ctx.ellipse(0, -5, 24, 28, 0, 0, Math.PI * 2); ctx.fill();
+            // Hollow dripping eyes
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.ellipse(-8, -8, 6, 9, -0.15, 0, Math.PI * 2);
+            ctx.ellipse(8, -8, 6, 9, 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            // Screaming mouth
+            ctx.beginPath(); ctx.ellipse(0, 12, 7, 14, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+          }
+          drawGhostFace(75, 105, 0.85);
+          drawGhostFace(425, 115, 0.8);
+
+          // Spectral text headline
+          ctx.font = '900 44px Impact, Arial Black, sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#020617'; ctx.fillText(headline, 258, 107);
+          ctx.fillStyle = '#38bdf8'; ctx.fillText(headline, 256, 104);
+
+          // Dripping ethereal lines from letters
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.75)';
+          for (let i = 0; i < 15; i++) {
+            ctx.fillRect(80 + i * 25, 124, 2.5, 15 + Math.random() * 45);
+          }
+          if (sub) {
+            ctx.font = '700 22px monospace';
+            ctx.fillStyle = '#67e8f9';
+            ctx.fillText(sub, 256, 175);
+          }
+          const t = new THREE.CanvasTexture(c);
+          t.wrapS = THREE.ClampToEdgeWrapping;
+          t.wrapT = THREE.ClampToEdgeWrapping;
+          return t;
         }
 
-        // Containment Warehouses & Bio-Reactors
-        for (let i = -2; i <= 2; i++) {
-          for (let j = -2; j <= 2; j++) {
-            if (i === 0 || j === 0) continue;
-            const cx = i * 24, cz = j * 24;
-            envGroup.add(
-              box(16, 12, 16, cx, 6, cz, steelMat),
-              box(16.6, 0.8, 16.6, cx, 12.2, cz, L(0x0f172a))
-            );
-            // Glowing Bio-Containment Silos outside buildings
-            const silo = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 7, 14), glassVatMat);
-            silo.position.set(cx - Math.sign(cx) * 9.5, 3.5, cz);
-            envGroup.add(
-              silo,
-              new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.0, 0.6, 14), L(0x1e293b)).translateX(cx - Math.sign(cx) * 9.5).translateY(0.3),
-              new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.0, 0.6, 14), L(0x1e293b)).translateX(cx - Math.sign(cx) * 9.5).translateY(7.0)
-            );
-          }
-        }
+        // Big Industrial Chimneys with Ghost Graffiti
+        const chimneys = [
+          { x: -36, z: -18, head: "GHOST IN THE LAB", sub: "SUBJECT ZERO" },
+          { x: 36, z: -18, head: "WE NEVER LEFT", sub: "QUARANTINE BREACHED" },
+          { x: -36, z: 18, head: "SOULS OF INFECTED", sub: "ABANDON FACILITY" },
+          { x: 36, z: 18, head: "SPECTRAL LEAK", sub: "DEATH IN THE AIR" }
+        ];
 
-        // Overhead Gantry Arches & Emergency Red Beacons
-        [[-16, 0], [16, 0], [0, -16], [0, 16]].forEach(([gx, gz]) => {
+        chimneys.forEach(ch => {
+          const chim = new THREE.Group();
+          // Massive 28m Tapered Industrial Smokestack / Chimney
+          const stack = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 2.3, 28, 16), chimMat);
+          stack.position.y = 14;
+          chim.add(stack);
+
+          // Structural steel reinforcing rings
+          [7, 14, 21, 27].forEach(ry => {
+            const ring = new THREE.Mesh(new THREE.CylinderGeometry(ry === 27 ? 1.75 : 1.95 + (28 - ry) * 0.02, ry === 27 ? 1.75 : 1.95 + (28 - ry) * 0.02, 0.5, 16), steelMat);
+            ring.position.y = ry;
+            chim.add(ring);
+          });
+
+          // Top hazard rim with blinking red aviation light
+          const topRim = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.7, 1.2, 16), new THREE.MeshBasicMaterial({ color: 0xd97706 }));
+          topRim.position.y = 28;
+          const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+          beacon.position.y = 29;
+          chim.add(topRim, beacon);
+          lampBulbs.push(beacon);
+
+          const l = new THREE.PointLight(0xef4444, 1.6, 35);
+          l.position.set(0, 29, 0);
+          chim.add(l);
+          lamps.push(l);
+
+          // Ghost Graffiti Plaque on Chimney Base facing center
+          const gTex = makeGhostGraffitiTex(ch.head, ch.sub);
+          const gMesh = new THREE.Mesh(new THREE.PlaneGeometry(6.5, 3.8), new THREE.MeshBasicMaterial({ map: gTex }));
+          gMesh.position.set(0, 5.0, 2.4);
+          chim.add(gMesh);
+
+          chim.position.set(ch.x, 0, ch.z);
+          chim.lookAt(0, chim.position.y, 0);
+          envGroup.add(chim);
+        });
+
+        // Modular Bio-Containment Research Labs
+        const labs = [
+          { x: -26, z: -38, rot: 0 },
+          { x: 26, z: -38, rot: 0 },
+          { x: -26, z: 38, rot: Math.PI },
+          { x: 26, z: 38, rot: Math.PI },
+          { x: -44, z: 0, rot: Math.PI / 2 },
+          { x: 44, z: 0, rot: -Math.PI / 2 }
+        ];
+
+        labs.forEach((lb, idx) => {
+          const lab = new THREE.Group();
+          // High-tech modular research lab building
+          lab.add(
+            box(16, 7.5, 14, 0, 3.75, 0, steelMat),
+            box(16.8, 0.8, 14.8, 0, 7.8, 0, darkLabMat)
+          );
+
+          // Observation Decontamination Chamber with Glowing Green Bio-Vat
+          const vat = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 5.2, 14), glassVatMat);
+          vat.position.set(0, 3.0, 7.1);
+          const vatBase = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 0.6, 14), darkLabMat);
+          vatBase.position.set(0, 0.3, 7.1);
+          const vatTop = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 0.6, 14), darkLabMat);
+          vatTop.position.set(0, 5.8, 7.1);
+          lab.add(vat, vatBase, vatTop);
+
+          // Ghost / Biohazard Graffiti Panel on Lab Wall
+          const gHead = idx % 2 === 0 ? "SPECTRAL BIOHAZARD" : "CONTAINMENT ZERO";
+          const gSub = idx % 2 === 0 ? "DO NOT ENTER" : "INFECTION OUTBREAK";
+          const lTex = makeGhostGraffitiTex(gHead, gSub);
+          const lMesh = new THREE.Mesh(new THREE.PlaneGeometry(6.0, 3.2), new THREE.MeshBasicMaterial({ map: lTex }));
+          lMesh.position.set(0, 4.5, -7.05);
+          lMesh.rotation.y = Math.PI;
+          lab.add(lMesh);
+
+          // Glowing Green Bioluminescent Light
+          const greenLight = new THREE.PointLight(0x10b981, 1.5, 24);
+          greenLight.position.set(0, 3.2, 8.2);
+          lab.add(greenLight);
+          lamps.push(greenLight);
+
+          lab.position.set(lb.x, 0, lb.z);
+          lab.rotation.y = lb.rot;
+          envGroup.add(lab);
+        });
+
+        // Overhead Gantry Arches & Emergency Beacons (at clear radius 18m)
+        [[-18, 0], [18, 0], [0, -18], [0, 18]].forEach(([gx, gz]) => {
           const arch = new THREE.Group();
           arch.add(
-            box(0.6, 7.5, 0.6, -6.6, 3.75, 0, steelMat),
-            box(0.6, 7.5, 0.6, 6.6, 3.75, 0, steelMat),
-            box(14, 0.7, 0.8, 0, 7.5, 0, steelMat)
+            box(0.6, 7.5, 0.6, -7.0, 3.75, 0, steelMat),
+            box(0.6, 7.5, 0.6, 7.0, 3.75, 0, steelMat),
+            box(14.6, 0.7, 0.8, 0, 7.5, 0, steelMat)
           );
           const beacon = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.3, 0.5), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
           beacon.position.set(0, 7.0, 0);
@@ -3718,13 +4075,71 @@
     // Build initial city environment
     buildEnvironment('city');
 
-    // Explosive Red Fuel Barrels
+    // Procedural Explosive Drum "DANGER" Label Texture Generator
+    function createDangerDrumTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512;
+      c.height = 128;
+      const ctx = c.getContext('2d');
+
+      // Vivid hazard yellow base
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(0, 0, 512, 128);
+
+      // Black diagonal hazard warning stripes on top and bottom bands
+      ctx.fillStyle = '#111827';
+      for (let i = -128; i < 512 + 128; i += 32) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0); ctx.lineTo(i + 16, 0); ctx.lineTo(i + 16 - 22, 22); ctx.lineTo(i - 22, 22);
+        ctx.closePath(); ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(i, 106); ctx.lineTo(i + 16, 106); ctx.lineTo(i + 16 - 22, 128); ctx.lineTo(i - 22, 128);
+        ctx.closePath(); ctx.fill();
+      }
+
+      // Center red alert banner
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(0, 24, 512, 80);
+
+      // Bold "DANGER - EXPLOSIVE" text repeated twice around cylindrical circumference
+      for (let rep = 0; rep < 2; rep++) {
+        const ox = rep * 256 + 128;
+        ctx.font = '900 32px Impact, Arial Black, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('⚠ DANGER ⚠', ox, 48);
+
+        ctx.font = '800 18px monospace';
+        ctx.fillStyle = '#fef08a';
+        ctx.fillText('EXPLOSIVE', ox, 80);
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
+      return tex;
+    }
+
+    const dangerDrumTex = createDangerDrumTexture();
+    const dangerDrumMat = new THREE.MeshBasicMaterial({ map: dangerDrumTex });
+
+    // Explosive Red Fuel Barrels (Marked with DANGER in all levels)
     const barrels = [];
     [[3.2, -14], [-4.2, -20], [2.5, 18], [-3.2, 26], [14, 3.2], [-18, -2.5], [24, -4.0], [-30, 3.2], [35, 2.5], [-2.5, 36]].forEach(([x, z]) => {
       const m = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.95, 14), L(0xb91c1c, 0x3f0000));
       m.position.set(x, 0.475, z);
-      const stripe = new THREE.Mesh(new THREE.CylinderGeometry(0.368, 0.368, 0.2, 14), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
-      m.add(stripe);
+
+      // Top and bottom yellow hazard rim stripes
+      const stripeTop = new THREE.Mesh(new THREE.CylinderGeometry(0.368, 0.368, 0.08, 14), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
+      stripeTop.position.y = 0.38;
+      const stripeBot = new THREE.Mesh(new THREE.CylinderGeometry(0.368, 0.368, 0.08, 14), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
+      stripeBot.position.y = -0.38;
+
+      // High-visibility Danger label cylinder wrapped around center
+      const labelMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.365, 0.365, 0.46, 16, 1, true), dangerDrumMat);
+      m.add(stripeTop, stripeBot, labelMesh);
+
       const b = { m, isBarrel: true, dead: false };
       m.userData.owner = b;
       scene.add(m);
@@ -3759,8 +4174,8 @@
     scene.add(new THREE.Points(ashGeo, ashMat));
 
     const inCorr = (x, z) => {
-      if (currentEnvId === 'cemetery') {
-        // Free 360-degree open arena movement in Gothic Cemetery
+      if (currentEnvId === 'forest' || currentEnvId === 'lab' || currentEnvId === 'cemetery') {
+        // Free 360-degree open arena movement in Forest, Lab, and Cemetery
         return Math.abs(x) < 88 && Math.abs(z) < 88;
       }
       return (Math.abs(x) < 6.2 || Math.abs(z) < 6.2) && Math.abs(x) < 92 && Math.abs(z) < 92;
@@ -5776,8 +6191,8 @@
         }
       }
 
-      if (currentEnvId === 'cemetery') {
-        // Organic 360-degree spawn around the gothic graveyard
+      if (currentEnvId === 'cemetery' || currentEnvId === 'forest' || currentEnvId === 'lab') {
+        // Organic 360-degree spawn around the open arena in Cemetery, Forest, and Bio-Lab
         const ang = Math.random() * Math.PI * 2;
         const d = (type === 'boss' ? 40 : R(26, 44));
         g.position.set(Math.cos(ang) * d, 0, Math.sin(ang) * d);
@@ -6567,6 +6982,37 @@
         if (posAttr.array[i + 1] < 0) posAttr.array[i + 1] = 28;
       }
       posAttr.needsUpdate = true;
+
+      // Roaming Search Helicopters in Downtown City Sky
+      if (currentEnvId === 'city' && cityHelicopters && cityHelicopters.length > 0) {
+        cityHelicopters.forEach(h => {
+          h.angle += dt * h.speed;
+          const hx = Math.cos(h.angle) * h.radius;
+          const hz = Math.sin(h.angle) * (h.radius * 0.85);
+          h.g.position.set(hx, h.alt + Math.sin(h.angle * 2) * 1.5, hz);
+
+          // Point forward along trajectory
+          const nextAngle = h.angle + h.speed * 0.05;
+          const nx = Math.cos(nextAngle) * h.radius;
+          const nz = Math.sin(nextAngle) * (h.radius * 0.85);
+          h.g.lookAt(nx, h.alt, nz);
+          h.g.rotation.z = -Math.sign(h.speed) * 0.18;
+          h.g.rotation.x += 0.08;
+
+          // Spin main & tail rotors
+          if (h.mainRotor) h.mainRotor.rotation.y += dt * 32;
+          if (h.tailRotor) h.tailRotor.rotation.x += dt * 38;
+
+          // Searchlight sweep on city streets
+          if (h.spotLight && h.spotTarget) {
+            h.spotTarget.position.set(
+              hx + Math.sin(h.angle * 3.5) * 16,
+              0,
+              hz + Math.cos(h.angle * 3.5) * 16
+            );
+          }
+        });
+      }
 
       if (xr()) {
         pollVR(dt);
