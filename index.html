@@ -3023,73 +3023,55 @@
     scene.add(rig);
     camera.position.y = 1.7;
 
-    // ---------- HIGH-PERFORMANCE DYNAMIC CULLING MASK ENGINE ----------
-    // Eliminates frame drops & screen stutter by culling off-screen and distant geometry/lights
+    // ---------- HIGH-PERFORMANCE CULLING MASK FOR 3D GLB ZOMBIE MODELS ----------
+    // Dedicated GLB Frustum & Range Culling: Culls off-screen and distant 3D GLB character models
+    // to maintain high FPS, while keeping 100% of the platform/environment geometry fully visible.
     let cullingTick = 0;
     const cullingFrustum = new THREE.Frustum();
     const cullingProjMatrix = new THREE.Matrix4();
     const cullingCamPos = new THREE.Vector3();
+    const zombieWorldPos = new THREE.Vector3();
 
     function updateCullingMask() {
       cullingTick++;
-      // Staggered execution every 3 frames for zero CPU overhead
-      if (cullingTick % 3 !== 0) return;
+      // Staggered check every 2 frames for smooth frame pacing
+      if (cullingTick % 2 !== 0) return;
 
       camera.updateMatrixWorld();
       cullingProjMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
       cullingFrustum.setFromProjectionMatrix(cullingProjMatrix);
       camera.getWorldPosition(cullingCamPos);
 
-      const maxDistSq = 80 * 80; // 80m fog threshold squared
+      const maxGlbDistSq = 75 * 75; // 75m fog horizon cutoff for GLB character models
 
-      // 1. Cull Static Environment Geometry (Trees, Grass, Buildings, Silos)
-      if (envGroup && envGroup.children.length > 0) {
-        for (let i = 0, len = envGroup.children.length; i < len; i++) {
-          const obj = envGroup.children[i];
-          const dx = obj.position.x - cullingCamPos.x;
-          const dz = obj.position.z - cullingCamPos.z;
-          const dSq = dx * dx + dz * dz;
-
-          if (dSq > maxDistSq) {
-            if (obj.visible) obj.visible = false;
-          } else {
-            // If near player (< 12m), always render; otherwise check camera view frustum
-            if (dSq < 144 || cullingFrustum.containsPoint(obj.position)) {
-              if (!obj.visible) obj.visible = true;
-            } else {
-              if (obj.visible) obj.visible = false;
-            }
-          }
-        }
-      }
-
-      // 2. Cull Dynamic Point Lights (Lamps) - massive GPU fill-rate saving
-      if (lamps && lamps.length > 0) {
-        for (let i = 0, len = lamps.length; i < len; i++) {
-          const l = lamps[i];
-          const dx = l.position.x - cullingCamPos.x;
-          const dz = l.position.z - cullingCamPos.z;
-          const dSq = dx * dx + dz * dz;
-          if (dSq > 1156 || (dSq > 64 && !cullingFrustum.containsPoint(l.position))) { // 34m light cutoff
-            if (l.visible) l.visible = false;
-          } else {
-            if (!l.visible) l.visible = true;
-          }
-        }
-      }
-
-      // 3. Cull Distant Zombies beyond fog horizon
+      // Cull ONLY 3D GLB Character Models (zombie meshes, skinned meshes, animations)
+      // The platform, buildings, terrain, and environment remain 100% visible at all times!
       if (zombies && zombies.length > 0) {
         for (let i = 0, len = zombies.length; i < len; i++) {
           const z = zombies[i];
           if (z.dead) continue;
+
+          // Distance to camera/player
           const dx = z.g.position.x - cullingCamPos.x;
           const dz = z.g.position.z - cullingCamPos.z;
           const dSq = dx * dx + dz * dz;
-          if (dSq > maxDistSq) {
+
+          if (dSq > maxGlbDistSq) {
+            // Far beyond fog horizon: cull GLB rendering
             if (z.g.visible) z.g.visible = false;
-          } else {
+          } else if (dSq < 64) {
+            // Close combat range (< 8m): always keep visible to prevent popping
             if (!z.g.visible) z.g.visible = true;
+          } else {
+            // Frustum Culling Mask: check if zombie is inside the camera's view frustum
+            zombieWorldPos.set(z.g.position.x, z.g.position.y + 1.0, z.g.position.z);
+            const inFrustum = cullingFrustum.containsPoint(zombieWorldPos);
+            if (inFrustum) {
+              if (!z.g.visible) z.g.visible = true;
+            } else {
+              // Behind camera or off-screen: cull heavy GLB skeletal draw calls
+              if (z.g.visible) z.g.visible = false;
+            }
           }
         }
       }
