@@ -1,5 +1,5 @@
 // Dead Zone: Survival Apocalypse - Service Worker (PWA & WebXR)
-const CACHE_NAME = 'deadzone-vr-v15';
+const CACHE_NAME = 'deadzone-vr-v16';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -16,7 +16,8 @@ const PRECACHE_ASSETS = [
   'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js',
   './zombie%20characteres/classic_zombie_torso__half-life_2.glb',
   './zombie%20characteres/zombie_monster_slasher_necromorph.glb',
-  './zombie%20characteres/headcrab_zombie.glb'
+  './zombie%20characteres/headcrab_zombie.glb',
+  './freesound_community-concrete-footsteps-6752.mp3'
 ];
 
 self.addEventListener('install', event => {

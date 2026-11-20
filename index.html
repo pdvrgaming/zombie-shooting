@@ -2335,14 +2335,15 @@
         id: 'lab',
         shortName: 'BIO-LAB',
         name: 'LOCATION 3: BIO-LAB COMPOUND',
-        sky: 0x16070a,
-        fog: 0x1d090d,
-        fogDens: 0.021,
-        hemiSky: 0xf87171,
-        hemiGnd: 0x1c1917,
-        moonCol: 0xfca5a5,
-        moonInt: 0.85,
-        lampCol: 0xef4444,
+        sky: 0x90caf9,
+        fog: 0xcfe2f3,
+        fogDens: 0.0075,
+        hemiSky: 0xffffff,
+        hemiGnd: 0x94a3b8,
+        hemiInt: 1.25,
+        moonCol: 0xfff7ed,
+        moonInt: 1.45,
+        lampCol: 0x0ea5e9,
         waves: [
           { w: 10, r: 7, sp: 4, g: 2, b: 0 },
           { w: 12, r: 9, sp: 5, g: 3, b: 0 },
@@ -2548,7 +2549,7 @@
 
     // Update Menu Mission Summaries across all panels
     function updateMenuSummaries() {
-      const locNames = ['DOWNTOWN CITY', 'DARK PINE FOREST', 'BIO-LAB COMPOUND'];
+      const locNames = ['DOWNTOWN CITY', 'DARK PINE FOREST', 'BIO-LAB COMPOUND', 'GOTHIC CEMETERY'];
       const locName = locNames[selectedLevel] || 'DOWNTOWN CITY';
       const modeName = enemyCategory === 'animals' ? 'MUTANT ANIMALS' : (zombieModelType === 'glb' ? 'ZOMBIES (3D GLB)' : 'ZOMBIES (PROC)');
       const gunName = WEAPON_NAMES[chosenWeapon] || 'GLOCK 17';
@@ -2893,6 +2894,7 @@
         'sounds/Foley/Foley_Movement_Clothes_A_003.mp3'
       ],
       footstep: [
+        'freesound_community-concrete-footsteps-6752.mp3',
         'sounds/zombie sound/Footsteps_Zombie_concret_002.mp3',
         'sounds/Footsteps/Footsteps_Zombie_concret_001.mp3',
         'sounds/Footsteps/Footsteps_Zombie_concret_002.mp3',
@@ -2956,11 +2958,22 @@
       });
     }
 
+    let concreteStepIdx = 0;
+    const concreteStepOffsets = [
+      0.012, 0.869, 1.690, 2.545, 3.387, 4.228, 5.061, 5.910, 6.757, 7.585,
+      8.409, 9.222, 10.134, 11.042, 11.953, 12.845, 13.676, 14.633, 15.506, 16.419,
+      17.175, 18.059, 18.895, 19.743, 21.013, 21.871, 22.734, 23.598, 24.438, 25.278,
+      26.120, 26.960, 27.800, 28.640, 29.480, 30.320, 31.160, 32.000, 32.840, 33.680
+    ];
+
     function playSample(category, pos = null, vol = 1.0, pitchVariation = 0.05) {
       if (!AC || state === 'paused') return false;
       const list = AUDIO_MANIFEST[category];
       if (!list || !list.length) return false;
-      const url = list[Math.floor(Math.random() * list.length)];
+      let url = list[Math.floor(Math.random() * list.length)];
+      if (category === 'footstep' && AUDIO_BUFFERS['freesound_community-concrete-footsteps-6752.mp3']) {
+        url = 'freesound_community-concrete-footsteps-6752.mp3';
+      }
       const buffer = AUDIO_BUFFERS[url];
       if (!buffer) {
         preloadAudioSample(url);
@@ -2991,7 +3004,17 @@
         gain.connect(compressor);
       }
 
-      src.start();
+      if (category === 'footstep' && buffer.duration > 3.0) {
+        const offset = concreteStepOffsets[concreteStepIdx % concreteStepOffsets.length];
+        concreteStepIdx++;
+        const stepDur = 0.38;
+        gain.gain.setValueAtTime(vol, AC.currentTime);
+        gain.gain.setValueAtTime(vol, AC.currentTime + 0.28);
+        gain.gain.linearRampToValueAtTime(0.001, AC.currentTime + stepDur);
+        src.start(0, offset, stepDur);
+      } else {
+        src.start();
+      }
       return true;
     }
 
@@ -3165,18 +3188,22 @@
           g.fill();
         }
       } else {
-        // Industrial Bio-Lab Concrete Tiles
-        g.fillStyle = '#27292e';
+        // Industrial Bio-Lab Daylight Reinforced Concrete Tiles & Hazard Lines
+        g.fillStyle = '#8f9aa6';
         g.fillRect(0, 0, 512, 512);
-        g.strokeStyle = '#141518';
+        g.strokeStyle = '#5a6572';
         g.lineWidth = 3;
         for (let x = 0; x <= 512; x += 64) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 512); g.stroke(); }
         for (let y = 0; y <= 512; y += 64) { g.beginPath(); g.moveTo(0, y); g.lineTo(512, y); g.stroke(); }
         for (let i = 0; i < 4000; i++) {
-          const v = R(28, 55) | 0;
-          g.fillStyle = `rgba(${v},${v},${v},0.35)`;
+          const v = R(140, 195) | 0;
+          g.fillStyle = `rgba(${v},${v},${v + 5},0.25)`;
           g.fillRect(R(0, 512), R(0, 512), 2, 2);
         }
+        // Bright high-vis yellow hazard demarcation lines
+        g.fillStyle = 'rgba(234, 179, 8, 0.45)';
+        g.fillRect(20, 20, 472, 8);
+        g.fillRect(20, 504 - 20, 472, 8);
       }
       const t = new THREE.CanvasTexture(c);
       t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -3617,10 +3644,10 @@
 
       } else if (locId === 'lab') {
         // Roads & Corridor Borders: COMPLETELY REMOVED per user request to allow 100% free character movement!
-        const steelMat = L(0x334155);
-        const darkLabMat = L(0x0f172a);
-        const chimMat = L(0x1e293b);
-        const glassVatMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.6 });
+        const steelMat = L(0x718096);
+        const darkLabMat = L(0x475569);
+        const chimMat = L(0x64748b);
+        const glassVatMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.65 });
 
         // Procedural Ghost Graffiti Texture Generator
         function makeGhostGraffitiTex(headline, sub) {
@@ -4366,7 +4393,7 @@
         noise(0.08, 2200, 0.25, 'bandpass');
       },
       step(pos) {
-        playSample('footstep', pos, 0.45, 0.08);
+        playSample('footstep', pos, 0.55, 0.08);
       },
       bite(pos) {
         playSample('bite', pos, 1.35, 0.1);
@@ -6399,6 +6426,7 @@
       scene.fog.density = lv.fogDens;
       hemiLight.color.setHex(lv.hemiSky);
       hemiLight.groundColor.setHex(lv.hemiGnd);
+      hemiLight.intensity = lv.hemiInt !== undefined ? lv.hemiInt : 0.85;
       moon.color.setHex(lv.moonCol);
       moon.intensity = lv.moonInt;
       moonMesh.material.color.setHex(lv.moonCol);
