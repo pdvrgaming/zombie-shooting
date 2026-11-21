@@ -712,30 +712,113 @@
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 16px rgba(255, 255, 255, 0.3);
     }
 
-    /* 4 Location Cards: Bigger, Crystal Clear HD, Vibrant Neon Glow */
+    /* 5 Location Cards: Bigger, Crystal Clear HD, Vibrant Neon Glow */
     .locations-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
       width: 100%;
-      max-width: 980px;
+      max-width: 1100px;
       margin: 10px 0 16px 0;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1020px) {
       .locations-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 12px;
-        max-width: 540px;
+        max-width: 720px;
       }
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: 680px) {
+      .locations-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        max-width: 480px;
+      }
+    }
+
+    @media (max-width: 460px) {
       .locations-grid {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 8px;
         max-width: 320px;
       }
+    }
+
+    /* Single Button Armory Switcher & Difficulty Controls */
+    .cycle-armory-btn {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      color: #f8fafc;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .cycle-armory-btn:hover {
+      background: rgba(51, 65, 85, 0.95);
+      border-color: #fbbf24;
+      box-shadow: 0 0 18px rgba(245, 158, 11, 0.45);
+    }
+    .diff-select-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .diff-pill-btn {
+      padding: 10px 6px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1.5px solid #475569;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.7);
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+      text-align: center;
+    }
+    .diff-pill-btn:hover {
+      border-color: #94a3b8;
+      color: #f8fafc;
+    }
+    .diff-pill-btn.active[data-diff="normal"] {
+      border-color: #22c55e;
+      background: rgba(22, 101, 52, 0.45);
+      color: #86efac;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.45);
+    }
+    .diff-pill-btn.active[data-diff="medium"] {
+      border-color: #f59e0b;
+      background: rgba(180, 83, 9, 0.45);
+      color: #fde68a;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+    }
+    .diff-pill-btn.active[data-diff="difficult"] {
+      border-color: #ef4444;
+      background: rgba(185, 28, 28, 0.5);
+      color: #fca5a5;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.55);
+    }
+    .sound-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      width: 44px;
+      height: 38px;
+      padding: 0;
+      cursor: pointer;
     }
           .location-card {
             background: rgba(15, 23, 42, 0.88);
@@ -1882,6 +1965,9 @@
     <div class="top-nav-bar">
       <div class="top-badge">☠ DEAD ZONE VR</div>
       <div class="top-actions">
+        <button class="top-action-btn sound-toggle-btn" id="btn-top-sound" title="Toggle Sound (Mute/Unmute)">
+          🔊
+        </button>
         <button class="top-action-btn vr-quick-btn" id="btn-top-vr" title="Launch Immersive VR (Quest 2)">
           🥽 ENTER VR
         </button>
@@ -1926,6 +2012,13 @@
           </div>
           <div class="location-card-title">GOTHIC CEMETERY</div>
         </div>
+        <div class="location-card" data-lvl="4" id="map-card-4">
+          <div class="card-thumb" style="position:relative;background:#030712;">
+            <img src="map-forest-hd.png" alt="Blackout Pine Abyss" style="filter: brightness(0.2) contrast(1.7) grayscale(0.6);" />
+            <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.85);color:#38bdf8;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;border:1px solid #0284c7;">🔦 TORCH</div>
+          </div>
+          <div class="location-card-title">BLACKOUT PINE ABYSS</div>
+        </div>
       </div>
 
       <!-- Hero Start Survival CTA Button (Directly below cards) -->
@@ -1956,6 +2049,13 @@
         <!-- Panel 1: Armory & Weapons -->
         <div class="settings-content-panel active" id="panel-tab-armory">
           <div class="settings-sec-title">🔫 SELECT STARTING FIREARM</div>
+          <!-- Single Button Armory Switcher: changes one after another on click! -->
+          <div style="margin-bottom:12px;">
+            <button type="button" class="cycle-armory-btn" id="btn-cycle-armory" title="Click to cycle next weapon">
+              <span>🔫 EQUIPPED WEAPON: <span id="cycle-armory-name" style="color:#fbbf24;">GLOCK 17</span></span>
+              <span style="font-size:11px;color:#94a3b8;background:rgba(15,23,42,0.8);padding:4px 8px;border-radius:4px;border:1px solid #475569;">[CLICK TO SWITCH NEXT 🔁]</span>
+            </button>
+          </div>
           <div class="gun-select-grid" id="gun-select-grid">
             <div class="gun-card active" data-gun="pistol">
               <div class="gun-card-name">GLOCK 17</div>
@@ -1973,6 +2073,19 @@
               <div class="gun-card-name">M870 BREACHER</div>
               <div class="gun-card-desc">MAG: 8 &bull; DMG: 20x8 &bull; PUMP SPREAD</div>
             </div>
+          </div>
+
+          <div class="settings-sec-title" style="margin-top:14px;">🎯 COMBAT DIFFICULTY</div>
+          <div class="diff-select-grid">
+            <button type="button" class="diff-pill-btn active" data-diff="normal" id="btn-diff-normal">
+              🛡️ NORMAL
+            </button>
+            <button type="button" class="diff-pill-btn" data-diff="medium" id="btn-diff-medium">
+              ⚡ MEDIUM
+            </button>
+            <button type="button" class="diff-pill-btn" data-diff="difficult" id="btn-diff-difficult">
+              ☠️ DIFFICULT
+            </button>
           </div>
 
           <div class="settings-sec-title" style="margin-top:14px;">☠ ENEMY MUTATION TYPE</div>
@@ -2067,6 +2180,11 @@
               <div class="dossier-desc">Midnight burial grounds shrouded in spectral fog, ancient mausoleums, and iron
                 crypts. Dread Reaper wields scythe claws and summons shadow hordes.</div>
             </div>
+            <div class="dossier-card">
+              <div class="dossier-name">SECTOR 5: BLACKOUT PINE ABYSS</div>
+              <div class="dossier-waves">WAVES 13-15 &bull; BOSS: VOID NIGHTSTALKER</div>
+              <div class="dossier-desc">Pitch-black nocturnal forest engulfed in absolute darkness. Tactical gun torchlight required to navigate. Void Nightstalker stalks from the shadows.</div>
+            </div>
           </div>
         </div>
 
@@ -2135,6 +2253,8 @@
       <span id="hud-score">SCORE 0</span>
     </div>
     <div id="sys-controls">
+      <button class="sys-btn hud-sound-btn" id="hud-sound" title="Toggle Sound (Mute/Unmute)">🔊</button>
+      <button class="sys-btn" id="hud-torch" title="Toggle Gun Torchlight (Press F)" style="display:none;">🔦</button>
       <button class="sys-btn" id="hud-pause">PAUSE</button>
       <button class="sys-btn" id="hud-retry">RETRY</button>
       <button class="sys-btn danger" id="hud-quit">QUIT</button>
@@ -2309,7 +2429,7 @@
         lampCol: 0xff9e44,
         waves: [
           { w: 6, r: 2, sp: 0, g: 0, b: 0 },
-          { w: 8, r: 4, sp: 2, g: 1, b: 0 },
+          { w: 8, r: 4, sp: 2, g: 0, b: 0 },
           { w: 6, r: 4, sp: 2, g: 1, b: 1, bossName: 'THE WARDEN' }
         ]
       },
@@ -2326,8 +2446,8 @@
         moonInt: 0.75,
         lampCol: 0xfbbf24,
         waves: [
-          { w: 8, r: 5, sp: 2, g: 1, b: 0 },
-          { w: 10, r: 6, sp: 3, g: 2, b: 0 },
+          { w: 8, r: 5, sp: 2, g: 0, b: 0 },
+          { w: 10, r: 6, sp: 3, g: 0, b: 0 },
           { w: 8, r: 6, sp: 4, g: 2, b: 1, bossName: 'ALPHA BEHEMOTH' }
         ]
       },
@@ -2345,8 +2465,8 @@
         moonInt: 1.45,
         lampCol: 0x0ea5e9,
         waves: [
-          { w: 10, r: 7, sp: 4, g: 2, b: 0 },
-          { w: 12, r: 9, sp: 5, g: 3, b: 0 },
+          { w: 10, r: 7, sp: 4, g: 0, b: 0 },
+          { w: 12, r: 9, sp: 5, g: 0, b: 0 },
           { w: 10, r: 8, sp: 5, g: 3, b: 1, bossName: 'OMEGA APEX' }
         ]
       },
@@ -2363,9 +2483,28 @@
         moonInt: 0.7,
         lampCol: 0x64dfdf,
         waves: [
-          { w: 12, r: 8, sp: 5, g: 3, b: 0 },
-          { w: 14, r: 10, sp: 6, g: 4, b: 0 },
+          { w: 12, r: 8, sp: 5, g: 0, b: 0 },
+          { w: 14, r: 10, sp: 6, g: 0, b: 0 },
           { w: 12, r: 10, sp: 6, g: 4, b: 1, bossName: 'DREAD REAPER', bossHp: 2500 }
+        ]
+      },
+      {
+        id: 'abyss',
+        shortName: 'BLACKOUT PINE',
+        name: 'LOCATION 5: BLACKOUT PINE ABYSS',
+        sky: 0x000000,
+        fog: 0x000000,
+        fogDens: 0.042,
+        hemiSky: 0x06060c,
+        hemiGnd: 0x010103,
+        hemiInt: 0.08,
+        moonCol: 0x000000,
+        moonInt: 0.0,
+        lampCol: 0x000000,
+        waves: [
+          { w: 12, r: 8, sp: 4, g: 0, b: 0 },
+          { w: 14, r: 10, sp: 6, g: 0, b: 0 },
+          { w: 12, r: 10, sp: 6, g: 4, b: 1, bossName: 'VOID NIGHTSTALKER', bossHp: 2800 }
         ]
       }
     ];
@@ -2377,6 +2516,12 @@
     let chosenWeapon = 'pistol';   // Only one gun equipped for run
     let sessionDurationLimit = 0;  // 0 = unlimited, or seconds (120, 300, 600, 900)
     let sessionTimeElapsed = 0;
+    let gameDifficulty = 'normal'; // 'normal' | 'medium' | 'difficult'
+    const diffMultipliers = {
+      normal: { hp: 1.0, sp: 1.0, dm: 1.0 },
+      medium: { hp: 1.25, sp: 1.15, dm: 1.2 },
+      difficult: { hp: 1.6, sp: 1.3, dm: 1.45 }
+    };
 
     // ---------- 3D GLB ZOMBIE LOADER & TEMPLATE CACHE ----------
     const zombieTemplates = {
@@ -2549,19 +2694,74 @@
 
     // Update Menu Mission Summaries across all panels
     function updateMenuSummaries() {
-      const locNames = ['DOWNTOWN CITY', 'DARK PINE FOREST', 'BIO-LAB COMPOUND', 'GOTHIC CEMETERY'];
+      const locNames = ['DOWNTOWN CITY', 'DARK PINE FOREST', 'BIO-LAB COMPOUND', 'GOTHIC CEMETERY', 'BLACKOUT PINE ABYSS'];
       const locName = locNames[selectedLevel] || 'DOWNTOWN CITY';
       const modeName = enemyCategory === 'animals' ? 'MUTANT ANIMALS' : (zombieModelType === 'glb' ? 'ZOMBIES (3D GLB)' : 'ZOMBIES (PROC)');
       const gunName = WEAPON_NAMES[chosenWeapon] || 'GLOCK 17';
       const timeName = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit / 60)} MIN` : 'UNLIMITED';
+      const diffName = gameDifficulty.toUpperCase();
 
       if ($('sum-step1-loc')) $('sum-step1-loc').textContent = locName;
       if ($('sum-step1-mode')) $('sum-step1-mode').textContent = modeName;
       if ($('sum-step1-gun')) $('sum-step1-gun').textContent = gunName;
       if ($('sum-step1-time')) $('sum-step1-time').textContent = timeName;
+      if ($('cycle-armory-name')) $('cycle-armory-name').textContent = gunName;
 
-      if ($('sub-goto-sectors')) $('sub-goto-sectors').textContent = `${locName} • ${modeName}`;
+      if ($('sub-goto-sectors')) $('sub-goto-sectors').textContent = `${locName} • ${modeName} • ${diffName}`;
       if ($('sub-goto-loadout')) $('sub-goto-loadout').textContent = `${gunName} • ${timeName} • ${zombieModelType === 'glb' ? '3D GLB Monsters' : 'Procedural'}`;
+    }
+
+    // Armory Weapon Selection & Single Cycle Button Handler
+    function selectWeapon(gunId) {
+      if (!WEAPON_NAMES[gunId]) return;
+      chosenWeapon = gunId;
+      if (typeof cur !== 'undefined') {
+        cur = gunId;
+        if (typeof switchGun === 'function') switchGun(gunId);
+      }
+      document.querySelectorAll('.gun-card').forEach(c => {
+        c.classList.toggle('active', c.dataset.gun === gunId);
+      });
+      const lbl = $('cycle-armory-name');
+      if (lbl) lbl.textContent = WEAPON_NAMES[gunId];
+      updateMenuSummaries();
+      if (typeof vrUI !== 'undefined' && vrUI.mode === 'menu') {
+        vrUI.draw();
+      }
+    }
+
+    function cycleArmory() {
+      const guns = ['pistol', 'deagle', 'rifle', 'shotgun'];
+      const curIdx = guns.indexOf(chosenWeapon);
+      const nextGun = guns[(curIdx + 1) % guns.length];
+      selectWeapon(nextGun);
+      if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
+    }
+
+    // Difficulty Mode Selector Handler
+    function setDifficulty(diff) {
+      if (!diffMultipliers[diff]) return;
+      gameDifficulty = diff;
+      document.querySelectorAll('.diff-pill-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.diff === diff);
+      });
+      updateMenuSummaries();
+      if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
+    }
+
+    // Global Master Audio Sound On/Off Toggle Handler
+    let isMuted = false;
+    function toggleSoundMute() {
+      isMuted = !isMuted;
+      if (!AC) initAudio();
+      if (master && AC) {
+        master.gain.setValueAtTime(isMuted ? 0 : 0.95, AC.currentTime);
+      }
+      document.querySelectorAll('#btn-top-sound, #hud-sound, .sound-toggle-btn').forEach(btn => {
+        btn.innerHTML = isMuted ? '🔇' : '🔊';
+        btn.title = isMuted ? 'Sound Muted (Click to Unmute)' : 'Sound On (Click to Mute)';
+      });
+      if (typeof SND !== 'undefined' && SND.uiClick && !isMuted) SND.uiClick();
     }
 
     // Settings Modal Open/Close & Tabs
@@ -2639,16 +2839,36 @@
       });
     });
 
-    // Gun Selection Listener
+    // Gun Selection Listener & Single Armory Switcher Button
     document.querySelectorAll('.gun-card').forEach(card => {
       bindUniversalClick(card, () => {
         if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
-        document.querySelectorAll('.gun-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        chosenWeapon = card.dataset.gun;
-        updateMenuSummaries();
+        selectWeapon(card.dataset.gun);
       });
     });
+
+    if ($('btn-cycle-armory')) {
+      bindUniversalClick('btn-cycle-armory', cycleArmory);
+    }
+
+    // Difficulty Listeners
+    document.querySelectorAll('.diff-pill-btn').forEach(btn => {
+      bindUniversalClick(btn, () => {
+        setDifficulty(btn.dataset.diff);
+      });
+    });
+
+    // Sound On/Off Toggle Button Listeners
+    if ($('btn-top-sound')) bindUniversalClick('btn-top-sound', toggleSoundMute);
+    if ($('hud-sound')) bindUniversalClick('hud-sound', toggleSoundMute);
+
+    // Gun Torchlight Toggle Listener
+    if ($('hud-torch')) {
+      bindUniversalClick('hud-torch', () => {
+        setTorch(!torchActive);
+        if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
+      });
+    }
 
     // Session Time Limit Listener
     document.querySelectorAll('.time-btn').forEach(btn => {
@@ -2988,14 +3208,26 @@
       gain.gain.value = vol;
 
       if (pos && typeof pos.x === 'number') {
+        // High-Precision Binaural 3D Spatial Audio ("Dolby" HRTF Panning)
         const pn = AC.createPanner();
         pn.panningModel = 'HRTF';
-        pn.refDistance = 3.5;
-        pn.maxDistance = 65;
-        pn.rolloffFactor = 1.2;
-        pn.positionX.value = pos.x;
-        pn.positionY.value = (pos.y || 0) + 1.2;
-        pn.positionZ.value = pos.z;
+        pn.distanceModel = 'inverse';
+        pn.refDistance = 2.2;
+        pn.maxDistance = 90;
+        pn.rolloffFactor = 1.35;
+        pn.coneInnerAngle = 360;
+        const px = pos.x, py = (pos.y || 0) + 1.2, pz = pos.z;
+        if (pn.positionX && pn.positionX.setValueAtTime) {
+          pn.positionX.setValueAtTime(px, AC.currentTime);
+          pn.positionY.setValueAtTime(py, AC.currentTime);
+          pn.positionZ.setValueAtTime(pz, AC.currentTime);
+        } else if (pn.setPosition) {
+          pn.setPosition(px, py, pz);
+        } else {
+          pn.positionX.value = px;
+          pn.positionY.value = py;
+          pn.positionZ.value = pz;
+        }
         src.connect(gain);
         gain.connect(pn);
         pn.connect(compressor);
@@ -3215,7 +3447,8 @@
       city: createGroundTexture('city'),
       forest: createGroundTexture('forest'),
       lab: createGroundTexture('lab'),
-      cemetery: createGroundTexture('cemetery')
+      cemetery: createGroundTexture('cemetery'),
+      abyss: createGroundTexture('forest')
     };
 
     const ground = new THREE.Mesh(
@@ -3442,7 +3675,7 @@
           });
         });
 
-      } else if (locId === 'forest') {
+      } else if (locId === 'forest' || locId === 'abyss') {
         // Roads: COMPLETELY REMOVED per user request to allow 100% free character movement!
 
         // Overgrown 3D Wild Grass Tufts across forest floor
@@ -3577,15 +3810,21 @@
             cabin.add(plank);
           }
 
-          // Lantern hanging near entrance
-          const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.35), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
-          lantern.position.set(2.4, 2.8, 3.45);
-          cabin.add(lantern);
-          lampBulbs.push(lantern);
-          const l = new THREE.PointLight(0xf59e0b, 1.4, 22);
-          l.position.set(2.4, 2.8, 3.6);
-          cabin.add(l);
-          lamps.push(l);
+          // Lantern hanging near entrance (unlit in Blackout Abyss)
+          if (locId !== 'abyss') {
+            const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.35), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
+            lantern.position.set(2.4, 2.8, 3.45);
+            cabin.add(lantern);
+            lampBulbs.push(lantern);
+            const l = new THREE.PointLight(0xf59e0b, 1.4, 22);
+            l.position.set(2.4, 2.8, 3.6);
+            cabin.add(l);
+            lamps.push(l);
+          } else {
+            const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.35), L(0x18181b));
+            lantern.position.set(2.4, 2.8, 3.45);
+            cabin.add(lantern);
+          }
 
           cabin.position.set(c.x, 0, c.z);
           cabin.rotation.y = c.rot;
@@ -3629,18 +3868,20 @@
           }
         }
 
-        // Campfire Lantern Posts along perimeter
-        [[-16, -16], [16, -16], [-16, 16], [16, 16], [0, -26], [0, 26]].forEach(([x, z]) => {
-          envGroup.add(box(0.2, 3.2, 0.2, x, 1.6, z, trunkMat));
-          const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshBasicMaterial({ color: 0xfbbf24 }));
-          lantern.position.set(x, 3.3, z);
-          envGroup.add(lantern);
-          lampBulbs.push(lantern);
-          const l = new THREE.PointLight(0xfbbf24, 1.4, 26);
-          l.position.set(x, 3.3, z);
-          envGroup.add(l);
-          lamps.push(l);
-        });
+        // Campfire Lantern Posts along perimeter (omitted in Blackout Abyss)
+        if (locId !== 'abyss') {
+          [[-16, -16], [16, -16], [-16, 16], [16, 16], [0, -26], [0, 26]].forEach(([x, z]) => {
+            envGroup.add(box(0.2, 3.2, 0.2, x, 1.6, z, trunkMat));
+            const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshBasicMaterial({ color: 0xfbbf24 }));
+            lantern.position.set(x, 3.3, z);
+            envGroup.add(lantern);
+            lampBulbs.push(lantern);
+            const l = new THREE.PointLight(0xfbbf24, 1.4, 26);
+            l.position.set(x, 3.3, z);
+            envGroup.add(l);
+            lamps.push(l);
+          });
+        }
 
       } else if (locId === 'lab') {
         // Roads & Corridor Borders: COMPLETELY REMOVED per user request to allow 100% free character movement!
@@ -4265,8 +4506,8 @@
     scene.add(new THREE.Points(ashGeo, ashMat));
 
     const inCorr = (x, z) => {
-      if (currentEnvId === 'forest' || currentEnvId === 'lab' || currentEnvId === 'cemetery') {
-        // Free 360-degree open arena movement in Forest, Lab, and Cemetery
+      if (currentEnvId === 'forest' || currentEnvId === 'lab' || currentEnvId === 'cemetery' || currentEnvId === 'abyss') {
+        // Free 360-degree open arena movement in Forest, Lab, Cemetery, and Blackout Abyss
         return Math.abs(x) < 88 && Math.abs(z) < 88;
       }
       return (Math.abs(x) < 6.2 || Math.abs(z) < 6.2) && Math.abs(x) < 92 && Math.abs(z) < 92;
@@ -4583,13 +4824,28 @@
       const l = AC.listener;
       camera.getWorldPosition(P1);
       camera.getWorldDirection(P2);
+      const camUp = P3.set(0, 1, 0).applyQuaternion(camera.quaternion);
+
+      const t = AC.currentTime;
       if (l.positionX) {
-        l.positionX.value = P1.x; l.positionY.value = P1.y; l.positionZ.value = P1.z;
-        l.forwardX.value = P2.x; l.forwardY.value = P2.y; l.forwardZ.value = P2.z;
-        l.upX.value = 0; l.upY.value = 1; l.upZ.value = 0;
+        if (l.positionX.setValueAtTime) {
+          l.positionX.setValueAtTime(P1.x, t);
+          l.positionY.setValueAtTime(P1.y, t);
+          l.positionZ.setValueAtTime(P1.z, t);
+          l.forwardX.setValueAtTime(P2.x, t);
+          l.forwardY.setValueAtTime(P2.y, t);
+          l.forwardZ.setValueAtTime(P2.z, t);
+          l.upX.setValueAtTime(camUp.x, t);
+          l.upY.setValueAtTime(camUp.y, t);
+          l.upZ.setValueAtTime(camUp.z, t);
+        } else {
+          l.positionX.value = P1.x; l.positionY.value = P1.y; l.positionZ.value = P1.z;
+          l.forwardX.value = P2.x; l.forwardY.value = P2.y; l.forwardZ.value = P2.z;
+          l.upX.value = camUp.x; l.upY.value = camUp.y; l.upZ.value = camUp.z;
+        }
       } else if (l.setPosition) {
         l.setPosition(P1.x, P1.y, P1.z);
-        l.setOrientation(P2.x, P2.y, P2.z, 0, 1, 0);
+        l.setOrientation(P2.x, P2.y, P2.z, camUp.x, camUp.y, camUp.z);
       }
     }
 
@@ -4625,6 +4881,34 @@
     muzzle.add(flashM);
     const flashL = new THREE.PointLight(0xffaa44, 0, 12);
     muzzle.add(flashL);
+
+    // ---------- TACTICAL GUN TORCHLIGHT (FLASHLIGHT) ----------
+    // Powerful weapon-mounted dynamic beam illuminating the dark woods in Blackout Pine Abyss
+    const torchLight = new THREE.SpotLight(0xfff6dc, 4.2, 52, Math.PI / 6.5, 0.45, 1.15);
+    torchLight.position.set(0, 0, -0.12);
+    const torchTarget = new THREE.Object3D();
+    torchTarget.position.set(0, 0, -25);
+    gun.add(torchLight, torchTarget);
+    torchLight.target = torchTarget;
+
+    const torchFill = new THREE.PointLight(0xfffaea, 0.65, 12);
+    torchFill.position.set(0, 0, -0.2);
+    gun.add(torchFill);
+
+    let torchActive = false;
+    function setTorch(on) {
+      torchActive = !!on;
+      torchLight.visible = torchActive;
+      torchFill.visible = torchActive;
+      const torchBtns = document.querySelectorAll('.hud-torch-btn, #hud-torch');
+      torchBtns.forEach(b => {
+        b.style.display = (LEVELS[selectedLevel].id === 'abyss' || torchActive) ? 'inline-block' : 'none';
+        b.classList.toggle('active', torchActive);
+        b.title = torchActive ? 'Gun Torchlight ON (Press F to toggle)' : 'Gun Torchlight OFF (Press F to toggle)';
+      });
+    }
+    torchLight.visible = false;
+    torchFill.visible = false;
 
     const hudP = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.1), new THREE.MeshBasicMaterial({ map: htex, transparent: true }));
     hudP.position.set(0, 0.1, 0.05);
@@ -4939,6 +5223,74 @@
     bossHpMesh.renderOrder = 9999;
     scene.add(bossHpMesh);
 
+    // ---------- FLOATING IN-VR WAVE NOTIFICATION BANNER BILLBOARD ----------
+    // Positioned in front screen in VR so player immediately sees wave completion and the next wave starting
+    const vrWaveCanvas = document.createElement('canvas');
+    vrWaveCanvas.width = 1024;
+    vrWaveCanvas.height = 256;
+    const vrWaveCtx = vrWaveCanvas.getContext('2d');
+    const vrWaveTex = new THREE.CanvasTexture(vrWaveCanvas);
+    const vrWaveMat = new THREE.MeshBasicMaterial({
+      map: vrWaveTex,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+      side: THREE.DoubleSide
+    });
+    const vrWaveMesh = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 0.9), vrWaveMat);
+    vrWaveMesh.visible = false;
+    vrWaveMesh.renderOrder = 9998;
+    scene.add(vrWaveMesh);
+
+    let vrWaveBannerTimer = 0;
+
+    function showVRWaveBanner(title, sub, duration = 4.2) {
+      vrWaveBannerTimer = duration;
+      vrWaveMesh.visible = true;
+
+      vrWaveCtx.clearRect(0, 0, 1024, 256);
+
+      // Cyber/Tactical Military HUD Box
+      vrWaveCtx.fillStyle = 'rgba(7, 12, 22, 0.94)';
+      vrWaveCtx.beginPath();
+      vrWaveCtx.roundRect(10, 10, 1004, 236, 16);
+      vrWaveCtx.fill();
+
+      // Glowing Neon Border
+      const borderGrad = vrWaveCtx.createLinearGradient(0, 0, 1024, 0);
+      borderGrad.addColorStop(0, '#f59e0b');
+      borderGrad.addColorStop(0.5, '#38bdf8');
+      borderGrad.addColorStop(1, '#f59e0b');
+      vrWaveCtx.strokeStyle = borderGrad;
+      vrWaveCtx.lineWidth = 5;
+      vrWaveCtx.beginPath();
+      vrWaveCtx.roundRect(10, 10, 1004, 236, 16);
+      vrWaveCtx.stroke();
+
+      // Top Ribbon
+      vrWaveCtx.fillStyle = '#0f172a';
+      vrWaveCtx.fillRect(16, 16, 992, 36);
+      vrWaveCtx.font = '900 19px monospace';
+      vrWaveCtx.fillStyle = '#38bdf8';
+      vrWaveCtx.textAlign = 'center';
+      vrWaveCtx.fillText('★ TACTICAL MISSION INTEL ★', 512, 40);
+
+      // Main Large Title Text
+      vrWaveCtx.font = '900 50px Impact, "Arial Black", sans-serif';
+      vrWaveCtx.fillStyle = '#fef08a';
+      vrWaveCtx.shadowColor = 'rgba(245, 158, 11, 0.9)';
+      vrWaveCtx.shadowBlur = 16;
+      vrWaveCtx.fillText(title, 512, 126);
+      vrWaveCtx.shadowBlur = 0;
+
+      // Subtitle Text
+      vrWaveCtx.font = '700 26px sans-serif';
+      vrWaveCtx.fillStyle = '#e2e8f0';
+      vrWaveCtx.fillText(sub, 512, 192);
+
+      vrWaveTex.needsUpdate = true;
+    }
+
     let lastBossHpPct = -1;
     let bossHitFlashTimer = 0;
 
@@ -5243,8 +5595,17 @@
         vrx.fillText('SURVIVAL APOCALYPSE', 512, 92);
 
         const count = LEVELS.length;
-        const bw = count === 4 ? 228 : 290;
-        const gap = count === 4 ? 14 : 32;
+        let bw = 228, gap = 14;
+        if (count >= 5) {
+          bw = 184;
+          gap = 10;
+        } else if (count === 4) {
+          bw = 228;
+          gap = 14;
+        } else {
+          bw = 290;
+          gap = 32;
+        }
         const totalW = count * bw + (count - 1) * gap;
         const startX = (1024 - totalW) / 2;
 
@@ -5274,14 +5635,14 @@
           vrx.lineWidth = isActive ? 3 : 1.5;
           vrx.strokeRect(bx, by, bw, bh);
 
-          vrx.font = count === 4 ? 'bold 16px Impact, "Arial Black", sans-serif' : 'bold 19px Impact, "Arial Black", sans-serif';
+          vrx.font = count >= 5 ? 'bold 13px Impact, "Arial Black", sans-serif' : count === 4 ? 'bold 16px Impact, "Arial Black", sans-serif' : 'bold 19px Impact, "Arial Black", sans-serif';
           vrx.fillStyle = isActive ? "#fbbf24" : "#e2e8f0";
           vrx.textAlign = "left";
-          vrx.fillText(`${i + 1}. ${(lv.shortName || lv.name).toUpperCase()}`, bx + 10, by + 34);
+          vrx.fillText(`${i + 1}. ${(lv.shortName || lv.name).toUpperCase()}`, bx + 8, by + 34);
 
-          vrx.font = count === 4 ? "bold 11px sans-serif" : "bold 13px sans-serif";
+          vrx.font = count >= 5 ? "bold 10px sans-serif" : count === 4 ? "bold 11px sans-serif" : "bold 13px sans-serif";
           vrx.fillStyle = isActive ? "#fef08a" : "#94a3b8";
-          vrx.fillText(`WAVES: ${i * 3 + 1}-${i * 3 + 3}  •  ${(lv.waves[2] && lv.waves[2].bossName) || "BOSS"}`, bx + 10, by + 64);
+          vrx.fillText(`WAVES: ${i * 3 + 1}-${i * 3 + 3}  •  ${(lv.waves[2] && lv.waves[2].bossName) || "BOSS"}`, bx + 8, by + 64);
         });
 
         const modes = [
@@ -5898,8 +6259,21 @@
     };
 
     function spawn(type) {
+      // Boss size zombie should ONLY appear in 3rd wave of every level!
+      // For 1st and 2nd wave for all levels, zombies should be small and medium in size not large like boss!
+      if (wave < 3 && (type === 'boss' || type === 'giant')) {
+        type = Math.random() < 0.6 ? 'walker' : 'runner';
+      }
+
       const isAnimal = enemyCategory === 'animals';
       const T = { ...TY[type] };
+
+      // Apply Combat Difficulty Modifiers
+      const diff = diffMultipliers[gameDifficulty] || diffMultipliers.normal;
+      T.hp = Math.round(T.hp * diff.hp);
+      T.sp = T.sp * diff.sp;
+      T.dm = Math.round(T.dm * diff.dm);
+
       if (isAnimal) T.sp *= 1.18; // Wild beasts are slightly faster
 
       const g = new THREE.Group();
@@ -6002,7 +6376,11 @@
           arr.push(p);
         });
 
-        g.scale.setScalar(type === 'boss' ? 2.4 : type === 'giant' ? 1.75 : 1.05);
+        if (wave < 3) {
+          g.scale.setScalar(type === 'runner' ? 0.85 : 1.02);
+        } else {
+          g.scale.setScalar(type === 'boss' ? 2.4 : type === 'giant' ? 1.75 : 1.05);
+        }
 
       } else {
         // --- ZOMBIE HUMANOID MODELS (GLB 3D Skeletal Mesh vs Basic Procedural Fallback) ---
@@ -6097,7 +6475,12 @@
 
               // Headcrab model height in accessor is ~68 units; 0.026 yields 1.76m height
               model.scale.setScalar(0.026);
-              const scaleMult = (type === 'boss' ? 2.6 : type === 'giant' ? 1.75 : type === 'runner' ? 0.95 : 1.05);
+              let scaleMult = 1.0;
+              if (wave < 3) {
+                scaleMult = (type === 'runner' ? 0.88 : type === 'spitter' ? 0.95 : 1.02);
+              } else {
+                scaleMult = (type === 'boss' ? 2.6 : type === 'giant' ? 1.75 : type === 'runner' ? 0.95 : 1.05);
+              }
               g.scale.setScalar(T.s * scaleMult);
               headYThreshold = 1.35 * (T.s * scaleMult);
 
@@ -6154,7 +6537,12 @@
               else if (type === 'boss') animAction.timeScale = 0.85;
               else animAction.timeScale = 1.05;
 
-              const scaleMult = (type === 'boss' ? 2.6 : type === 'giant' ? 1.75 : type === 'runner' ? 0.95 : 1.05);
+              let scaleMult = 1.0;
+              if (wave < 3) {
+                scaleMult = (type === 'runner' ? 0.88 : type === 'spitter' ? 0.95 : 1.02);
+              } else {
+                scaleMult = (type === 'boss' ? 2.6 : type === 'giant' ? 1.75 : type === 'runner' ? 0.95 : 1.05);
+              }
               g.scale.setScalar(T.s * scaleMult);
               headYThreshold = 1.35 * (T.s * scaleMult);
 
@@ -6278,12 +6666,16 @@
             legs.push(p);
           });
 
-          g.scale.setScalar(T.s);
+          if (wave < 3) {
+            g.scale.setScalar(type === 'runner' ? 0.85 : 1.0);
+          } else {
+            g.scale.setScalar(T.s);
+          }
         }
       }
 
-      if (currentEnvId === 'cemetery' || currentEnvId === 'forest' || currentEnvId === 'lab') {
-        // Organic 360-degree spawn around the open arena in Cemetery, Forest, and Bio-Lab
+      if (currentEnvId === 'cemetery' || currentEnvId === 'forest' || currentEnvId === 'lab' || currentEnvId === 'abyss') {
+        // Organic 360-degree spawn around the open arena in Cemetery, Forest, Bio-Lab, and Abyss
         const ang = Math.random() * Math.PI * 2;
         const d = (type === 'boss' ? 40 : R(26, 44));
         g.position.set(Math.cos(ang) * d, 0, Math.sin(ang) * d);
@@ -6431,6 +6823,11 @@
       moon.intensity = lv.moonInt;
       moonMesh.material.color.setHex(lv.moonCol);
       buildEnvironment(lv.id);
+      if (lv.id === 'abyss') {
+        setTorch(true);
+      } else {
+        setTorch(false);
+      }
     }
 
     function say(main, sub = '', sec = 3) {
@@ -6568,7 +6965,10 @@
       queue = q;
       spawnT = 1.2;
       breakT = 0;
+      const waveTitle = wave === 3 ? 'FINAL WAVE 3: BOSS INCOMING' : `WAVE ${wave} COMMENCING`;
+      const waveSub = `${lv.shortName} • ${enemyCategory.toUpperCase()}`;
       say(wave === 3 ? 'FINAL WAVE' : `WAVE ${wave} OF 3`, `${lv.name} (${enemyCategory.toUpperCase()})`, 3);
+      showVRWaveBanner(waveTitle, waveSub, 4.2);
       updateHUD();
     }
 
@@ -6685,6 +7085,7 @@
       }
       if (state !== 'play') return;
       if (e.code === 'KeyR') reload();
+      if (e.code === 'KeyF') setTorch(!torchActive);
       // In-game weapon hot-swapping disabled: single gun locked for run
     });
     addEventListener('keyup', e => keys[e.code] = 0);
@@ -7221,18 +7622,20 @@
               wave = 0;
               breakT = 4.5;
               say('LOCATION SECURED!', `CONVOY ADVANCING TO ${LEVELS[selectedLevel].shortName}...`, 4.2);
+              showVRWaveBanner('LOCATION SECURED!', `ADVANCING TO ${LEVELS[selectedLevel].shortName}...`, 4.5);
               hp = Math.min(100, hp + 50);
               ammo[cur].res += W[cur].mag * 3;
               applyLevelTheme(selectedLevel);
               updateHUD();
             } else {
-              // City 3 Wave 3 cleared: Full Campaign Victory!
+              // Final Wave cleared: Full Campaign Victory!
               gameOver(true);
             }
           } else {
             if (!breakT) {
               breakT = 5.0;
-              say('WAVE CLEARED', 'Resupplying Armor & Ammunition...', 4.2);
+              say('WAVE CLEARED', `PREPARE FOR WAVE ${wave + 1}...`, 4.2);
+              showVRWaveBanner(`WAVE ${wave} COMPLETED!`, `PREPARE FOR WAVE ${wave + 1} • RESUPPLIED`, 4.5);
               hp = Math.min(100, hp + 35);
               ammo[cur].res += W[cur].mag * 2;
               updateHUD();
@@ -7472,6 +7875,22 @@
         if (msgT <= 0) {
           $('main-msg').textContent = '';
           $('sub-msg').textContent = '';
+        }
+      }
+
+      // Front-Screen VR Wave Announcement Banner
+      if (vrWaveBannerTimer > 0) {
+        vrWaveBannerTimer -= dt;
+        if (vrWaveBannerTimer <= 0) {
+          vrWaveMesh.visible = false;
+        } else {
+          vrWaveMesh.visible = true;
+          camera.getWorldPosition(P1);
+          camera.getWorldQuaternion(Q);
+          P2.set(0, 0, -1).applyQuaternion(Q);
+          vrWaveMesh.position.copy(P1).addScaledVector(P2, 2.4);
+          vrWaveMesh.position.y = P1.y + 0.15;
+          vrWaveMesh.quaternion.copy(Q);
         }
       }
 
