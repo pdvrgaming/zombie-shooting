@@ -2841,16 +2841,22 @@
         }
       }
 
-      function setBGMScale(scale, rampSec = 1.2) {
+      function setBGMScale(scale, rampSec = 1.0) {
         bgmCurrentScale = scale;
         const targetVol = isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale);
         if (bgmGainNode && AC) {
           try {
             bgmGainNode.gain.cancelScheduledValues(AC.currentTime);
+            bgmGainNode.gain.setValueAtTime(bgmGainNode.gain.value, AC.currentTime);
             bgmGainNode.gain.linearRampToValueAtTime(targetVol, AC.currentTime + rampSec);
+          } catch (e) {
+            try { bgmGainNode.gain.value = targetVol; } catch (e2) { }
+          }
+        }
+        if (bgmAudio) {
+          try {
+            bgmAudio.volume = Math.max(0, Math.min(1, targetVol));
           } catch (e) { }
-        } else if (bgmAudio) {
-          bgmAudio.volume = Math.max(0, Math.min(1, targetVol));
         }
       }
 
@@ -2865,6 +2871,7 @@
 
       function startBGM() {
         initBGM();
+        setBGMScale(0.03, 0.5); // When wave starts, music volume is 2-5% (3%)
         if (bgmAudio && bgmAudio.paused) {
           bgmAudio.play().catch(() => { });
         }
@@ -4942,18 +4949,19 @@
         pistolAction = null;
         if (n === 'pistol' && weaponTemplates.pistol && weaponTemplates.pistol.scene) {
           // High-Quality Rigged Stylized 3D Pistol GLB for Glock 17
+          // Perfectly leveled and pointing straight forward (-Z) towards zombies (no downward angle)
           const pModel = (typeof THREE.SkeletonUtils !== 'undefined') ? THREE.SkeletonUtils.clone(weaponTemplates.pistol.scene) : weaponTemplates.pistol.scene.clone();
-          pModel.rotation.set(Math.PI / 2, 0, Math.PI / 2);
           pModel.scale.setScalar(0.044);
-          pModel.position.set(0, -0.02, -0.09);
+          pModel.rotation.set(0.005, -2.6083, 0);
+          pModel.position.set(0, -0.03, -0.14);
           body.add(pModel);
 
           // Tactical Underbarrel Laser Diode Module
           body.add(
-            box(0.018, 0.014, 0.044, 0, -0.013, -0.125, gm),
-            box(0.022, 0.006, 0.03, 0, -0.003, -0.125, pol),
-            gc(0.0042, 0.006, 0, -0.013, -0.148, gm),
-            gc(0.0028, 0.002, 0, -0.013, -0.151, laserLensMat)
+            box(0.018, 0.014, 0.036, 0, -0.008, -0.115, gm),
+            box(0.022, 0.006, 0.026, 0, 0.001, -0.115, pol),
+            gc(0.0042, 0.006, 0, -0.008, -0.133, gm),
+            gc(0.0028, 0.002, 0, -0.008, -0.136, laserLensMat)
           );
 
           if (weaponTemplates.pistol.animations && weaponTemplates.pistol.animations.length) {
@@ -4964,8 +4972,8 @@
             pistolAction.timeScale = 1.8;
           }
 
-          muzzle.position.set(0, 0.032, -0.21);
-          laserEmitter.position.set(0, -0.013, -0.155);
+          muzzle.position.set(0, 0.0195, -0.155);
+          laserEmitter.position.set(0, -0.008, -0.136);
         } else {
           const d = n === 'deagle', F = d ? 1.25 : 1, m = d ? sil : gm;
           const grip = box(0.034 * F, 0.1 * F, 0.05 * F, 0, -0.065 * F, 0.035, pol);
@@ -7005,8 +7013,8 @@
               queue = q;
               spawnT = 1.2;
               breakT = 0;
-              // In-game dynamic BGM ducking: BGM drops to 12% (10-15%) during combat wave
-              setBGMScale(0.12, 1.2);
+              // In-game dynamic BGM ducking: BGM drops to 3% (2-5% volume range) during combat wave
+              setBGMScale(0.03, 1.0);
               const waveTitle = wave === 3 ? 'FINAL WAVE 3: BOSS INCOMING' : `WAVE ${wave} COMMENCING`;
               const waveSub = `${lv.shortName} • ${enemyCategory.toUpperCase()}`;
               say(wave === 3 ? 'FINAL WAVE' : `WAVE ${wave} OF 3`, `${lv.name} (${enemyCategory.toUpperCase()})`, 3);
@@ -7664,10 +7672,23 @@
                   }
                 }
 
+                // Dynamic Background Music: 2-5% (3%) during combat, swells to 100% when all zombies dead & going to next wave
+                if (queue.length > 0 || alive > 0) {
+                  if (bgmCurrentScale > 0.04) {
+                    setBGMScale(0.03, 1.0);
+                  }
+                } else {
+                  // All zombies died and going to next wave: music swells to 100%!
+                  if (bgmCurrentScale < 0.9) {
+                    setBGMScale(1.0, 1.2);
+                  }
+                  if (bgmAudio && bgmAudio.paused) {
+                    bgmAudio.play().catch(() => { });
+                  }
+                }
+
                 // Wave / Sector Progression: Continuous 9-Wave Campaign (City 1 -> City 2 -> City 3 -> Victory)
                 if (!queue.length && !alive) {
-                  // All zombies died and going to next wave: music swells to 100%!
-                  setBGMScale(1.0, 1.2);
                   if (wave === 3) {
                     if (selectedLevel < LEVELS.length - 1) {
                       // Advance to next location automatically!
@@ -7866,10 +7887,10 @@
                 }
               }
 
-              // Weapon Recoil & Muzzle Flash (Ergonomic ~14° Quest 2 Grip in VR)
-              kick = Math.max(0, kick - dt * 8);
+              // Weapon Recoil & Muzzle Flash (Level horizontal aim straight at zombies)
+              kick = Math.max(0, kick - dt * 8.5);
               gun.position.set(gunBase.x, gunBase.y, gunBase.z + (xr() ? kick * 0.035 : kick * 0.05));
-              gun.rotation.x = (xr() ? -0.24 : 0) + kick * 0.12 + (reloading ? 0.72 : 0);
+              gun.rotation.x = kick * 0.12 + (reloading ? 0.72 : 0);
               if (slide) slide.position.z = (ammo && ammo[cur].mag === 0 ? 0.04 : kick * 0.04);
               if (pump) pump.position.z = -0.35 + (cd > 0 ? Math.sin(Math.max(0, Math.min(1, 1 - cd / W[cur].rate)) * Math.PI) * 0.12 : 0);
 
