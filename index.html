@@ -2023,8 +2023,7 @@
         </div>
         <div class="location-card" data-lvl="4" id="map-card-4">
           <div class="card-thumb" style="position:relative;background:#030712;">
-            <img src="map-forest-hd.png" alt="Blackout Pine Abyss"
-              style="filter: brightness(0.2) contrast(1.7) grayscale(0.6);" />
+            <img src="map-abyss-hd.png" alt="Blackout Pine Abyss" />
             <div
               style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.85);color:#38bdf8;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;border:1px solid #0284c7;">
               🔦 TORCH</div>
@@ -2518,14 +2517,14 @@
         id: 'abyss',
         shortName: 'BLACKOUT PINE',
         name: 'LOCATION 5: BLACKOUT PINE ABYSS',
-        sky: 0x000000,
-        fog: 0x000000,
-        fogDens: 0.042,
-        hemiSky: 0x06060c,
-        hemiGnd: 0x010103,
-        hemiInt: 0.08,
-        moonCol: 0x000000,
-        moonInt: 0.0,
+        sky: 0x010204,
+        fog: 0x020408,
+        fogDens: 0.038,
+        hemiSky: 0x141824,
+        hemiGnd: 0x080a10,
+        hemiInt: 0.18,
+        moonCol: 0x182436,
+        moonInt: 0.10,
         lampCol: 0x000000,
         waves: [
           { w: 12, r: 8, sp: 4, g: 0, b: 0 },
@@ -2862,20 +2861,37 @@
 
       function setBGMBaseVolume(vol) {
         bgmBaseVolume = Math.max(0, Math.min(1, vol));
-        setBGMScale(bgmCurrentScale, 0.1);
+        setBGMScale(bgmCurrentScale, 0.05);
         const lbl = $('bgm-vol-label');
         if (lbl) lbl.textContent = Math.round(bgmBaseVolume * 100) + '%';
         const slider = $('slider-bgm');
         if (slider) slider.value = Math.round(bgmBaseVolume * 100);
       }
 
-      function startBGM() {
-        initBGM();
-        setBGMScale(0.03, 0.5); // When wave starts, music volume is 2-5% (3%)
-        if (bgmAudio && bgmAudio.paused) {
+      function ensureMenuBGM() {
+        if (!bgmAudio) initBGM();
+        if (state === 'menu') {
+          setBGMScale(1.0, 0.2);
+        }
+        if (bgmAudio && bgmAudio.paused && !isMuted) {
           bgmAudio.play().catch(() => { });
         }
       }
+
+      function startBGM() {
+        initBGM();
+        setBGMScale(0.05, 1.2); // When wave starts, combat BGM ducks down to 5%
+        if (bgmAudio && bgmAudio.paused && !isMuted) {
+          bgmAudio.play().catch(() => { });
+        }
+      }
+
+      // Continuous UI Background Music: Resume playback on first user gesture in main screen
+      ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, () => {
+          if (state === 'menu') ensureMenuBGM();
+        }, { passive: true });
+      });
 
       function toggleSoundMute() {
         isMuted = !isMuted;
@@ -2894,6 +2910,7 @@
       if ($('slider-bgm')) {
         $('slider-bgm').addEventListener('input', e => {
           setBGMBaseVolume(parseInt(e.target.value) / 100);
+          ensureMenuBGM();
         });
       }
 
@@ -3300,8 +3317,20 @@
         26.120, 26.960, 27.800, 28.640, 29.480, 30.320, 31.160, 32.000, 32.840, 33.680
       ];
 
+      const activeZombieSources = new Set();
+
+      function stopAllZombieSounds() {
+        activeZombieSources.forEach(src => {
+          try {
+            src.stop(0);
+            src.disconnect();
+          } catch (e) { }
+        });
+        activeZombieSources.clear();
+      }
+
       function playSample(category, pos = null, vol = 1.0, pitchVariation = 0.05) {
-        if (!AC || state === 'paused') return false;
+        if (!AC || state === 'paused' || state === 'over' || state === 'win' || state === 'session_over' || state === 'menu') return false;
         const list = AUDIO_MANIFEST[category];
         if (!list || !list.length) return false;
         let url = list[Math.floor(Math.random() * list.length)];
@@ -3317,6 +3346,14 @@
         const src = AC.createBufferSource();
         src.buffer = buffer;
         src.playbackRate.value = 1.0 + (Math.random() * 2 - 1) * pitchVariation;
+
+        const isZombieAudio = category.startsWith('zombie') || category === 'bossApproaching' || category === 'bite' || category === 'eat' || category === 'fleshImpact' || category === 'bodyFall';
+        if (isZombieAudio) {
+          activeZombieSources.add(src);
+          src.onended = () => {
+            activeZombieSources.delete(src);
+          };
+        }
 
         const gain = AC.createGain();
         gain.gain.value = vol;
@@ -6847,12 +6884,12 @@
 
             function gameOver(win = false) {
               state = win ? 'win' : 'over';
+              stopAllZombieSounds();
               if (document.pointerLockElement === dom) document.exitPointerLock();
               if (win) {
                 showStoryModal('SURVIVAL COMPLETE', 'All sectors cleared! Mission accomplished, survivor.', true, false, true);
                 if (xr()) vrUI.show('win');
               } else {
-                SND.eat();
                 showStoryModal('YOU DIED', 'The horde overwhelmed you.', false, true, false);
                 if (xr()) vrUI.show('over');
               }
@@ -6876,6 +6913,8 @@
               } else {
                 setTorch(false);
               }
+              // Reposition character to center (0, 0, 0) on sector change for free 360-degree mobility
+              rig.position.set(0, 0, 0);
             }
 
             function say(main, sub = '', sec = 3) {
@@ -6927,6 +6966,7 @@
             function togglePause() {
               if (state === 'play') {
                 state = 'paused';
+                stopAllZombieSounds();
                 mouseDown = false;
                 touchState.firing = false;
                 if (document.pointerLockElement === dom) document.exitPointerLock();
@@ -6943,6 +6983,7 @@
             }
 
             function quitToMenu() {
+              stopAllZombieSounds();
               SND.uiClick();
               state = 'menu';
               document.body.classList.remove('is-in-game');
@@ -6953,6 +6994,10 @@
               $('modal-ov').style.display = 'none';
               $('hud').style.display = 'none';
               $('mobile-ui').style.display = 'none';
+              setBGMScale(1.0, 0.5); // Resume full slider volume in main screen UI
+              if (bgmAudio && bgmAudio.paused && !isMuted) {
+                bgmAudio.play().catch(() => { });
+              }
               if (xr()) {
                 vrUI.show('menu');
               } else {
@@ -6961,6 +7006,7 @@
             }
 
             function retryGame() {
+              stopAllZombieSounds();
               SND.uiClick();
               $('modal-ov').style.display = 'none';
               if (xr()) vrUI.hide();
@@ -7013,8 +7059,8 @@
               queue = q;
               spawnT = 1.2;
               breakT = 0;
-              // In-game dynamic BGM ducking: BGM drops to 3% (2-5% volume range) during combat wave
-              setBGMScale(0.03, 1.0);
+              // In-game dynamic BGM ducking: BGM ducks down to 5% during active combat wave
+              setBGMScale(0.05, 1.5);
               const waveTitle = wave === 3 ? 'FINAL WAVE 3: BOSS INCOMING' : `WAVE ${wave} COMMENCING`;
               const waveSub = `${lv.shortName} • ${enemyCategory.toUpperCase()}`;
               say(wave === 3 ? 'FINAL WAVE' : `WAVE ${wave} OF 3`, `${lv.name} (${enemyCategory.toUpperCase()})`, 3);
@@ -7624,6 +7670,7 @@
                     timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
                     if (remaining <= 0) {
                       state = 'session_over';
+                      stopAllZombieSounds();
                       if (document.pointerLockElement === dom) document.exitPointerLock();
                       showStoryModal('SESSION COMPLETED', 'Designated survival mission duration has elapsed!', false, false, false, true);
                       if (xr()) vrUI.show('session_over');
@@ -7672,17 +7719,17 @@
                   }
                 }
 
-                // Dynamic Background Music: 2-5% (3%) during combat, swells to 100% when all zombies dead & going to next wave
+                // Dynamic Background Music: ducks down to 5% during combat, swells to 50% (fades in/out) between waves
                 if (queue.length > 0 || alive > 0) {
-                  if (bgmCurrentScale > 0.04) {
-                    setBGMScale(0.03, 1.0);
+                  if (Math.abs(bgmCurrentScale - 0.05) > 0.01) {
+                    setBGMScale(0.05, 1.5);
                   }
                 } else {
-                  // All zombies died and going to next wave: music swells to 100%!
-                  if (bgmCurrentScale < 0.9) {
-                    setBGMScale(1.0, 1.2);
+                  // All zombies died and going to next wave: music swells up to 50% (fade in/out)!
+                  if (Math.abs(bgmCurrentScale - 0.50) > 0.01) {
+                    setBGMScale(0.50, 1.8);
                   }
-                  if (bgmAudio && bgmAudio.paused) {
+                  if (bgmAudio && bgmAudio.paused && !isMuted) {
                     bgmAudio.play().catch(() => { });
                   }
                 }
