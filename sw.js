@@ -1,5 +1,5 @@
 // Dead Zone: Survival Apocalypse - Service Worker (PWA & WebXR)
-const CACHE_NAME = 'deadzone-vr-v17';
+const CACHE_NAME = 'deadzone-vr-v18';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -17,7 +17,17 @@ const PRECACHE_ASSETS = [
   './zombie%20characteres/classic_zombie_torso__half-life_2.glb',
   './zombie%20characteres/zombie_monster_slasher_necromorph.glb',
   './zombie%20characteres/headcrab_zombie.glb',
-  './freesound_community-concrete-footsteps-6752.mp3'
+  './zombie%20characteres/stylized_pistol_low_poly_rigged.glb',
+  './freesound_community-concrete-footsteps-6752.mp3',
+  './sounds/zombie%20sound%20new/background%20music.mp3',
+  './sounds/zombie%20sound%20new/boss%20approaching.wav',
+  './sounds/zombie%20sound%20new/zombie%20attacking%201.mp3',
+  './sounds/zombie%20sound%20new/zombie%20attacking.mp3',
+  './sounds/zombie%20sound%20new/zombie%20screaming.mp3',
+  './sounds/Footsteps/Footsteps_Zombie_concret_001.mp3',
+  './sounds/Footsteps/Footsteps_Zombie_concret_002.mp3',
+  './sounds/Footsteps/Footsteps_Zombie_concret_003.mp3',
+  './sounds/Footsteps/Footsteps_Zombie_concret_004.mp3'
 ];
 
 self.addEventListener('install', event => {
