@@ -2590,301 +2590,302 @@
         }
       };
 
-        // Preload Slasher Necromorph (Walker, Runner, Giant, Boss)
-        // Preload Slasher Necromorph (Wave 3 Horde & Boss)
-        loader.load(slasherPath, gltf => {
-          gltf.scene.traverse(o => {
-            if (o.isMesh || o.isSkinnedMesh) {
-              o.castShadow = true;
-              o.receiveShadow = true;
-              if (o.material) {
-                o.material.roughness = 0.75;
-                o.material.metalness = 0.15;
-              }
-            }
-          });
-          zombieTemplates.slasher = {
-            scene: gltf.scene,
-            animations: gltf.animations
-          };
-          checkDone();
-        }, undefined, err => {
-          console.warn('Could not load Slasher GLB, will fallback to procedural if needed:', err);
-          checkDone();
-        });
-
-        // Preload Half-Life 2 Classic Zombie Torso Crawler (Spitter)
-        // Preload Half-Life 2 Classic Zombie Torso Crawler (Wave 2 Horde)
-        loader.load(torsoPath, gltf => {
-          gltf.scene.traverse(o => {
-            if (o.isMesh || o.isSkinnedMesh) {
-              o.castShadow = true;
-              o.receiveShadow = true;
-              if (o.material) {
-                o.material.roughness = 0.8;
-                o.material.metalness = 0.1;
-              }
-            }
-          });
-
-          // Fix crawler root motion so it crawls smoothly in-place with game AI
-          if (gltf.animations) {
-            const crawlClip = gltf.animations.find(a => a.name.includes('crawl'));
-            if (crawlClip) {
-              const spineTrack = crawlClip.tracks.find(t => t.name.includes('Spine_01.position'));
-              if (spineTrack) {
-                const initialY = spineTrack.values[1];
-                for (let i = 0; i < spineTrack.values.length; i += 3) {
-                  spineTrack.values[i + 1] = initialY;
-                }
-              }
+      // Preload Slasher Necromorph (Walker, Runner, Giant, Boss)
+      // Preload Slasher Necromorph (Wave 3 Horde & Boss)
+      loader.load(slasherPath, gltf => {
+        gltf.scene.traverse(o => {
+          if (o.isMesh || o.isSkinnedMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+            if (o.material) {
+              o.material.roughness = 0.75;
+              o.material.metalness = 0.15;
             }
           }
-
-          zombieTemplates.torso = {
-            scene: gltf.scene,
-            animations: gltf.animations
-          };
-          checkDone();
-        }, undefined, err => {
-          console.warn('Could not load Torso GLB, will fallback to procedural if needed:', err);
-          checkDone();
         });
-
-        // Preload Headcrab Zombie (Walker, Runner, Giant, Boss in all 4 levels)
-        // Preload Headcrab Zombie (Wave 1 Horde)
-        loader.load(headcrabPath, gltf => {
-          gltf.scene.traverse(o => {
-            if (o.isMesh || o.isSkinnedMesh) {
-              o.castShadow = true;
-              o.receiveShadow = true;
-              if (o.material) {
-                o.material.roughness = 0.78;
-                o.material.metalness = 0.12;
-              }
-            }
-          });
-          zombieTemplates.headcrab = {
-            scene: gltf.scene,
-            animations: gltf.animations
-          };
-          checkDone();
-        }, undefined, err => {
-          console.warn('Could not load Headcrab Zombie GLB:', err);
-          checkDone();
-        });
-
-        // Preload Stylized Rigged 3D Pistol for Glock 17
-        loader.load(pistolPath, gltf => {
-          gltf.scene.traverse(o => {
-            if (o.isMesh || o.isSkinnedMesh) {
-              o.castShadow = true;
-              o.receiveShadow = true;
-              if (o.material) {
-                o.material.roughness = 0.65;
-                o.material.metalness = 0.25;
-              }
-            }
-          });
-          weaponTemplates.pistol = {
-            scene: gltf.scene,
-            animations: gltf.animations
-          };
-          weaponTemplates.loaded = true;
-          console.log('✅ Stylized Rigged Pistol model loaded for Glock 17!');
-          if (typeof cur !== 'undefined' && cur === 'pistol') {
-            buildGun('pistol');
-          }
-          checkDone();
-        }, undefined, err => {
-          console.warn('Could not load Stylized Pistol GLB:', err);
-          checkDone();
-        });
-      }
-      initGLBZombieLoader();
-
-      // Device Auto-Detection
-      function detectDevice() {
-        const ua = navigator.userAgent || '';
-        const isQuestOrVR = /OculusBrowser|Quest|Pico|Vive|VR|WebXR/i.test(ua) || (window.location.search.includes('mode=vr'));
-        if (isQuestOrVR) return 'vr';
-        if (window.location.search.includes('mode=pc')) return 'pc';
-        if (window.location.search.includes('mode=mob')) return 'mobile';
-        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-        if (isMobileUA || (isTouch && window.innerWidth <= 1024)) return 'mobile';
-        return 'pc';
-      }
-
-      const detectedDevice = detectDevice();
-      const devBadge = $('device-detect-badge');
-      if (devBadge) {
-        if (detectedDevice === 'vr') {
-          devBadge.className = 'vr-mode';
-          devBadge.innerHTML = '&#129523; QUEST 2 VR ACTIVE &bull; 6DOF TOUCH CONTROLLERS &bull; 3D SPATIAL UI';
-        } else if (detectedDevice === 'mobile') {
-          devBadge.className = 'mobile-mode';
-          devBadge.innerHTML = '&#128241; MOBILE TOUCH CONTROLS ACTIVE &bull; DUAL VIRTUAL STICKS';
-        } else {
-          devBadge.className = 'pc-mode';
-          devBadge.innerHTML = '&#128421; PC FPS CONTROLS &bull; WASD MOVE &bull; MOUSE AIM & SHOOT';
-        }
-      }
-
-      // Universal Start Survival Game Launcher
-      function launchCurrentGameMode() {
-        if (detectedDevice === 'vr') {
-          launchVRMode();
-        } else if (detectedDevice === 'mobile') {
-          launchMobileMode();
-        } else {
-          launchPCMode();
-        }
-      }
-
-      // Bind All Start Survival Buttons
-      ['btn-start-hero', 'btn-step2-start', 'btn-step3-start', 'btn-step4-start', 'btn-start-main', 'btn-quest-hero'].forEach(id => {
-        if ($(id)) bindUniversalClick(id, launchCurrentGameMode);
+        zombieTemplates.slasher = {
+          scene: gltf.scene,
+          animations: gltf.animations
+        };
+        checkDone();
+      }, undefined, err => {
+        console.warn('Could not load Slasher GLB, will fallback to procedural if needed:', err);
+        checkDone();
       });
 
-      // Weapons Name Catalog for UI Summaries (Safe from TDZ)
-      const WEAPON_NAMES = {
-        pistol: 'GLOCK 17',
-        deagle: 'DESERT EAGLE',
-        rifle: 'M4A1 CARBINE',
-        shotgun: 'M870 BREACHER'
-      };
-
-      // Update Menu Mission Summaries across all panels
-      function updateMenuSummaries() {
-        const locName = (LEVELS[selectedLevel] && (LEVELS[selectedLevel].shortName || LEVELS[selectedLevel].name)) || 'DOWNTOWN CITY';
-        const modeName = enemyCategory === 'animals' ? 'MUTANT ANIMALS' : (zombieModelType === 'glb' ? 'ZOMBIES (3D GLB)' : 'ZOMBIES (PROC)');
-        const gunName = WEAPON_NAMES[chosenWeapon] || 'GLOCK 17';
-        const timeName = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit / 60)} MIN` : 'UNLIMITED';
-        const diffName = gameDifficulty.toUpperCase();
-
-        if ($('sum-step1-loc')) $('sum-step1-loc').textContent = locName;
-        if ($('sum-step1-mode')) $('sum-step1-mode').textContent = modeName;
-        if ($('sum-step1-gun')) $('sum-step1-gun').textContent = gunName;
-        if ($('sum-step1-time')) $('sum-step1-time').textContent = timeName;
-        if ($('cycle-armory-name')) $('cycle-armory-name').textContent = gunName;
-
-        if ($('sub-goto-sectors')) $('sub-goto-sectors').textContent = `${locName} • ${modeName} • ${diffName}`;
-        if ($('sub-goto-loadout')) $('sub-goto-loadout').textContent = `${gunName} • ${timeName} • ${zombieModelType === 'glb' ? '3D GLB Monsters' : 'Procedural'}`;
-      }
-
-      // Armory Weapon Selection & Single Cycle Button Handler
-      function selectWeapon(gunId) {
-        if (!WEAPON_NAMES[gunId]) return;
-        chosenWeapon = gunId;
-        if (typeof cur !== 'undefined') {
-          cur = gunId;
-          if (typeof switchGun === 'function') switchGun(gunId);
-        }
-        document.querySelectorAll('.gun-card').forEach(c => {
-          c.classList.toggle('active', c.dataset.gun === gunId);
-        });
-        const lbl = $('cycle-armory-name');
-        if (lbl) lbl.textContent = WEAPON_NAMES[gunId];
-        updateMenuSummaries();
-        if (typeof vrUI !== 'undefined' && vrUI.mode === 'menu') {
-          vrUI.draw();
-        }
-      }
-
-      function cycleArmory() {
-        const guns = ['pistol', 'deagle', 'rifle', 'shotgun'];
-        const curIdx = guns.indexOf(chosenWeapon);
-        const nextGun = guns[(curIdx + 1) % guns.length];
-        selectWeapon(nextGun);
-        if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
-      }
-
-      // Difficulty Mode Selector Handler
-      function setDifficulty(diff) {
-        if (!diffMultipliers[diff]) return;
-        gameDifficulty = diff;
-        document.querySelectorAll('.diff-pill-btn').forEach(b => {
-          b.classList.toggle('active', b.dataset.diff === diff);
-        });
-        updateMenuSummaries();
-        if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
-      }
-
-      // Global Master Audio Sound On/Off Toggle Handler
-      // Global Master Audio Sound On/Off & Dynamic Background Music (BGM) System
-      let isMuted = false;
-      let bgmAudio = null;
-      let bgmGainNode = null;
-      let bgmBaseVolume = 0.8;
-      let bgmCurrentScale = 1.0;
-
-      function initBGM() {
-        if (bgmAudio) return;
-        bgmAudio = new Audio('sounds/zombie%20sound%20new/background%20music.mp3');
-        bgmAudio.loop = true;
-        bgmAudio.crossOrigin = 'anonymous';
-        if (AC && typeof AC.createMediaElementSource === 'function') {
-          try {
-            const bgmSrc = AC.createMediaElementSource(bgmAudio);
-            bgmGainNode = AC.createGain();
-            bgmGainNode.gain.setValueAtTime(isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale), AC.currentTime);
-            bgmSrc.connect(bgmGainNode);
-            bgmGainNode.connect(master || AC.destination);
-            bgmAudio.volume = 1.0;
-          } catch (e) {
-            bgmAudio.volume = isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale);
+      // Preload Half-Life 2 Classic Zombie Torso Crawler (Spitter)
+      // Preload Half-Life 2 Classic Zombie Torso Crawler (Wave 2 Horde)
+      loader.load(torsoPath, gltf => {
+        gltf.scene.traverse(o => {
+          if (o.isMesh || o.isSkinnedMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+            if (o.material) {
+              o.material.roughness = 0.8;
+              o.material.metalness = 0.1;
+            }
           }
-        } else {
+        });
+
+        // Fix crawler root motion so it crawls smoothly in-place with game AI
+        if (gltf.animations) {
+          const crawlClip = gltf.animations.find(a => a.name.includes('crawl'));
+          if (crawlClip) {
+            const spineTrack = crawlClip.tracks.find(t => t.name.includes('Spine_01.position'));
+            if (spineTrack) {
+              const initialY = spineTrack.values[1];
+              for (let i = 0; i < spineTrack.values.length; i += 3) {
+                spineTrack.values[i + 1] = initialY;
+              }
+            }
+          }
+        }
+
+        zombieTemplates.torso = {
+          scene: gltf.scene,
+          animations: gltf.animations
+        };
+        checkDone();
+      }, undefined, err => {
+        console.warn('Could not load Torso GLB, will fallback to procedural if needed:', err);
+        checkDone();
+      });
+
+      // Preload Headcrab Zombie (Walker, Runner, Giant, Boss in all 4 levels)
+      // Preload Headcrab Zombie (Wave 1 Horde)
+      loader.load(headcrabPath, gltf => {
+        gltf.scene.traverse(o => {
+          if (o.isMesh || o.isSkinnedMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+            if (o.material) {
+              o.material.roughness = 0.78;
+              o.material.metalness = 0.12;
+            }
+          }
+        });
+        zombieTemplates.headcrab = {
+          scene: gltf.scene,
+          animations: gltf.animations
+        };
+        checkDone();
+      }, undefined, err => {
+        console.warn('Could not load Headcrab Zombie GLB:', err);
+        checkDone();
+      });
+
+      // Preload Stylized Rigged 3D Pistol for Glock 17
+      loader.load(pistolPath, gltf => {
+        gltf.scene.traverse(o => {
+          if (o.isMesh || o.isSkinnedMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+            if (o.material) {
+              o.material.roughness = 0.65;
+              o.material.metalness = 0.25;
+            }
+          }
+        });
+        weaponTemplates.pistol = {
+          scene: gltf.scene,
+          animations: gltf.animations
+        };
+        weaponTemplates.loaded = true;
+        console.log('✅ Stylized Rigged Pistol model loaded for Glock 17!');
+        if (typeof cur !== 'undefined' && cur === 'pistol') {
+          buildGun('pistol');
+        }
+        checkDone();
+      }, undefined, err => {
+        console.warn('Could not load Stylized Pistol GLB:', err);
+        checkDone();
+      });
+    }
+    initGLBZombieLoader();
+
+    // Device Auto-Detection
+    function detectDevice() {
+      const ua = navigator.userAgent || '';
+      const isQuestOrVR = /OculusBrowser|Quest|Pico|Vive|VR|WebXR/i.test(ua) || (window.location.search.includes('mode=vr'));
+      if (isQuestOrVR) return 'vr';
+      if (window.location.search.includes('mode=pc')) return 'pc';
+      if (window.location.search.includes('mode=mob')) return 'mobile';
+      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+      if (isMobileUA || (isTouch && window.innerWidth <= 1024)) return 'mobile';
+      return 'pc';
+    }
+
+    const detectedDevice = detectDevice();
+    const devBadge = $('device-detect-badge');
+    if (devBadge) {
+      if (detectedDevice === 'vr') {
+        devBadge.className = 'vr-mode';
+        devBadge.innerHTML = '&#129523; QUEST 2 VR ACTIVE &bull; 6DOF TOUCH CONTROLLERS &bull; 3D SPATIAL UI';
+      } else if (detectedDevice === 'mobile') {
+        devBadge.className = 'mobile-mode';
+        devBadge.innerHTML = '&#128241; MOBILE TOUCH CONTROLS ACTIVE &bull; DUAL VIRTUAL STICKS';
+      } else {
+        devBadge.className = 'pc-mode';
+        devBadge.innerHTML = '&#128421; PC FPS CONTROLS &bull; WASD MOVE &bull; MOUSE AIM & SHOOT';
+      }
+    }
+
+    // Universal Start Survival Game Launcher
+    function launchCurrentGameMode() {
+      if (detectedDevice === 'vr') {
+        launchVRMode();
+      } else if (detectedDevice === 'mobile') {
+        launchMobileMode();
+      } else {
+        launchPCMode();
+      }
+    }
+
+    // Bind All Start Survival Buttons
+    ['btn-start-hero', 'btn-step2-start', 'btn-step3-start', 'btn-step4-start', 'btn-start-main', 'btn-quest-hero'].forEach(id => {
+      if ($(id)) bindUniversalClick(id, launchCurrentGameMode);
+    });
+
+    // Weapons Name Catalog for UI Summaries (Safe from TDZ)
+    const WEAPON_NAMES = {
+      pistol: 'GLOCK 17',
+      deagle: 'DESERT EAGLE',
+      rifle: 'M4A1 CARBINE',
+      shotgun: 'M870 BREACHER'
+    };
+
+    // Update Menu Mission Summaries across all panels
+    function updateMenuSummaries() {
+      const locName = (LEVELS[selectedLevel] && (LEVELS[selectedLevel].shortName || LEVELS[selectedLevel].name)) || 'DOWNTOWN CITY';
+      const modeName = enemyCategory === 'animals' ? 'MUTANT ANIMALS' : (zombieModelType === 'glb' ? 'ZOMBIES (3D GLB)' : 'ZOMBIES (PROC)');
+      const gunName = WEAPON_NAMES[chosenWeapon] || 'GLOCK 17';
+      const timeName = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit / 60)} MIN` : 'UNLIMITED';
+      const diffName = gameDifficulty.toUpperCase();
+
+      if ($('sum-step1-loc')) $('sum-step1-loc').textContent = locName;
+      if ($('sum-step1-mode')) $('sum-step1-mode').textContent = modeName;
+      if ($('sum-step1-gun')) $('sum-step1-gun').textContent = gunName;
+      if ($('sum-step1-time')) $('sum-step1-time').textContent = timeName;
+      if ($('cycle-armory-name')) $('cycle-armory-name').textContent = gunName;
+
+      if ($('sub-goto-sectors')) $('sub-goto-sectors').textContent = `${locName} • ${modeName} • ${diffName}`;
+      if ($('sub-goto-loadout')) $('sub-goto-loadout').textContent = `${gunName} • ${timeName} • ${zombieModelType === 'glb' ? '3D GLB Monsters' : 'Procedural'}`;
+    }
+
+    // Armory Weapon Selection & Single Cycle Button Handler
+    function selectWeapon(gunId) {
+      if (!WEAPON_NAMES[gunId]) return;
+      chosenWeapon = gunId;
+      if (typeof cur !== 'undefined') {
+        cur = gunId;
+        if (typeof switchGun === 'function') switchGun(gunId);
+      }
+      document.querySelectorAll('.gun-card').forEach(c => {
+        c.classList.toggle('active', c.dataset.gun === gunId);
+      });
+      const lbl = $('cycle-armory-name');
+      if (lbl) lbl.textContent = WEAPON_NAMES[gunId];
+      updateMenuSummaries();
+      if (typeof vrUI !== 'undefined' && vrUI.mode === 'menu') {
+        vrUI.draw();
+      }
+    }
+
+    function cycleArmory() {
+      const guns = ['pistol', 'deagle', 'rifle', 'shotgun'];
+      const curIdx = guns.indexOf(chosenWeapon);
+      const nextGun = guns[(curIdx + 1) % guns.length];
+      selectWeapon(nextGun);
+      if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
+    }
+
+    // Difficulty Mode Selector Handler
+    function setDifficulty(diff) {
+      if (!diffMultipliers[diff]) return;
+      gameDifficulty = diff;
+      document.querySelectorAll('.diff-pill-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.diff === diff);
+      });
+      updateMenuSummaries();
+      if (typeof SND !== 'undefined' && SND.uiClick) SND.uiClick();
+    }
+
+    // Global Master Audio Sound On/Off Toggle Handler
+    // Global Master Audio Sound On/Off & Dynamic Background Music (BGM) System
+    let isMuted = false;
+    let bgmAudio = null;
+    let bgmGainNode = null;
+    let bgmBaseVolume = 0.8;
+    let bgmCurrentScale = 1.0;
+
+    function initBGM() {
+      if (bgmAudio) return;
+      bgmAudio = new Audio('sounds/zombie%20sound%20new/background%20music.mp3');
+      bgmAudio.loop = true;
+      bgmAudio.crossOrigin = 'anonymous';
+      if (AC && typeof AC.createMediaElementSource === 'function') {
+        try {
+          const bgmSrc = AC.createMediaElementSource(bgmAudio);
+          bgmGainNode = AC.createGain();
+          bgmGainNode.gain.setValueAtTime(isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale), AC.currentTime);
+          bgmSrc.connect(bgmGainNode);
+          bgmGainNode.connect(master || AC.destination);
+          bgmAudio.volume = 1.0;
+        } catch (e) {
           bgmAudio.volume = isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale);
         }
+      } else {
+        bgmAudio.volume = isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale);
       }
+    }
 
-      function setBGMScale(scale, rampSec = 1.0) {
-        bgmCurrentScale = scale;
-        const targetVol = isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale);
-        if (bgmGainNode && AC) {
-          try {
-            bgmGainNode.gain.cancelScheduledValues(AC.currentTime);
-            bgmGainNode.gain.setValueAtTime(bgmGainNode.gain.value, AC.currentTime);
-            bgmGainNode.gain.linearRampToValueAtTime(targetVol, AC.currentTime + rampSec);
-          } catch (e) {
-            try { bgmGainNode.gain.value = targetVol; } catch (e2) { }
-          }
-        }
-        if (bgmAudio) {
-          try {
-            bgmAudio.volume = Math.max(0, Math.min(1, targetVol));
-          } catch (e) { }
+    function setBGMScale(scale, rampSec = 1.0) {
+      bgmCurrentScale = scale;
+      const targetVol = isMuted ? 0 : (bgmBaseVolume * bgmCurrentScale);
+      if (bgmGainNode && AC) {
+        try {
+          bgmGainNode.gain.cancelScheduledValues(AC.currentTime);
+          bgmGainNode.gain.setValueAtTime(bgmGainNode.gain.value, AC.currentTime);
+          bgmGainNode.gain.linearRampToValueAtTime(targetVol, AC.currentTime + rampSec);
+        } catch (e) {
+          try { bgmGainNode.gain.value = targetVol; } catch (e2) { }
         }
       }
+      if (bgmAudio) {
+        try {
+          bgmAudio.volume = Math.max(0, Math.min(1, targetVol));
+        } catch (e) { }
+      }
+    }
 
-      function setBGMBaseVolume(vol) {
-        bgmBaseVolume = Math.max(0, Math.min(1, vol));
-        setBGMScale(bgmCurrentScale, 0.05);
-        const lbl = $('bgm-vol-label');
-        if (lbl) lbl.textContent = Math.round(bgmBaseVolume * 100) + '%';
-        const slider = $('slider-bgm');
-        if (slider) slider.value = Math.round(bgmBaseVolume * 100);
-      }
+    function setBGMBaseVolume(vol) {
+      bgmBaseVolume = Math.max(0, Math.min(1, vol));
+      setBGMScale(bgmCurrentScale, 0.1);
+      setBGMScale(bgmCurrentScale, 0.05);
+      const lbl = $('bgm-vol-label');
+      if (lbl) lbl.textContent = Math.round(bgmBaseVolume * 100) + '%';
+      const slider = $('slider-bgm');
+      if (slider) slider.value = Math.round(bgmBaseVolume * 100);
+    }
 
-      function ensureMenuBGM() {
-        if (!bgmAudio) initBGM();
-        if (state === 'menu') {
-          setBGMScale(1.0, 0.2);
-        }
-        if (bgmAudio && bgmAudio.paused && !isMuted) {
-          bgmAudio.play().catch(() => { });
-        }
+    function ensureMenuBGM() {
+      if (!bgmAudio) initBGM();
+      if (state === 'menu') {
+        setBGMScale(1.0, 0.2);
       }
+      if (bgmAudio && bgmAudio.paused && !isMuted) {
+        bgmAudio.play().catch(() => { });
+      }
+    }
 
-      function startBGM() {
-        initBGM();
-        setBGMScale(0.05, 1.2); // When wave starts, combat BGM ducks down to 5%
-        if (bgmAudio && bgmAudio.paused && !isMuted) {
-          bgmAudio.play().catch(() => { });
-        }
+    function startBGM() {
+      initBGM();
+      setBGMScale(0.05, 1.2); // When wave starts, combat BGM ducks down to 5%
+      if (bgmAudio && bgmAudio.paused && !isMuted) {
+        bgmAudio.play().catch(() => { });
       }
+    }
 
       // Continuous UI Background Music: Resume playback on first user gesture in main screen
       ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(evt => {
@@ -3228,67 +3229,67 @@
       }
 
       // ---------- REAL AUDIO FILES INTEGRATION (sounds/) ----------
-    const AUDIO_MANIFEST = {
-      pistol: [
-        'sounds/pistol/pi_hand_single_near_03.wav'
-      ],
-      explosion: [
-        'sounds/zombie sound/explosion-big_A_003.mp3',
-        'sounds/zombie sound/explosion-big.mp3'
-      ],
-      bite: [
-        'sounds/zombie sound new/zombie attacking.mp3',
-        'sounds/zombie sound new/zombie attacking 1.mp3'
-      ],
-      blood: [
-        'sounds/Blood/Blood_Splash_A_001.mp3',
-        'sounds/Blood/Blood_Splash_A_002.mp3',
-        'sounds/Blood/Blood_Splash_A_003.mp3'
-      ],
-      bodyFall: [
-        'sounds/BodyFall/Foley_BodyFall_001.mp3',
-        'sounds/BodyFall/Foley_BodyFall_002.mp3',
-        'sounds/BodyFall/Foley_BodyFall_003.mp3'
-      ],
-      eat: [
-        'sounds/zombie sound new/zombie attacking.mp3',
-        'sounds/zombie sound new/zombie attacking 1.mp3'
-      ],
-      foley: [
-        'sounds/Foley/Foley_Movement_Clothes_A_001.mp3',
-        'sounds/Foley/Foley_Movement_Clothes_A_002.mp3',
-        'sounds/Foley/Foley_Movement_Clothes_A_003.mp3'
-      ],
-      footstep: [
-        'freesound_community-concrete-footsteps-6752.mp3'
-      ],
-      zombieFootstep: [
-        'sounds/Footsteps/Footsteps_Zombie_concret_001.mp3',
-        'sounds/Footsteps/Footsteps_Zombie_concret_002.mp3',
-        'sounds/Footsteps/Footsteps_Zombie_concret_003.mp3',
-        'sounds/Footsteps/Footsteps_Zombie_concret_004.mp3'
-      ],
-      fleshImpact: [
-        'sounds/Impact/Impact_Flesh_001.mp3',
-        'sounds/Impact/Impact_Flesh_002.mp3',
-        'sounds/Impact/Impact_Flesh_003.mp3'
-      ],
-      zombieAttack: [
-        'sounds/zombie sound new/zombie attacking.mp3',
-        'sounds/zombie sound new/zombie attacking 1.mp3'
-      ],
-      zombieScreaming: [
-        'sounds/zombie sound new/zombie screaming.mp3'
-      ],
-      bossApproaching: [
-        'sounds/zombie sound new/boss approaching.wav'
-      ],
-      bgm: [
-        'sounds/zombie sound new/background music.mp3'
-      ]
-    };
+      const AUDIO_MANIFEST = {
+        pistol: [
+          'sounds/pistol/pi_hand_single_near_03.wav'
+        ],
+        explosion: [
+          'sounds/zombie sound/explosion-big_A_003.mp3',
+          'sounds/zombie sound/explosion-big.mp3'
+        ],
+        bite: [
+          'sounds/zombie sound new/zombie attacking.mp3',
+          'sounds/zombie sound new/zombie attacking 1.mp3'
+        ],
+        blood: [
+          'sounds/Blood/Blood_Splash_A_001.mp3',
+          'sounds/Blood/Blood_Splash_A_002.mp3',
+          'sounds/Blood/Blood_Splash_A_003.mp3'
+        ],
+        bodyFall: [
+          'sounds/BodyFall/Foley_BodyFall_001.mp3',
+          'sounds/BodyFall/Foley_BodyFall_002.mp3',
+          'sounds/BodyFall/Foley_BodyFall_003.mp3'
+        ],
+        eat: [
+          'sounds/zombie sound new/zombie attacking.mp3',
+          'sounds/zombie sound new/zombie attacking 1.mp3'
+        ],
+        foley: [
+          'sounds/Foley/Foley_Movement_Clothes_A_001.mp3',
+          'sounds/Foley/Foley_Movement_Clothes_A_002.mp3',
+          'sounds/Foley/Foley_Movement_Clothes_A_003.mp3'
+        ],
+        footstep: [
+          'freesound_community-concrete-footsteps-6752.mp3'
+        ],
+        zombieFootstep: [
+          'sounds/Footsteps/Footsteps_Zombie_concret_001.mp3',
+          'sounds/Footsteps/Footsteps_Zombie_concret_002.mp3',
+          'sounds/Footsteps/Footsteps_Zombie_concret_003.mp3',
+          'sounds/Footsteps/Footsteps_Zombie_concret_004.mp3'
+        ],
+        fleshImpact: [
+          'sounds/Impact/Impact_Flesh_001.mp3',
+          'sounds/Impact/Impact_Flesh_002.mp3',
+          'sounds/Impact/Impact_Flesh_003.mp3'
+        ],
+        zombieAttack: [
+          'sounds/zombie sound new/zombie attacking.mp3',
+          'sounds/zombie sound new/zombie attacking 1.mp3'
+        ],
+        zombieScreaming: [
+          'sounds/zombie sound new/zombie screaming.mp3'
+        ],
+        bossApproaching: [
+          'sounds/zombie sound new/boss approaching.wav'
+        ],
+        bgm: [
+          'sounds/zombie sound new/background music.mp3'
+        ]
+      };
 
-    const AUDIO_BUFFERS = {};
+      const AUDIO_BUFFERS = {};
 
       function preloadAudioSample(url) {
         if (!AC || AUDIO_BUFFERS[url]) return;
@@ -3330,6 +3331,7 @@
       }
 
       function playSample(category, pos = null, vol = 1.0, pitchVariation = 0.05) {
+        if (!AC || state === 'paused') return false;
         if (!AC || state === 'paused' || state === 'over' || state === 'win' || state === 'session_over' || state === 'menu') return false;
         const list = AUDIO_MANIFEST[category];
         if (!list || !list.length) return false;
@@ -4865,181 +4867,181 @@
       };
 
       const P1 = new V(), P2 = new V(), P3 = new V(), P4 = new V(), Q = new THREE.Quaternion(), V_NEG_Z = new THREE.Vector3(0, 0, -1);
-        const ray = new THREE.Raycaster();
-        ray.far = 250;
-        function updateAudioListener() {
-          if (!AC || !AC.listener) return;
-      const l = AC.listener;
-      camera.getWorldPosition(P1);
-      camera.getWorldDirection(P2);
-      const camUp = P3.set(0, 1, 0).applyQuaternion(camera.quaternion);
+      const ray = new THREE.Raycaster();
+      ray.far = 250;
+      function updateAudioListener() {
+        if (!AC || !AC.listener) return;
+        const l = AC.listener;
+        camera.getWorldPosition(P1);
+        camera.getWorldDirection(P2);
+        const camUp = P3.set(0, 1, 0).applyQuaternion(camera.quaternion);
 
-      const t = AC.currentTime;
-      if (l.positionX) {
-        if (l.positionX.setValueAtTime) {
-          l.positionX.setValueAtTime(P1.x, t);
-          l.positionY.setValueAtTime(P1.y, t);
-          l.positionZ.setValueAtTime(P1.z, t);
-          l.forwardX.setValueAtTime(P2.x, t);
-          l.forwardY.setValueAtTime(P2.y, t);
-          l.forwardZ.setValueAtTime(P2.z, t);
-          l.upX.setValueAtTime(camUp.x, t);
-          l.upY.setValueAtTime(camUp.y, t);
-          l.upZ.setValueAtTime(camUp.z, t);
-        } else {
-          l.positionX.value = P1.x; l.positionY.value = P1.y; l.positionZ.value = P1.z;
-          l.forwardX.value = P2.x; l.forwardY.value = P2.y; l.forwardZ.value = P2.z;
-          l.upX.value = camUp.x; l.upY.value = camUp.y; l.upZ.value = camUp.z;
+        const t = AC.currentTime;
+        if (l.positionX) {
+          if (l.positionX.setValueAtTime) {
+            l.positionX.setValueAtTime(P1.x, t);
+            l.positionY.setValueAtTime(P1.y, t);
+            l.positionZ.setValueAtTime(P1.z, t);
+            l.forwardX.setValueAtTime(P2.x, t);
+            l.forwardY.setValueAtTime(P2.y, t);
+            l.forwardZ.setValueAtTime(P2.z, t);
+            l.upX.setValueAtTime(camUp.x, t);
+            l.upY.setValueAtTime(camUp.y, t);
+            l.upZ.setValueAtTime(camUp.z, t);
+          } else {
+            l.positionX.value = P1.x; l.positionY.value = P1.y; l.positionZ.value = P1.z;
+            l.forwardX.value = P2.x; l.forwardY.value = P2.y; l.forwardZ.value = P2.z;
+            l.upX.value = camUp.x; l.upY.value = camUp.y; l.upZ.value = camUp.z;
+          }
+        } else if (l.setPosition) {
+          l.setPosition(P1.x, P1.y, P1.z);
+          l.setOrientation(P2.x, P2.y, P2.z, camUp.x, camUp.y, camUp.z);
         }
-      } else if (l.setPosition) {
-        l.setPosition(P1.x, P1.y, P1.z);
-        l.setOrientation(P2.x, P2.y, P2.z, camUp.x, camUp.y, camUp.z);
       }
-    }
 
-    // ---------- WEAPONS ----------
-    const W = {
-      pistol: { n: 'GLOCK 17', mag: 15, dmg: 42, rate: 0.24, auto: 0, pel: 1, spr: 0.004, rel: 1.15 },
-      deagle: { n: 'DESERT EAGLE', mag: 7, dmg: 105, rate: 0.46, auto: 0, pel: 1, spr: 0.003, rel: 1.5 },
-      rifle: { n: 'M4A1 CARBINE', mag: 30, dmg: 25, rate: 0.088, auto: 1, pel: 1, spr: 0.011, rel: 1.75 },
-      shotgun: { n: 'M870 BREACHER', mag: 8, dmg: 20, rate: 0.8, auto: 0, pel: 8, spr: 0.068, rel: 2.2 }
-    };
-    const NAMES = Object.keys(W);
-    let cur = 'pistol';
-    let ammo = {
-      pistol: { mag: 15, res: 75 },
-      deagle: { mag: 7, res: 35 },
-      rifle: { mag: 30, res: 150 },
-      shotgun: { mag: 8, res: 40 }
-    };
-    let cd = 0, reloading = 0, kick = 0, flash = 0;
-    let hp = 100, score = 0, kills = 0, wave = 0, state = 'menu';
-    let queue = [], spawnT = 0, breakT = 0, bossT = 0, msgT = 0, hurtA = 0, hudT = 0, stepT = 0;
+      // ---------- WEAPONS ----------
+      const W = {
+        pistol: { n: 'GLOCK 17', mag: 15, dmg: 42, rate: 0.24, auto: 0, pel: 1, spr: 0.004, rel: 1.15 },
+        deagle: { n: 'DESERT EAGLE', mag: 7, dmg: 105, rate: 0.46, auto: 0, pel: 1, spr: 0.003, rel: 1.5 },
+        rifle: { n: 'M4A1 CARBINE', mag: 30, dmg: 25, rate: 0.088, auto: 1, pel: 1, spr: 0.011, rel: 1.75 },
+        shotgun: { n: 'M870 BREACHER', mag: 8, dmg: 20, rate: 0.8, auto: 0, pel: 8, spr: 0.068, rel: 2.2 }
+      };
+      const NAMES = Object.keys(W);
+      let cur = 'pistol';
+      let ammo = {
+        pistol: { mag: 15, res: 75 },
+        deagle: { mag: 7, res: 35 },
+        rifle: { mag: 30, res: 150 },
+        shotgun: { mag: 8, res: 40 }
+      };
+      let cd = 0, reloading = 0, kick = 0, flash = 0;
+      let hp = 100, score = 0, kills = 0, wave = 0, state = 'menu';
+      let queue = [], spawnT = 0, breakT = 0, bossT = 0, msgT = 0, hurtA = 0, hudT = 0, stepT = 0;
 
-    // VR Wrist HUD
-    const hc = document.createElement('canvas');
-    hc.width = 256; hc.height = 128;
-    const hx = hc.getContext('2d'), htex = new THREE.CanvasTexture(hc);
-    const gun = new THREE.Group(), body = new THREE.Group(), muzzle = new THREE.Object3D(), laserEmitter = new THREE.Object3D();
-    const gunBase = new V(0.22, -0.22, -0.4);
-    gun.add(body, muzzle, laserEmitter);
+      // VR Wrist HUD
+      const hc = document.createElement('canvas');
+      hc.width = 256; hc.height = 128;
+      const hx = hc.getContext('2d'), htex = new THREE.CanvasTexture(hc);
+      const gun = new THREE.Group(), body = new THREE.Group(), muzzle = new THREE.Object3D(), laserEmitter = new THREE.Object3D();
+      const gunBase = new V(0.22, -0.22, -0.4);
+      gun.add(body, muzzle, laserEmitter);
 
-    const flashM = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffd166 }));
-    flashM.visible = false;
-    muzzle.add(flashM);
-    const flashL = new THREE.PointLight(0xffaa44, 0, 12);
-    muzzle.add(flashL);
+      const flashM = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffd166 }));
+      flashM.visible = false;
+      muzzle.add(flashM);
+      const flashL = new THREE.PointLight(0xffaa44, 0, 12);
+      muzzle.add(flashL);
 
-    // ---------- TACTICAL GUN TORCHLIGHT (FLASHLIGHT) ----------
-    // Powerful weapon-mounted dynamic beam illuminating the dark woods in Blackout Pine Abyss
-    const torchLight = new THREE.SpotLight(0xfff6dc, 4.2, 52, Math.PI / 6.5, 0.45, 1.15);
-    torchLight.position.set(0, 0, -0.12);
-    const torchTarget = new THREE.Object3D();
-    torchTarget.position.set(0, 0, -25);
-    gun.add(torchLight, torchTarget);
-    torchLight.target = torchTarget;
+      // ---------- TACTICAL GUN TORCHLIGHT (FLASHLIGHT) ----------
+      // Powerful weapon-mounted dynamic beam illuminating the dark woods in Blackout Pine Abyss
+      const torchLight = new THREE.SpotLight(0xfff6dc, 4.2, 52, Math.PI / 6.5, 0.45, 1.15);
+      torchLight.position.set(0, 0, -0.12);
+      const torchTarget = new THREE.Object3D();
+      torchTarget.position.set(0, 0, -25);
+      gun.add(torchLight, torchTarget);
+      torchLight.target = torchTarget;
 
-    const torchFill = new THREE.PointLight(0xfffaea, 0.65, 12);
-    torchFill.position.set(0, 0, -0.2);
-    gun.add(torchFill);
+      const torchFill = new THREE.PointLight(0xfffaea, 0.65, 12);
+      torchFill.position.set(0, 0, -0.2);
+      gun.add(torchFill);
 
-    let torchActive = false;
-    function setTorch(on) {
-      torchActive = !!on;
-      torchLight.visible = torchActive;
-      torchFill.visible = torchActive;
-      const torchBtns = document.querySelectorAll('.hud-torch-btn, #hud-torch');
-      torchBtns.forEach(b => {
-        b.style.display = (LEVELS[selectedLevel].id === 'abyss' || torchActive) ? 'inline-block' : 'none';
-        b.classList.toggle('active', torchActive);
-        b.title = torchActive ? 'Gun Torchlight ON (Press F to toggle)' : 'Gun Torchlight OFF (Press F to toggle)';
-      });
-    }
-    torchLight.visible = false;
-    torchFill.visible = false;
+      let torchActive = false;
+      function setTorch(on) {
+        torchActive = !!on;
+        torchLight.visible = torchActive;
+        torchFill.visible = torchActive;
+        const torchBtns = document.querySelectorAll('.hud-torch-btn, #hud-torch');
+        torchBtns.forEach(b => {
+          b.style.display = (LEVELS[selectedLevel].id === 'abyss' || torchActive) ? 'inline-block' : 'none';
+          b.classList.toggle('active', torchActive);
+          b.title = torchActive ? 'Gun Torchlight ON (Press F to toggle)' : 'Gun Torchlight OFF (Press F to toggle)';
+        });
+      }
+      torchLight.visible = false;
+      torchFill.visible = false;
 
-    const hudP = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.1), new THREE.MeshBasicMaterial({ map: htex, transparent: true }));
-    hudP.position.set(0, 0.1, 0.05);
-    hudP.rotation.x = -0.9;
-    hudP.visible = false;
-    gun.add(hudP);
+      const hudP = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.1), new THREE.MeshBasicMaterial({ map: htex, transparent: true }));
+      hudP.position.set(0, 0.1, 0.05);
+      hudP.rotation.x = -0.9;
+      hudP.visible = false;
+      gun.add(hudP);
 
-    let slide = null, pump = null;
-    let pistolMixer = null, pistolAction = null;
-    const gm = new THREE.MeshPhongMaterial({ color: 0x1b1d21, shininess: 90, specular: 0x666666 });
-    const pol = new THREE.MeshPhongMaterial({ color: 0x121316, shininess: 20 });
-    const wd = new THREE.MeshPhongMaterial({ color: 0x6b3f1e, shininess: 40, specular: 0x332211 });
-    const sil = new THREE.MeshPhongMaterial({ color: 0xcbd5e1, shininess: 120, specular: 0xffffff });
-    const laserLensMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });
-    const gc = (r, h, x, y, z, m) => {
-      const o = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 10), m);
-      o.rotation.x = Math.PI / 2;
-      o.position.set(x, y, z);
-      return o;
-    };
+      let slide = null, pump = null;
+      let pistolMixer = null, pistolAction = null;
+      const gm = new THREE.MeshPhongMaterial({ color: 0x1b1d21, shininess: 90, specular: 0x666666 });
+      const pol = new THREE.MeshPhongMaterial({ color: 0x121316, shininess: 20 });
+      const wd = new THREE.MeshPhongMaterial({ color: 0x6b3f1e, shininess: 40, specular: 0x332211 });
+      const sil = new THREE.MeshPhongMaterial({ color: 0xcbd5e1, shininess: 120, specular: 0xffffff });
+      const laserLensMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });
+      const gc = (r, h, x, y, z, m) => {
+        const o = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 10), m);
+        o.rotation.x = Math.PI / 2;
+        o.position.set(x, y, z);
+        return o;
+      };
 
-    function buildGun(n) {
-      body.clear();
-      slide = pump = null;
-      if (n === 'pistol' || n === 'deagle') {
-        pistolMixer = null;
-        pistolAction = null;
-        if (n === 'pistol' && weaponTemplates.pistol && weaponTemplates.pistol.scene) {
-          // High-Quality Rigged Stylized 3D Pistol GLB for Glock 17
-          // Perfectly leveled and pointing straight forward (-Z) towards zombies (no downward angle)
-          const pModel = (typeof THREE.SkeletonUtils !== 'undefined') ? THREE.SkeletonUtils.clone(weaponTemplates.pistol.scene) : weaponTemplates.pistol.scene.clone();
-          pModel.scale.setScalar(0.044);
-          pModel.rotation.set(0.005, -2.6083, 0);
-          pModel.position.set(0, -0.03, -0.14);
-          body.add(pModel);
+      function buildGun(n) {
+        body.clear();
+        slide = pump = null;
+        if (n === 'pistol' || n === 'deagle') {
+          pistolMixer = null;
+          pistolAction = null;
+          if (n === 'pistol' && weaponTemplates.pistol && weaponTemplates.pistol.scene) {
+            // High-Quality Rigged Stylized 3D Pistol GLB for Glock 17
+            // Perfectly leveled and pointing straight forward (-Z) towards zombies (no downward angle)
+            const pModel = (typeof THREE.SkeletonUtils !== 'undefined') ? THREE.SkeletonUtils.clone(weaponTemplates.pistol.scene) : weaponTemplates.pistol.scene.clone();
+            pModel.scale.setScalar(0.044);
+            pModel.rotation.set(0.005, -2.6083, 0);
+            pModel.position.set(0, -0.03, -0.14);
+            body.add(pModel);
 
-          // Tactical Underbarrel Laser Diode Module
-          body.add(
-            box(0.018, 0.014, 0.036, 0, -0.008, -0.115, gm),
-            box(0.022, 0.006, 0.026, 0, 0.001, -0.115, pol),
-            gc(0.0042, 0.006, 0, -0.008, -0.133, gm),
-            gc(0.0028, 0.002, 0, -0.008, -0.136, laserLensMat)
-          );
-
-          if (weaponTemplates.pistol.animations && weaponTemplates.pistol.animations.length) {
-            pistolMixer = new THREE.AnimationMixer(pModel);
-            pistolAction = pistolMixer.clipAction(weaponTemplates.pistol.animations[0]);
-            pistolAction.setLoop(THREE.LoopOnce);
-            pistolAction.clampWhenFinished = true;
-            pistolAction.timeScale = 1.8;
-          }
-
-          muzzle.position.set(0, 0.0195, -0.155);
-          laserEmitter.position.set(0, -0.008, -0.136);
-        } else {
-          const d = n === 'deagle', F = d ? 1.25 : 1, m = d ? sil : gm;
-          const grip = box(0.034 * F, 0.1 * F, 0.05 * F, 0, -0.065 * F, 0.035, pol);
-          grip.rotation.x = -0.25;
-          slide = new THREE.Group();
-          slide.add(
-            box(0.032 * F, 0.036 * F, 0.2 * F, 0, 0.03 * F, -0.1 * F, m),
-            box(0.006, 0.012, 0.012, 0, 0.054 * F, -0.19 * F, pol),
-            box(0.012, 0.01, 0.012, 0, 0.054 * F, -0.01, pol)
-          );
-          for (let i = 0; i < 5; i++) {
-            slide.add(box(0.034 * F, 0.03 * F, 0.004, 0, 0.03 * F, -0.015 * i - 0.01, pol));
-          }
-          body.add(
-            box(0.03 * F, 0.028 * F, 0.18 * F, 0, 0, -0.09 * F, pol),
-            grip, slide,
-            box(0.03 * F, 0.008, 0.07, 0, -0.022 * F, -0.045, pol),
-            box(0.006, 0.03, 0.006, 0, -0.04, -0.07, pol),
-            box(0.036 * F, 0.01, 0.056 * F, 0, -0.115 * F, 0.055, gm),
             // Tactical Underbarrel Laser Diode Module
-            box(0.018 * F, 0.014 * F, 0.044 * F, 0, -0.013 * F, -0.125 * F, gm),
-            box(0.022 * F, 0.006 * F, 0.03 * F, 0, -0.003 * F, -0.125 * F, pol),
-            gc(0.0042 * F, 0.006 * F, 0, -0.013 * F, -0.148 * F, gm),
-            gc(0.0028 * F, 0.002 * F, 0, -0.013 * F, -0.151 * F, laserLensMat)
-          );
-          muzzle.position.set(0, 0.032 * F, -0.2 * F - 0.005);
-          laserEmitter.position.set(0, -0.013 * F, -0.155 * F);
-        }
-      } else if (n === 'rifle') {
+            body.add(
+              box(0.018, 0.014, 0.036, 0, -0.008, -0.115, gm),
+              box(0.022, 0.006, 0.026, 0, 0.001, -0.115, pol),
+              gc(0.0042, 0.006, 0, -0.008, -0.133, gm),
+              gc(0.0028, 0.002, 0, -0.008, -0.136, laserLensMat)
+            );
+
+            if (weaponTemplates.pistol.animations && weaponTemplates.pistol.animations.length) {
+              pistolMixer = new THREE.AnimationMixer(pModel);
+              pistolAction = pistolMixer.clipAction(weaponTemplates.pistol.animations[0]);
+              pistolAction.setLoop(THREE.LoopOnce);
+              pistolAction.clampWhenFinished = true;
+              pistolAction.timeScale = 1.8;
+            }
+
+            muzzle.position.set(0, 0.0195, -0.155);
+            laserEmitter.position.set(0, -0.008, -0.136);
+          } else {
+            const d = n === 'deagle', F = d ? 1.25 : 1, m = d ? sil : gm;
+            const grip = box(0.034 * F, 0.1 * F, 0.05 * F, 0, -0.065 * F, 0.035, pol);
+            grip.rotation.x = -0.25;
+            slide = new THREE.Group();
+            slide.add(
+              box(0.032 * F, 0.036 * F, 0.2 * F, 0, 0.03 * F, -0.1 * F, m),
+              box(0.006, 0.012, 0.012, 0, 0.054 * F, -0.19 * F, pol),
+              box(0.012, 0.01, 0.012, 0, 0.054 * F, -0.01, pol)
+            );
+            for (let i = 0; i < 5; i++) {
+              slide.add(box(0.034 * F, 0.03 * F, 0.004, 0, 0.03 * F, -0.015 * i - 0.01, pol));
+            }
+            body.add(
+              box(0.03 * F, 0.028 * F, 0.18 * F, 0, 0, -0.09 * F, pol),
+              grip, slide,
+              box(0.03 * F, 0.008, 0.07, 0, -0.022 * F, -0.045, pol),
+              box(0.006, 0.03, 0.006, 0, -0.04, -0.07, pol),
+              box(0.036 * F, 0.01, 0.056 * F, 0, -0.115 * F, 0.055, gm),
+              // Tactical Underbarrel Laser Diode Module
+              box(0.018 * F, 0.014 * F, 0.044 * F, 0, -0.013 * F, -0.125 * F, gm),
+              box(0.022 * F, 0.006 * F, 0.03 * F, 0, -0.003 * F, -0.125 * F, pol),
+              gc(0.0042 * F, 0.006 * F, 0, -0.013 * F, -0.148 * F, gm),
+              gc(0.0028 * F, 0.002 * F, 0, -0.013 * F, -0.151 * F, laserLensMat)
+            );
+            muzzle.position.set(0, 0.032 * F, -0.2 * F - 0.005);
+            laserEmitter.position.set(0, -0.013 * F, -0.155 * F);
+          }
+        } else if (n === 'rifle') {
           body.add(
             box(0.05, 0.06, 0.32, 0, 0.02, -0.05, gm),
             box(0.045, 0.06, 0.22, 0, -0.035, 0, pol),
@@ -6802,940 +6804,943 @@
       }
 
       // Acid Spitter Projectiles
-            const spits = [];
-            const spitGeo = new THREE.SphereGeometry(0.18, 8, 8);
-            const spitMat = new THREE.MeshBasicMaterial({ color: 0x4ade80 });
-            function shootSpit(from, target) {
-              const m = new THREE.Mesh(spitGeo, spitMat);
-              m.position.copy(from).setY(1.2);
-              const dir = target.clone().sub(m.position).normalize();
-              dir.y += 0.08;
-              scene.add(m);
-              spits.push({ m, v: dir.multiplyScalar(14), life: 3 });
-            }
+      const spits = [];
+      const spitGeo = new THREE.SphereGeometry(0.18, 8, 8);
+      const spitMat = new THREE.MeshBasicMaterial({ color: 0x4ade80 });
+      function shootSpit(from, target) {
+        const m = new THREE.Mesh(spitGeo, spitMat);
+        m.position.copy(from).setY(1.2);
+        const dir = target.clone().sub(m.position).normalize();
+        dir.y += 0.08;
+        scene.add(m);
+        spits.push({ m, v: dir.multiplyScalar(14), life: 3 });
+      }
 
-            function dmgZ(z, d, pt, head) {
-              if (z.dead) return;
-              if (head) {
-                d *= 2.5;
-                SND.headshot(pt);
+      function dmgZ(z, d, pt, head) {
+        if (z.dead) return;
+        if (head) {
+          d *= 2.5;
+          SND.headshot(pt);
+        } else {
+          SND.fleshImpact(pt);
+        }
+        z.hp -= d;
+
+        // Authentic Zombie Pain Groan from sounds/zombie sound/
+        if (Math.random() < 0.65) {
+          SND.zombieHurt(pt);
+        }
+
+        burst(pt, z.type === 'spitter' ? 'acid' : 'blood', head ? 14 : 7, 2.4, 1.2);
+        burst(pt, 'flesh', head ? 8 : 4, 3.2, 1.4); // Organic bullet debris
+
+        const cx = $('cx');
+        cx.classList.add('hit');
+        setTimeout(() => cx.classList.remove('hit'), 90);
+
+        if (z.type === 'boss') {
+          bossHitFlashTimer = 0.25; // Trigger bright hit flash on floating 3D health bar
+          const pct = Math.max(0, Math.min(100, (z.hp / z.T.hp) * 100));
+          if ($('boss-bar-fill')) $('boss-bar-fill').style.width = `${pct}%`;
+          updateBossHealthBar(z, 0);
+        }
+
+        if (z.hp <= 0) {
+          z.dead = true;
+          z.dt = 0;
+          if (z.fallAction) {
+            try {
+              if (z.animAction) z.animAction.fadeOut(0.25);
+              z.fallAction.reset().fadeIn(0.25).play();
+            } catch (e) { }
+          }
+          if (z.type === 'boss' && $('boss-hud')) $('boss-hud').style.display = 'none';
+          score += z.T.pts + (head ? 75 : 0);
+          kills++;
+          SND.vocal(z.g.position, z.type === 'giant' || z.type === 'boss', z.isAnimal);
+          if (Math.random() < (z.type === 'giant' || z.type === 'boss' ? 0.9 : 0.18)) {
+            spawnDrop(z.g.position);
+          }
+        }
+      }
+
+      function hurt(d) {
+        if (state !== 'play') return;
+        hp -= d;
+        hurtA = 0.65;
+        SND.hurt();
+        triggerPlayerBloodShed(d);
+        if (xr()) {
+          ctrls.forEach(c => {
+            if (c.userData.src && c.userData.src.gamepad && c.userData.src.gamepad.hapticActuators && c.userData.src.gamepad.hapticActuators[0]) {
+              try { c.userData.src.gamepad.hapticActuators[0].pulse(0.95, 80); } catch (e) { }
+            }
+          });
+        }
+        if (hp <= 0) {
+          hp = 0;
+          gameOver(false);
+        }
+        updateHUD();
+      }
+
+      function gameOver(win = false) {
+        state = win ? 'win' : 'over';
+        stopAllZombieSounds();
+        if (document.pointerLockElement === dom) document.exitPointerLock();
+        if (win) {
+          showStoryModal('SURVIVAL COMPLETE', 'All sectors cleared! Mission accomplished, survivor.', true, false, true);
+          if (xr()) vrUI.show('win');
+        } else {
+          SND.eat();
+          showStoryModal('YOU DIED', 'The horde overwhelmed you.', false, true, false);
+          if (xr()) vrUI.show('over');
+        }
+      }
+
+      // ---------- GAME FLOW, PAUSE, RETRY & QUIT CONTROLS ----------
+      function applyLevelTheme(idx) {
+        const lv = LEVELS[idx];
+        scene.background.setHex(lv.sky);
+        scene.fog.color.setHex(lv.fog);
+        scene.fog.density = lv.fogDens;
+        hemiLight.color.setHex(lv.hemiSky);
+        hemiLight.groundColor.setHex(lv.hemiGnd);
+        hemiLight.intensity = lv.hemiInt !== undefined ? lv.hemiInt : 0.85;
+        moon.color.setHex(lv.moonCol);
+        moon.intensity = lv.moonInt;
+        moonMesh.material.color.setHex(lv.moonCol);
+        buildEnvironment(lv.id);
+        if (lv.id === 'abyss') {
+          setTorch(true);
+        } else {
+          setTorch(false);
+        }
+        // Reposition character to center (0, 0, 0) on sector change for free 360-degree mobility
+        rig.position.set(0, 0, 0);
+      }
+
+      function say(main, sub = '', sec = 3) {
+        msgT = sec;
+        $('main-msg').textContent = main;
+        $('sub-msg').textContent = sub;
+      }
+
+      function showStoryModal(title, sub, isWin = false, isDeath = false, canResume = true, isSessionOver = false) {
+        if (document.pointerLockElement) document.exitPointerLock();
+        $('modal-title').textContent = title;
+        $('modal-title').className = 'modal-title-main' + (isWin ? ' gold' : '');
+        $('modal-sub').textContent = sub;
+        $('modal-stars').style.display = isWin ? 'block' : 'none';
+        $('modal-stats').style.display = (isWin || isDeath || isSessionOver) ? 'block' : 'none';
+        $('modal-stat-score').textContent = score;
+        $('modal-stat-kills').textContent = kills;
+
+        if (isSessionOver) {
+          // Only "MAIN MENU" button appears per user requirement! Remove "PLAY AGAIN" / "RETRY"
+          $('modal-btn-primary').style.display = 'none';
+          if ($('modal-btn-retry')) $('modal-btn-retry').style.display = 'none';
+          if ($('modal-btn-quit')) {
+            $('modal-btn-quit').style.display = 'inline-block';
+            $('modal-btn-quit').textContent = 'MAIN MENU';
+            $('modal-btn-quit').className = 'modal-btn-primary';
+          }
+        } else {
+          $('modal-btn-primary').style.display = (canResume || isWin) ? 'block' : 'none';
+          $('modal-btn-primary').textContent = isWin ? 'NEXT LOCATION' : 'RESUME';
+          if ($('modal-btn-retry')) {
+            $('modal-btn-retry').style.display = 'inline-block';
+            $('modal-btn-retry').textContent = isDeath ? 'RETRY' : 'RESTART';
+          }
+          if ($('modal-btn-quit')) {
+            $('modal-btn-quit').style.display = 'inline-block';
+            $('modal-btn-quit').textContent = 'QUIT TO MENU';
+            $('modal-btn-quit').className = 'modal-btn-secondary';
+          }
+        }
+        if (!xr()) $('modal-ov').style.display = 'flex';
+      }
+
+      function showPauseModal(title, sub, canResume = true) {
+        showStoryModal(title, sub, false, false, canResume);
+        if ($('modal-btn-retry')) $('modal-btn-retry').textContent = 'RESTART';
+      }
+
+      function togglePause() {
+        if (state === 'play') {
+          state = 'paused';
+          stopAllZombieSounds();
+          mouseDown = false;
+          touchState.firing = false;
+          if (document.pointerLockElement === dom) document.exitPointerLock();
+          showPauseModal('GAME PAUSED', `${LEVELS[selectedLevel].shortName} · ${enemyCategory.toUpperCase()} MODE`, true);
+          if (xr()) vrUI.show('paused');
+          SND.uiClick();
+        } else if (state === 'paused') {
+          state = 'play';
+          $('modal-ov').style.display = 'none';
+          if (xr()) vrUI.hide();
+          SND.uiClick();
+          if (!mobileMode && !xr()) dom.requestPointerLock();
+        }
+      }
+
+      function quitToMenu() {
+        stopAllZombieSounds();
+        SND.uiClick();
+        state = 'menu';
+        document.body.classList.remove('is-in-game');
+        mouseDown = false;
+        touchState.firing = false;
+        sessionTimeElapsed = 0;
+        if (document.pointerLockElement === dom) document.exitPointerLock();
+        $('modal-ov').style.display = 'none';
+        $('hud').style.display = 'none';
+        $('mobile-ui').style.display = 'none';
+        setBGMScale(1.0, 0.5); // Resume full slider volume in main screen UI
+        if (bgmAudio && bgmAudio.paused && !isMuted) {
+          bgmAudio.play().catch(() => { });
+        }
+        if (xr()) {
+          vrUI.show('menu');
+        } else {
+          $('ov').style.display = 'flex';
+        }
+      }
+
+      function retryGame() {
+        stopAllZombieSounds();
+        SND.uiClick();
+        $('modal-ov').style.display = 'none';
+        if (xr()) vrUI.hide();
+        selectedLevel = initialSelectedLevel || 0;
+        startGame(true);
+        if (!mobileMode && !xr()) dom.requestPointerLock();
+      }
+
+      // Bind HUD Buttons with safe universal pointer handler
+      bindClick('hud-pause', e => { if (e && e.stopPropagation) e.stopPropagation(); togglePause(); });
+      bindClick('hud-retry', e => { if (e && e.stopPropagation) e.stopPropagation(); retryGame(); });
+      bindClick('hud-quit', e => { if (e && e.stopPropagation) e.stopPropagation(); quitToMenu(); });
+
+      // Bind Modal Handlers
+      bindClick('modal-btn-primary', () => {
+        if (state === 'win') {
+          $('modal-ov').style.display = 'none';
+          if (selectedLevel < LEVELS.length - 1) {
+            selectedLevel++;
+            wave = 0;
+            applyLevelTheme(selectedLevel);
+            startWave();
+          } else {
+            quitToMenu();
+          }
+        } else {
+          togglePause();
+        }
+      });
+      bindClick('modal-btn-retry', retryGame);
+      bindClick('modal-btn-quit', quitToMenu);
+
+      function startWave() {
+        if ($('boss-hud')) $('boss-hud').style.display = 'none';
+        wave++;
+        const lv = LEVELS[selectedLevel];
+        const wCfg = lv.waves[wave - 1];
+        const q = [];
+        const add = (t, n) => { for (let i = 0; i < n; i++) q.push(t); };
+
+        add('walker', wCfg.w);
+        add('runner', wCfg.r);
+        add('spitter', wCfg.sp);
+        add('giant', wCfg.g);
+        q.sort(() => Math.random() - 0.5);
+        if (wCfg.b) {
+          q.unshift('boss');
+          bossT = 11;
+        }
+        queue = q;
+        spawnT = 1.2;
+        breakT = 0;
+        // In-game dynamic BGM ducking: BGM drops to 3% (2-5% volume range) during combat wave
+        setBGMScale(0.03, 1.0);
+        // In-game dynamic BGM ducking: BGM ducks down to 5% during active combat wave
+        setBGMScale(0.05, 1.5);
+        const waveTitle = wave === 3 ? 'FINAL WAVE 3: BOSS INCOMING' : `WAVE ${wave} COMMENCING`;
+        const waveSub = `${lv.shortName} • ${enemyCategory.toUpperCase()}`;
+        say(wave === 3 ? 'FINAL WAVE' : `WAVE ${wave} OF 3`, `${lv.name} (${enemyCategory.toUpperCase()})`, 3);
+        showVRWaveBanner(waveTitle, waveSub, 4.2);
+        updateHUD();
+      }
+
+      function updateTimerDisplay() {
+        const timerBadge = $('hud-timer-badge');
+        if (!timerBadge) return;
+        if (sessionDurationLimit > 0) {
+          const remaining = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
+          const m = Math.floor(remaining / 60);
+          const s = Math.floor(remaining % 60);
+          timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        } else {
+          const m = Math.floor(sessionTimeElapsed / 60);
+          const s = Math.floor(sessionTimeElapsed % 60);
+          timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+      }
+
+      function startGame(isRetry = false) {
+        if (isRetry) {
+          selectedLevel = initialSelectedLevel || 0;
+        }
+        applyLevelTheme(selectedLevel);
+
+        // Clean all scene entities
+        zombies.forEach(z => {
+          if (z.mixer) {
+            try {
+              z.mixer.stopAllAction();
+              z.mixer.uncacheRoot(z.g);
+            } catch (e) { }
+          }
+          scene.remove(z.g);
+        });
+        zombies.length = 0;
+        parts.forEach(p => scene.remove(p.m));
+        parts.length = 0;
+        spits.forEach(s => scene.remove(s.m));
+        spits.length = 0;
+        drops.forEach(d => scene.remove(d.g));
+        drops.length = 0;
+
+        barrels.forEach(b => {
+          if (b.dead) {
+            b.dead = false;
+            b.m.position.y = 0.475;
+            scene.add(b.m);
+          }
+        });
+
+        // Reset full game stats & mission session timer
+        hp = 100;
+        score = 0;
+        kills = 0;
+        wave = 0;
+        sessionTimeElapsed = 0;
+        breakT = 0;
+        bossT = 0;
+        msgT = 0;
+        queue.length = 0;
+
+        // Clear screen bloodshed visor canvas & vignette
+        screenSplats.length = 0;
+        screenDrips.length = 0;
+        if (bloodCtx && bloodCanvas) bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
+        if (bloodVignette) bloodVignette.style.opacity = '0';
+        if ($('boss-hud')) $('boss-hud').style.display = 'none';
+
+        // Reset player transform
+        rig.position.set(0, 0, 0);
+        rig.rotation.y = 0;
+        pitch = 0;
+        camera.rotation.x = 0;
+
+        ammo = {
+          pistol: { mag: 15, res: 75 },
+          deagle: { mag: 7, res: 35 },
+          rifle: { mag: 30, res: 150 },
+          shotgun: { mag: 8, res: 40 }
+        };
+        cur = chosenWeapon || 'pistol';
+        buildGun(cur);
+        reloading = 0;
+        state = 'play';
+
+        document.body.classList.add('is-in-game');
+        if (pwaBanner) pwaBanner.style.display = 'none';
+        $('ov').style.display = 'none';
+        $('modal-ov').style.display = 'none';
+        $('hud').style.display = xr() ? 'none' : 'block';
+        $('vig').style.display = xr() ? 'none' : 'block';
+
+        if (mobileMode) {
+          document.body.classList.add('is-mobile');
+          $('mobile-ui').style.display = 'block';
+        } else {
+          document.body.classList.remove('is-mobile');
+          $('mobile-ui').style.display = 'none';
+        }
+
+        updateTimerDisplay();
+        startBGM();
+        startWave();
+      }
+
+      // ---------- PC, MOBILE TOUCH & VR CONTROLS ----------
+      const keys = {};
+      let mouseDown = false, pitch = 0, trig = false, c0 = false;
+
+      addEventListener('keydown', e => {
+        keys[e.code] = 1;
+        if (e.code === 'KeyP' || e.code === 'Escape') {
+          if (state === 'play' || state === 'paused') togglePause();
+          return;
+        }
+        if (state !== 'play') return;
+        if (e.code === 'KeyR') reload();
+        if (e.code === 'KeyF') setTorch(!torchActive);
+        // In-game weapon hot-swapping disabled: single gun locked for run
+      });
+      addEventListener('keyup', e => keys[e.code] = 0);
+
+      dom.addEventListener('mousedown', () => {
+        if (mobileMode || state !== 'play') return;
+        if (document.pointerLockElement !== dom) {
+          dom.requestPointerLock();
+        } else {
+          mouseDown = true;
+        }
+      });
+      addEventListener('mouseup', () => mouseDown = false);
+
+      addEventListener('mousemove', e => {
+        if (document.pointerLockElement === dom && !xr() && !mobileMode && state === 'play') {
+          rig.rotation.y -= e.movementX * 0.0022;
+          pitch = Math.max(-1.4, Math.min(1.4, pitch - e.movementY * 0.0022));
+          camera.rotation.x = pitch;
+        }
+      });
+      // Wheel weapon swapping disabled: single gun locked for run
+
+      // Mobile Touch Joystick & Look State
+      const touchState = {
+        joyId: null, joyX: 0, joyY: 0,
+        lookId: null, lastX: 0, lastY: 0,
+        firing: false, sprinting: false
+      };
+
+      const joyZone = $('joy-zone');
+      const joyKnob = $('joy-knob');
+      joyZone.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const t = e.changedTouches[0];
+        touchState.joyId = t.identifier;
+        updateJoystick(t);
+      }, { passive: false });
+
+      joyZone.addEventListener('touchmove', e => {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === touchState.joyId) {
+            updateJoystick(e.changedTouches[i]);
+          }
+        }
+      }, { passive: false });
+
+      const endJoystick = e => {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === touchState.joyId) {
+            touchState.joyId = null;
+            touchState.joyX = 0;
+            touchState.joyY = 0;
+            joyKnob.style.transform = 'translate(0px, 0px)';
+          }
+        }
+      };
+      joyZone.addEventListener('touchend', endJoystick);
+      joyZone.addEventListener('touchcancel', endJoystick);
+
+      function updateJoystick(t) {
+        const rect = joyZone.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const maxR = rect.width / 2 - 16;
+        let dx = t.clientX - cx;
+        let dy = t.clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist > maxR) {
+          dx = (dx / dist) * maxR;
+          dy = (dy / dist) * maxR;
+        }
+        joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+        touchState.joyX = dx / maxR;
+        touchState.joyY = dy / maxR;
+      }
+
+      const lookZone = $('look-zone');
+      lookZone.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const t = e.changedTouches[0];
+        touchState.lookId = t.identifier;
+        touchState.lastX = t.clientX;
+        touchState.lastY = t.clientY;
+      }, { passive: false });
+
+      lookZone.addEventListener('touchmove', e => {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const t = e.changedTouches[i];
+          if (t.identifier === touchState.lookId && state === 'play') {
+            const dx = t.clientX - touchState.lastX;
+            const dy = t.clientY - touchState.lastY;
+            touchState.lastX = t.clientX;
+            touchState.lastY = t.clientY;
+            rig.rotation.y -= dx * 0.0045;
+            pitch = Math.max(-1.35, Math.min(1.35, pitch - dy * 0.004));
+            camera.rotation.x = pitch;
+          }
+        }
+      }, { passive: false });
+
+      const endLook = e => {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === touchState.lookId) {
+            touchState.lookId = null;
+          }
+        }
+      };
+      lookZone.addEventListener('touchend', endLook);
+      lookZone.addEventListener('touchcancel', endLook);
+
+      const btnFire = $('btn-fire');
+      btnFire.addEventListener('touchstart', e => {
+        e.preventDefault();
+        if (state !== 'play') return;
+        touchState.firing = true;
+        btnFire.classList.add('pressed');
+      }, { passive: false });
+      btnFire.addEventListener('touchend', () => {
+        touchState.firing = false;
+        btnFire.classList.remove('pressed');
+      });
+      btnFire.addEventListener('touchcancel', () => {
+        touchState.firing = false;
+        btnFire.classList.remove('pressed');
+      });
+
+      $('btn-reload').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'play') reload(); }, { passive: false });
+      $('btn-swap').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'play') cyc(1); }, { passive: false });
+      $('btn-sprint').addEventListener('touchstart', e => {
+        e.preventDefault();
+        touchState.sprinting = !touchState.sprinting;
+        $('btn-sprint').classList.toggle('active', touchState.sprinting);
+      }, { passive: false });
+
+      // Start Mode Launchers
+      bindUniversalClick('pc', launchPCMode);
+      bindUniversalClick('mob', launchMobileMode);
+      bindUniversalClick('vr', launchVRMode);
+      if ($('btn-quest-hero')) bindUniversalClick('btn-quest-hero', launchVRMode);
+      ['btn-start-hero', 'btn-step2-start', 'btn-step3-start', 'btn-step4-start', 'btn-start-main'].forEach(id => {
+        if ($(id)) bindUniversalClick(id, launchCurrentGameMode);
+      });
+      if (isTouchDevice) {
+        $('mob').style.borderColor = '#4ade80';
+        $('mob').style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.5)';
+      }
+
+      function reload() {
+        if (state !== 'play') return;
+        if (!ammo || !cur || !W[cur] || !ammo[cur]) return;
+        const w = W[cur], a = ammo[cur];
+        if (reloading || a.mag === w.mag || a.res <= 0) return;
+        reloading = w.rel;
+        SND.reload(w.rel);
+        say('RELOADING', '', w.rel);
+        haptic(0.4, 30);
+      }
+
+      function haptic(intensity = 0.85, duration = 45) {
+        ctrls.forEach(c => {
+          if (c === gun.parent && c.userData.src && c.userData.src.gamepad) {
+            try {
+              if (c.userData.src.gamepad.hapticActuators && c.userData.src.gamepad.hapticActuators[0]) {
+                c.userData.src.gamepad.hapticActuators[0].pulse(intensity, duration);
+              }
+            } catch (e) { }
+          }
+        });
+      }
+
+      function pollVR(dt) {
+        trig = false;
+        updateWristPDA();
+
+        let leftCtrl = ctrls.find(c => c.userData.src && c.userData.src.handedness === 'left');
+        let rightCtrl = ctrls.find(c => c.userData.src && c.userData.src.handedness === 'right');
+        if (!leftCtrl && ctrls[0]) leftCtrl = ctrls[0];
+        if (!rightCtrl && ctrls[1]) rightCtrl = ctrls[1];
+
+        ctrls.forEach(c => {
+          const s = c.userData.src;
+          if (!s || !s.gamepad) return;
+          const b = s.gamepad.buttons, ax = s.gamepad.axes, pv = c.userData.prev;
+          const isLeft = (s.handedness === 'left' || c === leftCtrl);
+          const dn = i => b[i] && b[i].pressed && !pv[i];
+          const x = ax[2] || ax[0] || 0, y = ax[3] || ax[1] || 0;
+
+          // Movement on Left Controller (when in play)
+          if (isLeft && state === 'play') {
+            const mag = Math.hypot(x, y);
+            if (mag > 0.12) {
+              camera.getWorldDirection(P2);
+              P2.y = 0;
+              P2.normalize();
+              const sprint = !!c.userData.sprinting;
+              const sp = (sprint ? 4.8 : 3.2) * dt;
+              const nx = rig.position.x + (P2.x * -y - P2.z * x) * sp;
+              const nz = rig.position.z + (P2.z * -y + P2.x * x) * sp;
+              if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
+
+              stepT -= dt * (sprint ? 1.5 : 1.0);
+              if (stepT <= 0) {
+                stepT = sprint ? 0.32 : 0.45;
+                SND.step();
+              }
+            }
+            // Left thumbstick click = toggle sprint
+            if (dn(3)) {
+              c.userData.sprinting = !c.userData.sprinting;
+              if (s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
+                try { s.gamepad.hapticActuators[0].pulse(0.25, 20); } catch (e) { }
+              }
+            }
+            // Left X Button (4) or Menu Button (5) = Pause (in play)
+            if (state === 'play' && (dn(4) || dn(5))) {
+              togglePause();
+            }
+          }
+
+          // Snap Turning on Right Controller
+          if (!isLeft) {
+            if (Math.abs(x) > 0.65 && !c.userData.snap) {
+              rig.rotation.y -= Math.sign(x) * (Math.PI / 6);
+              c.userData.snap = 1;
+              if (s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
+                try { s.gamepad.hapticActuators[0].pulse(0.18, 15); } catch (e) { }
+              }
+            }
+            if (Math.abs(x) < 0.25) c.userData.snap = 0;
+
+            // Right Grip (1) or B Button (5) = Reload (ONLY IN PLAY!)
+            if (state === 'play' && (dn(1) || dn(5))) reload();
+
+            // Right A Button (4) = Toggle Pause (if in play)
+            if (state === 'play' && dn(4)) togglePause();
+          }
+
+          // Gun Trigger Firing (when in play)
+          if (state === 'play') {
+            if (c === gun.parent && b[0] && b[0].pressed) trig = true;
+            if (c.userData.laser) c.userData.laser.visible = false;
+            if (c.userData.dot) c.userData.dot.visible = false;
+          }
+
+          b.forEach((q, i) => pv[i] = q.pressed);
+        });
+
+        // Interactive 3D Spatial UI Raycasting (when in Menu / Pause / Win / Over)
+        if (state !== 'play' && vrMesh && vrMesh.visible) {
+          pollVRUIInteraction();
+        }
+      }
+
+      function aim() {
+        if (xr()) {
+          muzzle.getWorldPosition(P1);
+          muzzle.getWorldQuaternion(Q);
+          P2.set(0, 0, -1).applyQuaternion(Q);
+        } else {
+          camera.getWorldPosition(P1);
+          camera.getWorldDirection(P2);
+        }
+        return [P1.clone(), P2.clone()];
+      }
+
+      const mp = new V();
+
+      function fire() {
+        const w = W[cur], a = ammo[cur];
+        if (reloading || cd > 0) return;
+        if (a.mag <= 0) {
+          SND.click();
+          cd = 0.3;
+          reload();
+          return;
+        }
+        a.mag--;
+        cd = w.rate;
+        SND.shot(cur);
+        if (cur === 'pistol' && pistolAction) {
+          pistolAction.reset().play();
+        }
+        kick = 1;
+        flash = 0.05;
+        flashL.intensity = 3.5;
+        flashM.visible = true;
+        flashM.scale.setScalar(R(0.7, 1.5));
+        haptic();
+
+        const [o, d] = aim();
+        muzzle.getWorldPosition(mp);
+
+        // Eject spent brass bullet shell casing debris
+        ejectCasing(mp.clone(), d);
+
+        const tg = zombies.filter(z => !z.dead).map(z => z.g).concat(barrels.filter(b => !b.dead).map(b => b.m));
+
+        for (let i = 0; i < w.pel; i++) {
+          const dir = d.clone();
+          dir.x += R(-1, 1) * w.spr;
+          dir.y += R(-1, 1) * w.spr;
+          dir.z += R(-1, 1) * w.spr;
+          dir.normalize();
+          ray.set(o, dir);
+          ray.far = 250;
+          const hs = ray.intersectObjects(tg, true);
+          let end = o.clone().addScaledVector(dir, 150);
+
+          if (hs.length) {
+            const h = hs[0];
+            end = h.point;
+            let ob = h.object;
+            while (ob && !ob.userData.owner) ob = ob.parent;
+            if (ob) {
+              const t = ob.userData.owner;
+              if (t.isBarrel) {
+                spawnBulletDebris(h.point, dir, 'metal');
+                boom(t);
               } else {
-                SND.fleshImpact(pt);
-              }
-              z.hp -= d;
-
-              // Authentic Zombie Pain Groan from sounds/zombie sound/
-              if (Math.random() < 0.65) {
-                SND.zombieHurt(pt);
-              }
-
-              burst(pt, z.type === 'spitter' ? 'acid' : 'blood', head ? 14 : 7, 2.4, 1.2);
-              burst(pt, 'flesh', head ? 8 : 4, 3.2, 1.4); // Organic bullet debris
-
-              const cx = $('cx');
-              cx.classList.add('hit');
-              setTimeout(() => cx.classList.remove('hit'), 90);
-
-              if (z.type === 'boss') {
-                bossHitFlashTimer = 0.25; // Trigger bright hit flash on floating 3D health bar
-                const pct = Math.max(0, Math.min(100, (z.hp / z.T.hp) * 100));
-                if ($('boss-bar-fill')) $('boss-bar-fill').style.width = `${pct}%`;
-                updateBossHealthBar(z, 0);
-              }
-
-              if (z.hp <= 0) {
-                z.dead = true;
-                z.dt = 0;
-                if (z.fallAction) {
-                  try {
-                    if (z.animAction) z.animAction.fadeOut(0.25);
-                    z.fallAction.reset().fadeIn(0.25).play();
-                  } catch (e) { }
-                }
-                if (z.type === 'boss' && $('boss-hud')) $('boss-hud').style.display = 'none';
-                score += z.T.pts + (head ? 75 : 0);
-                kills++;
-                SND.vocal(z.g.position, z.type === 'giant' || z.type === 'boss', z.isAnimal);
-                if (Math.random() < (z.type === 'giant' || z.type === 'boss' ? 0.9 : 0.18)) {
-                  spawnDrop(z.g.position);
-                }
+                spawnBulletDebris(h.point, dir, 'flesh');
+                const isHead = !!h.object.userData.head || (t.isGLB && (h.point.y - t.g.position.y) >= (t.headYThreshold || 1.35));
+                dmgZ(t, w.dmg, h.point, isHead);
               }
             }
-
-            function hurt(d) {
-              if (state !== 'play') return;
-              hp -= d;
-              hurtA = 0.65;
-              SND.hurt();
-              triggerPlayerBloodShed(d);
-              if (xr()) {
-                ctrls.forEach(c => {
-                  if (c.userData.src && c.userData.src.gamepad && c.userData.src.gamepad.hapticActuators && c.userData.src.gamepad.hapticActuators[0]) {
-                    try { c.userData.src.gamepad.hapticActuators[0].pulse(0.95, 80); } catch (e) { }
-                  }
-                });
-              }
-              if (hp <= 0) {
-                hp = 0;
-                gameOver(false);
-              }
-              updateHUD();
-            }
-
-            function gameOver(win = false) {
-              state = win ? 'win' : 'over';
-              stopAllZombieSounds();
-              if (document.pointerLockElement === dom) document.exitPointerLock();
-              if (win) {
-                showStoryModal('SURVIVAL COMPLETE', 'All sectors cleared! Mission accomplished, survivor.', true, false, true);
-                if (xr()) vrUI.show('win');
-              } else {
-                showStoryModal('YOU DIED', 'The horde overwhelmed you.', false, true, false);
-                if (xr()) vrUI.show('over');
+          } else {
+            // Bullet missed entities -> check if it strikes the ground
+            if (dir.y < -0.01) {
+              const distToGround = -o.y / dir.y;
+              if (distToGround > 0 && distToGround < 160) {
+                end = o.clone().addScaledVector(dir, distToGround);
+                end.y = 0.03;
+                spawnBulletDebris(end, dir, 'concrete');
               }
             }
+          }
+          if (i < 3) tracer(mp.clone(), end);
+        }
+        updateHUD();
+      }
 
-            // ---------- GAME FLOW, PAUSE, RETRY & QUIT CONTROLS ----------
-            function applyLevelTheme(idx) {
-              const lv = LEVELS[idx];
-              scene.background.setHex(lv.sky);
-              scene.fog.color.setHex(lv.fog);
-              scene.fog.density = lv.fogDens;
-              hemiLight.color.setHex(lv.hemiSky);
-              hemiLight.groundColor.setHex(lv.hemiGnd);
-              hemiLight.intensity = lv.hemiInt !== undefined ? lv.hemiInt : 0.85;
-              moon.color.setHex(lv.moonCol);
-              moon.intensity = lv.moonInt;
-              moonMesh.material.color.setHex(lv.moonCol);
-              buildEnvironment(lv.id);
-              if (lv.id === 'abyss') {
-                setTorch(true);
-              } else {
-                setTorch(false);
+      function updateHUD() {
+        updateTimerDisplay();
+        const w = W[cur];
+        const a = ammo ? ammo[cur] : { mag: 0, res: 0 };
+        const at = `${a.mag} / ${a.res}`;
+        $('hud-lvl').textContent = LEVELS[selectedLevel].shortName;
+        $('hud-wave').textContent = `WAVE ${wave}/3`;
+        $('hud-score').textContent = `SCORE ${score}`;
+        $('hp-num').textContent = `${Math.ceil(hp)}%`;
+        $('hpf').style.width = `${hp}%`;
+        $('hpf').style.background = hp > 35 ? 'linear-gradient(90deg, #16a34a, #4ade80)' : 'linear-gradient(90deg, #991b1b, #ef4444)';
+        $('w-name').textContent = w.n;
+        $('ammo-txt').textContent = at;
+        const totalRounds = (a.mag || 0) + (a.res || 0);
+        const roundsEl = $('rounds-left-txt');
+        if (roundsEl) roundsEl.textContent = `${totalRounds} ROUNDS LEFT`;
+
+        if (xr()) {
+          updateWristPDA();
+          hx.fillStyle = 'rgba(5, 12, 20, 0.85)';
+          hx.fillRect(0, 0, 256, 128);
+          hx.font = 'bold 22px monospace';
+          hx.fillStyle = '#fbbf24';
+          hx.fillText(`${w.n} ${at}`, 8, 30);
+          hx.fillStyle = hp > 35 ? '#4ade80' : '#f87171';
+          hx.fillText(`HP ${Math.ceil(hp)}%`, 8, 60);
+          hx.font = '18px monospace';
+          hx.fillStyle = '#e2e8f0';
+          hx.fillText(`${LEVELS[selectedLevel].shortName} W${wave}/3`, 8, 90);
+          hx.fillStyle = '#f87171';
+          hx.fillText($('main-msg').textContent.slice(0, 22), 8, 118);
+          hx.fillStyle = '#facc15';
+          hx.fillText(`${totalRounds} ROUNDS LEFT`, 8, 118);
+          htex.needsUpdate = true;
+        }
+      }
+
+      // ---------- MAIN GAME LOOP ----------
+      const clock = new THREE.Clock();
+      let hbTimer = 0;
+
+      function update(dt) {
+        // Freeze simulation while paused
+        if (state === 'paused') return;
+
+        const w = W[cur], a = ammo ? ammo[cur] : { mag: 0, res: 0 };
+
+        // (Tactical Laser Sight updated below with weapon recoil)
+
+        // Animate floating ash particles
+        const posAttr = ashGeo.attributes.position;
+        for (let i = 0; i < ashCount * 3; i += 3) {
+          posAttr.array[i + 1] -= dt * 1.4;
+          posAttr.array[i] += Math.sin(performance.now() * 0.001 + i) * dt * 0.3;
+          if (posAttr.array[i + 1] < 0) posAttr.array[i + 1] = 28;
+        }
+        posAttr.needsUpdate = true;
+
+        // Dynamic Culling Mask for rock-solid 60/90 FPS
+        updateCullingMask();
+
+        // Roaming Search Helicopters in Downtown City Sky
+        if (currentEnvId === 'city' && cityHelicopters && cityHelicopters.length > 0) {
+          cityHelicopters.forEach(h => {
+            h.angle += dt * h.speed;
+            const hx = Math.cos(h.angle) * h.radius;
+            const hz = Math.sin(h.angle) * (h.radius * 0.85);
+            h.g.position.set(hx, h.alt + Math.sin(h.angle * 2) * 1.5, hz);
+
+            // Point forward along trajectory
+            const nextAngle = h.angle + h.speed * 0.05;
+            const nx = Math.cos(nextAngle) * h.radius;
+            const nz = Math.sin(nextAngle) * (h.radius * 0.85);
+            h.g.lookAt(nx, h.alt, nz);
+            h.g.rotation.z = -Math.sign(h.speed) * 0.18;
+            h.g.rotation.x += 0.08;
+
+            // Spin main & tail rotors
+            if (h.mainRotor) h.mainRotor.rotation.y += dt * 32;
+            if (h.tailRotor) h.tailRotor.rotation.x += dt * 38;
+
+            // Searchlight sweep on city streets
+            if (h.spotLight && h.spotTarget) {
+              h.spotTarget.position.set(
+                hx + Math.sin(h.angle * 3.5) * 16,
+                0,
+                hz + Math.cos(h.angle * 3.5) * 16
+              );
+            }
+          });
+        }
+
+        if (xr()) {
+          pollVR(dt);
+        } else {
+          trig = mobileMode ? touchState.firing : mouseDown;
+          if (state === 'play') {
+            let f = 0, r = 0, sprinting = false;
+            if (mobileMode) {
+              f = -touchState.joyY;
+              r = touchState.joyX;
+              sprinting = touchState.sprinting;
+            } else {
+              f = (keys.KeyW ? 1 : 0) - (keys.KeyS ? 1 : 0);
+              r = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0);
+              sprinting = !!keys.ShiftLeft;
+            }
+
+            const moving = Math.hypot(f, r) > 0.1;
+            if (moving) {
+              const y = rig.rotation.y;
+              const sp = (sprinting ? 4.8 : 3.2) * dt;
+              const nx = rig.position.x + (-Math.sin(y) * f + Math.cos(y) * r) * sp;
+              const nz = rig.position.z + (-Math.cos(y) * f - Math.sin(y) * r) * sp;
+              if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
+
+              stepT -= dt * (sprinting ? 1.5 : 1);
+              if (stepT <= 0) {
+                stepT = 0.45;
+                SND.step();
               }
-              // Reposition character to center (0, 0, 0) on sector change for free 360-degree mobility
-              rig.position.set(0, 0, 0);
             }
+          }
+          if (shake > 0) {
+            camera.position.set(R(-1, 1) * shake * 0.05, 1.7 + R(-1, 1) * shake * 0.05, 0);
+          } else {
+            camera.position.set(0, 1.7, 0);
+          }
+        }
 
-            function say(main, sub = '', sec = 3) {
-              msgT = sec;
-              $('main-msg').textContent = main;
-              $('sub-msg').textContent = sub;
-            }
+        shake = Math.max(0, shake - dt);
+        cd -= dt;
 
-            function showStoryModal(title, sub, isWin = false, isDeath = false, canResume = true, isSessionOver = false) {
-              if (document.pointerLockElement) document.exitPointerLock();
-              $('modal-title').textContent = title;
-              $('modal-title').className = 'modal-title-main' + (isWin ? ' gold' : '');
-              $('modal-sub').textContent = sub;
-              $('modal-stars').style.display = isWin ? 'block' : 'none';
-              $('modal-stats').style.display = (isWin || isDeath || isSessionOver) ? 'block' : 'none';
-              $('modal-stat-score').textContent = score;
-              $('modal-stat-kills').textContent = kills;
-
-              if (isSessionOver) {
-                // Only "MAIN MENU" button appears per user requirement! Remove "PLAY AGAIN" / "RETRY"
-                $('modal-btn-primary').style.display = 'none';
-                if ($('modal-btn-retry')) $('modal-btn-retry').style.display = 'none';
-                if ($('modal-btn-quit')) {
-                  $('modal-btn-quit').style.display = 'inline-block';
-                  $('modal-btn-quit').textContent = 'MAIN MENU';
-                  $('modal-btn-quit').className = 'modal-btn-primary';
-                }
-              } else {
-                $('modal-btn-primary').style.display = (canResume || isWin) ? 'block' : 'none';
-                $('modal-btn-primary').textContent = isWin ? 'NEXT LOCATION' : 'RESUME';
-                if ($('modal-btn-retry')) {
-                  $('modal-btn-retry').style.display = 'inline-block';
-                  $('modal-btn-retry').textContent = isDeath ? 'RETRY' : 'RESTART';
-                }
-                if ($('modal-btn-quit')) {
-                  $('modal-btn-quit').style.display = 'inline-block';
-                  $('modal-btn-quit').textContent = 'QUIT TO MENU';
-                  $('modal-btn-quit').className = 'modal-btn-secondary';
-                }
-              }
-              if (!xr()) $('modal-ov').style.display = 'flex';
-            }
-
-            function showPauseModal(title, sub, canResume = true) {
-              showStoryModal(title, sub, false, false, canResume);
-              if ($('modal-btn-retry')) $('modal-btn-retry').textContent = 'RESTART';
-            }
-
-            function togglePause() {
-              if (state === 'play') {
-                state = 'paused';
+        if (state === 'play') {
+          sessionTimeElapsed += dt;
+          const timerBadge = $('hud-timer-badge');
+          if (timerBadge) {
+            if (sessionDurationLimit > 0) {
+              const remaining = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
+              const m = Math.floor(remaining / 60);
+              const s = Math.floor(remaining % 60);
+              timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+              if (remaining <= 0) {
+                state = 'session_over';
                 stopAllZombieSounds();
-                mouseDown = false;
-                touchState.firing = false;
                 if (document.pointerLockElement === dom) document.exitPointerLock();
-                showPauseModal('GAME PAUSED', `${LEVELS[selectedLevel].shortName} · ${enemyCategory.toUpperCase()} MODE`, true);
-                if (xr()) vrUI.show('paused');
-                SND.uiClick();
-              } else if (state === 'paused') {
-                state = 'play';
-                $('modal-ov').style.display = 'none';
-                if (xr()) vrUI.hide();
-                SND.uiClick();
-                if (!mobileMode && !xr()) dom.requestPointerLock();
+                showStoryModal('SESSION COMPLETED', 'Designated survival mission duration has elapsed!', false, false, false, true);
+                if (xr()) vrUI.show('session_over');
+                return;
               }
+            } else {
+              const m = Math.floor(sessionTimeElapsed / 60);
+              const s = Math.floor(sessionTimeElapsed % 60);
+              timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             }
+          }
 
-            function quitToMenu() {
-              stopAllZombieSounds();
-              SND.uiClick();
-              state = 'menu';
-              document.body.classList.remove('is-in-game');
-              mouseDown = false;
-              touchState.firing = false;
-              sessionTimeElapsed = 0;
-              if (document.pointerLockElement === dom) document.exitPointerLock();
-              $('modal-ov').style.display = 'none';
-              $('hud').style.display = 'none';
-              $('mobile-ui').style.display = 'none';
-              setBGMScale(1.0, 0.5); // Resume full slider volume in main screen UI
-              if (bgmAudio && bgmAudio.paused && !isMuted) {
-                bgmAudio.play().catch(() => { });
-              }
-              if (xr()) {
-                vrUI.show('menu');
-              } else {
-                $('ov').style.display = 'flex';
-              }
-            }
+          if (trig && (w.auto || !c0)) fire();
+          c0 = trig;
 
-            function retryGame() {
-              stopAllZombieSounds();
-              SND.uiClick();
-              $('modal-ov').style.display = 'none';
-              if (xr()) vrUI.hide();
-              selectedLevel = initialSelectedLevel || 0;
-              startGame(true);
-              if (!mobileMode && !xr()) dom.requestPointerLock();
-            }
-
-            // Bind HUD Buttons with safe universal pointer handler
-            bindClick('hud-pause', e => { if (e && e.stopPropagation) e.stopPropagation(); togglePause(); });
-            bindClick('hud-retry', e => { if (e && e.stopPropagation) e.stopPropagation(); retryGame(); });
-            bindClick('hud-quit', e => { if (e && e.stopPropagation) e.stopPropagation(); quitToMenu(); });
-
-            // Bind Modal Handlers
-            bindClick('modal-btn-primary', () => {
-              if (state === 'win') {
-                $('modal-ov').style.display = 'none';
-                if (selectedLevel < LEVELS.length - 1) {
-                  selectedLevel++;
-                  wave = 0;
-                  applyLevelTheme(selectedLevel);
-                  startWave();
-                } else {
-                  quitToMenu();
-                }
-              } else {
-                togglePause();
-              }
-            });
-            bindClick('modal-btn-retry', retryGame);
-            bindClick('modal-btn-quit', quitToMenu);
-
-            function startWave() {
-              if ($('boss-hud')) $('boss-hud').style.display = 'none';
-              wave++;
-              const lv = LEVELS[selectedLevel];
-              const wCfg = lv.waves[wave - 1];
-              const q = [];
-              const add = (t, n) => { for (let i = 0; i < n; i++) q.push(t); };
-
-              add('walker', wCfg.w);
-              add('runner', wCfg.r);
-              add('spitter', wCfg.sp);
-              add('giant', wCfg.g);
-              q.sort(() => Math.random() - 0.5);
-              if (wCfg.b) {
-                q.unshift('boss');
-                bossT = 11;
-              }
-              queue = q;
-              spawnT = 1.2;
-              breakT = 0;
-              // In-game dynamic BGM ducking: BGM ducks down to 5% during active combat wave
-              setBGMScale(0.05, 1.5);
-              const waveTitle = wave === 3 ? 'FINAL WAVE 3: BOSS INCOMING' : `WAVE ${wave} COMMENCING`;
-              const waveSub = `${lv.shortName} • ${enemyCategory.toUpperCase()}`;
-              say(wave === 3 ? 'FINAL WAVE' : `WAVE ${wave} OF 3`, `${lv.name} (${enemyCategory.toUpperCase()})`, 3);
-              showVRWaveBanner(waveTitle, waveSub, 4.2);
-              updateHUD();
-            }
-
-            function updateTimerDisplay() {
-              const timerBadge = $('hud-timer-badge');
-              if (!timerBadge) return;
-              if (sessionDurationLimit > 0) {
-                const remaining = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
-                const m = Math.floor(remaining / 60);
-                const s = Math.floor(remaining % 60);
-                timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-              } else {
-                const m = Math.floor(sessionTimeElapsed / 60);
-                const s = Math.floor(sessionTimeElapsed % 60);
-                timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-              }
-            }
-
-            function startGame(isRetry = false) {
-              if (isRetry) {
-                selectedLevel = initialSelectedLevel || 0;
-              }
-              applyLevelTheme(selectedLevel);
-
-              // Clean all scene entities
-              zombies.forEach(z => {
-                if (z.mixer) {
-                  try {
-                    z.mixer.stopAllAction();
-                    z.mixer.uncacheRoot(z.g);
-                  } catch (e) { }
-                }
-                scene.remove(z.g);
-              });
-              zombies.length = 0;
-              parts.forEach(p => scene.remove(p.m));
-              parts.length = 0;
-              spits.forEach(s => scene.remove(s.m));
-              spits.length = 0;
-              drops.forEach(d => scene.remove(d.g));
-              drops.length = 0;
-
-              barrels.forEach(b => {
-                if (b.dead) {
-                  b.dead = false;
-                  b.m.position.y = 0.475;
-                  scene.add(b.m);
-                }
-              });
-
-              // Reset full game stats & mission session timer
-              hp = 100;
-              score = 0;
-              kills = 0;
-              wave = 0;
-              sessionTimeElapsed = 0;
-              breakT = 0;
-              bossT = 0;
-              msgT = 0;
-              queue.length = 0;
-
-              // Clear screen bloodshed visor canvas & vignette
-              screenSplats.length = 0;
-              screenDrips.length = 0;
-              if (bloodCtx && bloodCanvas) bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
-              if (bloodVignette) bloodVignette.style.opacity = '0';
-              if ($('boss-hud')) $('boss-hud').style.display = 'none';
-
-              // Reset player transform
-              rig.position.set(0, 0, 0);
-              rig.rotation.y = 0;
-              pitch = 0;
-              camera.rotation.x = 0;
-
-              ammo = {
-                pistol: { mag: 15, res: 75 },
-                deagle: { mag: 7, res: 35 },
-                rifle: { mag: 30, res: 150 },
-                shotgun: { mag: 8, res: 40 }
-              };
-              cur = chosenWeapon || 'pistol';
-              buildGun(cur);
+          if (reloading) {
+            reloading -= dt;
+            if (reloading <= 0) {
               reloading = 0;
-              state = 'play';
-
-              document.body.classList.add('is-in-game');
-              if (pwaBanner) pwaBanner.style.display = 'none';
-              $('ov').style.display = 'none';
-              $('modal-ov').style.display = 'none';
-              $('hud').style.display = xr() ? 'none' : 'block';
-              $('vig').style.display = xr() ? 'none' : 'block';
-
-              if (mobileMode) {
-                document.body.classList.add('is-mobile');
-                $('mobile-ui').style.display = 'block';
-              } else {
-                document.body.classList.remove('is-mobile');
-                $('mobile-ui').style.display = 'none';
-              }
-
-              updateTimerDisplay();
-              startBGM();
-              startWave();
-            }
-
-            // ---------- PC, MOBILE TOUCH & VR CONTROLS ----------
-            const keys = {};
-            let mouseDown = false, pitch = 0, trig = false, c0 = false;
-
-            addEventListener('keydown', e => {
-              keys[e.code] = 1;
-              if (e.code === 'KeyP' || e.code === 'Escape') {
-                if (state === 'play' || state === 'paused') togglePause();
-                return;
-              }
-              if (state !== 'play') return;
-              if (e.code === 'KeyR') reload();
-              if (e.code === 'KeyF') setTorch(!torchActive);
-              // In-game weapon hot-swapping disabled: single gun locked for run
-            });
-            addEventListener('keyup', e => keys[e.code] = 0);
-
-            dom.addEventListener('mousedown', () => {
-              if (mobileMode || state !== 'play') return;
-              if (document.pointerLockElement !== dom) {
-                dom.requestPointerLock();
-              } else {
-                mouseDown = true;
-              }
-            });
-            addEventListener('mouseup', () => mouseDown = false);
-
-            addEventListener('mousemove', e => {
-              if (document.pointerLockElement === dom && !xr() && !mobileMode && state === 'play') {
-                rig.rotation.y -= e.movementX * 0.0022;
-                pitch = Math.max(-1.4, Math.min(1.4, pitch - e.movementY * 0.0022));
-                camera.rotation.x = pitch;
-              }
-            });
-            // Wheel weapon swapping disabled: single gun locked for run
-
-            // Mobile Touch Joystick & Look State
-            const touchState = {
-              joyId: null, joyX: 0, joyY: 0,
-              lookId: null, lastX: 0, lastY: 0,
-              firing: false, sprinting: false
-            };
-
-            const joyZone = $('joy-zone');
-            const joyKnob = $('joy-knob');
-            joyZone.addEventListener('touchstart', e => {
-              e.preventDefault();
-              const t = e.changedTouches[0];
-              touchState.joyId = t.identifier;
-              updateJoystick(t);
-            }, { passive: false });
-
-            joyZone.addEventListener('touchmove', e => {
-              e.preventDefault();
-              for (let i = 0; i < e.changedTouches.length; i++) {
-                if (e.changedTouches[i].identifier === touchState.joyId) {
-                  updateJoystick(e.changedTouches[i]);
-                }
-              }
-            }, { passive: false });
-
-            const endJoystick = e => {
-              for (let i = 0; i < e.changedTouches.length; i++) {
-                if (e.changedTouches[i].identifier === touchState.joyId) {
-                  touchState.joyId = null;
-                  touchState.joyX = 0;
-                  touchState.joyY = 0;
-                  joyKnob.style.transform = 'translate(0px, 0px)';
-                }
-              }
-            };
-            joyZone.addEventListener('touchend', endJoystick);
-            joyZone.addEventListener('touchcancel', endJoystick);
-
-            function updateJoystick(t) {
-              const rect = joyZone.getBoundingClientRect();
-              const cx = rect.left + rect.width / 2;
-              const cy = rect.top + rect.height / 2;
-              const maxR = rect.width / 2 - 16;
-              let dx = t.clientX - cx;
-              let dy = t.clientY - cy;
-              const dist = Math.hypot(dx, dy);
-              if (dist > maxR) {
-                dx = (dx / dist) * maxR;
-                dy = (dy / dist) * maxR;
-              }
-              joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-              touchState.joyX = dx / maxR;
-              touchState.joyY = dy / maxR;
-            }
-
-            const lookZone = $('look-zone');
-            lookZone.addEventListener('touchstart', e => {
-              e.preventDefault();
-              const t = e.changedTouches[0];
-              touchState.lookId = t.identifier;
-              touchState.lastX = t.clientX;
-              touchState.lastY = t.clientY;
-            }, { passive: false });
-
-            lookZone.addEventListener('touchmove', e => {
-              e.preventDefault();
-              for (let i = 0; i < e.changedTouches.length; i++) {
-                const t = e.changedTouches[i];
-                if (t.identifier === touchState.lookId && state === 'play') {
-                  const dx = t.clientX - touchState.lastX;
-                  const dy = t.clientY - touchState.lastY;
-                  touchState.lastX = t.clientX;
-                  touchState.lastY = t.clientY;
-                  rig.rotation.y -= dx * 0.0045;
-                  pitch = Math.max(-1.35, Math.min(1.35, pitch - dy * 0.004));
-                  camera.rotation.x = pitch;
-                }
-              }
-            }, { passive: false });
-
-            const endLook = e => {
-              for (let i = 0; i < e.changedTouches.length; i++) {
-                if (e.changedTouches[i].identifier === touchState.lookId) {
-                  touchState.lookId = null;
-                }
-              }
-            };
-            lookZone.addEventListener('touchend', endLook);
-            lookZone.addEventListener('touchcancel', endLook);
-
-            const btnFire = $('btn-fire');
-            btnFire.addEventListener('touchstart', e => {
-              e.preventDefault();
-              if (state !== 'play') return;
-              touchState.firing = true;
-              btnFire.classList.add('pressed');
-            }, { passive: false });
-            btnFire.addEventListener('touchend', () => {
-              touchState.firing = false;
-              btnFire.classList.remove('pressed');
-            });
-            btnFire.addEventListener('touchcancel', () => {
-              touchState.firing = false;
-              btnFire.classList.remove('pressed');
-            });
-
-            $('btn-reload').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'play') reload(); }, { passive: false });
-            $('btn-swap').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'play') cyc(1); }, { passive: false });
-            $('btn-sprint').addEventListener('touchstart', e => {
-              e.preventDefault();
-              touchState.sprinting = !touchState.sprinting;
-              $('btn-sprint').classList.toggle('active', touchState.sprinting);
-            }, { passive: false });
-
-            // Start Mode Launchers
-            bindUniversalClick('pc', launchPCMode);
-            bindUniversalClick('mob', launchMobileMode);
-            bindUniversalClick('vr', launchVRMode);
-            if ($('btn-quest-hero')) bindUniversalClick('btn-quest-hero', launchVRMode);
-            ['btn-start-hero', 'btn-step2-start', 'btn-step3-start', 'btn-step4-start', 'btn-start-main'].forEach(id => {
-              if ($(id)) bindUniversalClick(id, launchCurrentGameMode);
-            });
-            if (isTouchDevice) {
-              $('mob').style.borderColor = '#4ade80';
-              $('mob').style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.5)';
-            }
-
-            function reload() {
-              if (state !== 'play') return;
-              if (!ammo || !cur || !W[cur] || !ammo[cur]) return;
-              const w = W[cur], a = ammo[cur];
-              if (reloading || a.mag === w.mag || a.res <= 0) return;
-              reloading = w.rel;
-              SND.reload(w.rel);
-              say('RELOADING', '', w.rel);
-              haptic(0.4, 30);
-            }
-
-            function haptic(intensity = 0.85, duration = 45) {
-              ctrls.forEach(c => {
-                if (c === gun.parent && c.userData.src && c.userData.src.gamepad) {
-                  try {
-                    if (c.userData.src.gamepad.hapticActuators && c.userData.src.gamepad.hapticActuators[0]) {
-                      c.userData.src.gamepad.hapticActuators[0].pulse(intensity, duration);
-                    }
-                  } catch (e) { }
-                }
-              });
-            }
-
-            function pollVR(dt) {
-              trig = false;
-              updateWristPDA();
-
-              let leftCtrl = ctrls.find(c => c.userData.src && c.userData.src.handedness === 'left');
-              let rightCtrl = ctrls.find(c => c.userData.src && c.userData.src.handedness === 'right');
-              if (!leftCtrl && ctrls[0]) leftCtrl = ctrls[0];
-              if (!rightCtrl && ctrls[1]) rightCtrl = ctrls[1];
-
-              ctrls.forEach(c => {
-                const s = c.userData.src;
-                if (!s || !s.gamepad) return;
-                const b = s.gamepad.buttons, ax = s.gamepad.axes, pv = c.userData.prev;
-                const isLeft = (s.handedness === 'left' || c === leftCtrl);
-                const dn = i => b[i] && b[i].pressed && !pv[i];
-                const x = ax[2] || ax[0] || 0, y = ax[3] || ax[1] || 0;
-
-                // Movement on Left Controller (when in play)
-                if (isLeft && state === 'play') {
-                  const mag = Math.hypot(x, y);
-                  if (mag > 0.12) {
-                    camera.getWorldDirection(P2);
-                    P2.y = 0;
-                    P2.normalize();
-                    const sprint = !!c.userData.sprinting;
-                    const sp = (sprint ? 4.8 : 3.2) * dt;
-                    const nx = rig.position.x + (P2.x * -y - P2.z * x) * sp;
-                    const nz = rig.position.z + (P2.z * -y + P2.x * x) * sp;
-                    if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
-
-                    stepT -= dt * (sprint ? 1.5 : 1.0);
-                    if (stepT <= 0) {
-                      stepT = sprint ? 0.32 : 0.45;
-                      SND.step();
-                    }
-                  }
-                  // Left thumbstick click = toggle sprint
-                  if (dn(3)) {
-                    c.userData.sprinting = !c.userData.sprinting;
-                    if (s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
-                      try { s.gamepad.hapticActuators[0].pulse(0.25, 20); } catch (e) { }
-                    }
-                  }
-                  // Left X Button (4) or Menu Button (5) = Pause (in play)
-                  if (state === 'play' && (dn(4) || dn(5))) {
-                    togglePause();
-                  }
-                }
-
-                // Snap Turning on Right Controller
-                if (!isLeft) {
-                  if (Math.abs(x) > 0.65 && !c.userData.snap) {
-                    rig.rotation.y -= Math.sign(x) * (Math.PI / 6);
-                    c.userData.snap = 1;
-                    if (s.gamepad.hapticActuators && s.gamepad.hapticActuators[0]) {
-                      try { s.gamepad.hapticActuators[0].pulse(0.18, 15); } catch (e) { }
-                    }
-                  }
-                  if (Math.abs(x) < 0.25) c.userData.snap = 0;
-
-                  // Right Grip (1) or B Button (5) = Reload (ONLY IN PLAY!)
-                  if (state === 'play' && (dn(1) || dn(5))) reload();
-
-                  // Right A Button (4) = Toggle Pause (if in play)
-                  if (state === 'play' && dn(4)) togglePause();
-                }
-
-                // Gun Trigger Firing (when in play)
-                if (state === 'play') {
-                  if (c === gun.parent && b[0] && b[0].pressed) trig = true;
-                  if (c.userData.laser) c.userData.laser.visible = false;
-                  if (c.userData.dot) c.userData.dot.visible = false;
-                }
-
-                b.forEach((q, i) => pv[i] = q.pressed);
-              });
-
-              // Interactive 3D Spatial UI Raycasting (when in Menu / Pause / Win / Over)
-              if (state !== 'play' && vrMesh && vrMesh.visible) {
-                pollVRUIInteraction();
-              }
-            }
-
-            function aim() {
-              if (xr()) {
-                muzzle.getWorldPosition(P1);
-                muzzle.getWorldQuaternion(Q);
-                P2.set(0, 0, -1).applyQuaternion(Q);
-              } else {
-                camera.getWorldPosition(P1);
-                camera.getWorldDirection(P2);
-              }
-              return [P1.clone(), P2.clone()];
-            }
-
-            const mp = new V();
-
-            function fire() {
-              const w = W[cur], a = ammo[cur];
-              if (reloading || cd > 0) return;
-              if (a.mag <= 0) {
-                SND.click();
-                cd = 0.3;
-                reload();
-                return;
-              }
-              a.mag--;
-              cd = w.rate;
-              SND.shot(cur);
-              if (cur === 'pistol' && pistolAction) {
-                pistolAction.reset().play();
-              }
-              kick = 1;
-              flash = 0.05;
-              flashL.intensity = 3.5;
-              flashM.visible = true;
-              flashM.scale.setScalar(R(0.7, 1.5));
-              haptic();
-
-              const [o, d] = aim();
-              muzzle.getWorldPosition(mp);
-
-              // Eject spent brass bullet shell casing debris
-              ejectCasing(mp.clone(), d);
-
-              const tg = zombies.filter(z => !z.dead).map(z => z.g).concat(barrels.filter(b => !b.dead).map(b => b.m));
-
-              for (let i = 0; i < w.pel; i++) {
-                const dir = d.clone();
-                dir.x += R(-1, 1) * w.spr;
-                dir.y += R(-1, 1) * w.spr;
-                dir.z += R(-1, 1) * w.spr;
-                dir.normalize();
-                ray.set(o, dir);
-                ray.far = 250;
-                const hs = ray.intersectObjects(tg, true);
-                let end = o.clone().addScaledVector(dir, 150);
-
-                if (hs.length) {
-                  const h = hs[0];
-                  end = h.point;
-                  let ob = h.object;
-                  while (ob && !ob.userData.owner) ob = ob.parent;
-                  if (ob) {
-                    const t = ob.userData.owner;
-                    if (t.isBarrel) {
-                      spawnBulletDebris(h.point, dir, 'metal');
-                      boom(t);
-                    } else {
-                      spawnBulletDebris(h.point, dir, 'flesh');
-                      const isHead = !!h.object.userData.head || (t.isGLB && (h.point.y - t.g.position.y) >= (t.headYThreshold || 1.35));
-                      dmgZ(t, w.dmg, h.point, isHead);
-                    }
-                  }
-                } else {
-                  // Bullet missed entities -> check if it strikes the ground
-                  if (dir.y < -0.01) {
-                    const distToGround = -o.y / dir.y;
-                    if (distToGround > 0 && distToGround < 160) {
-                      end = o.clone().addScaledVector(dir, distToGround);
-                      end.y = 0.03;
-                      spawnBulletDebris(end, dir, 'concrete');
-                    }
-                  }
-                }
-                if (i < 3) tracer(mp.clone(), end);
-              }
+              const n = Math.min(w.mag - a.mag, a.res);
+              a.mag += n;
+              a.res -= n;
               updateHUD();
             }
+          }
 
-            function updateHUD() {
-              updateTimerDisplay();
-              const w = W[cur];
-              const a = ammo ? ammo[cur] : { mag: 0, res: 0 };
-              const at = `${a.mag} / ${a.res}`;
-              $('hud-lvl').textContent = LEVELS[selectedLevel].shortName;
-              $('hud-wave').textContent = `WAVE ${wave}/3`;
-              $('hud-score').textContent = `SCORE ${score}`;
-              $('hp-num').textContent = `${Math.ceil(hp)}%`;
-              $('hpf').style.width = `${hp}%`;
-              $('hpf').style.background = hp > 35 ? 'linear-gradient(90deg, #16a34a, #4ade80)' : 'linear-gradient(90deg, #991b1b, #ef4444)';
-              $('w-name').textContent = w.n;
-              $('ammo-txt').textContent = at;
-              const totalRounds = (a.mag || 0) + (a.res || 0);
-              const roundsEl = $('rounds-left-txt');
-              if (roundsEl) roundsEl.textContent = `${totalRounds} ROUNDS LEFT`;
+          camera.getWorldPosition(P1);
+          const pp = P1.clone();
+          const alive = zombies.filter(z => !z.dead).length;
 
-              if (xr()) {
-                updateWristPDA();
-                hx.fillStyle = 'rgba(5, 12, 20, 0.85)';
-                hx.fillRect(0, 0, 256, 128);
-                hx.font = 'bold 22px monospace';
-                hx.fillStyle = '#fbbf24';
-                hx.fillText(`${w.n} ${at}`, 8, 30);
-                hx.fillStyle = hp > 35 ? '#4ade80' : '#f87171';
-                hx.fillText(`HP ${Math.ceil(hp)}%`, 8, 60);
-                hx.font = '18px monospace';
-                hx.fillStyle = '#e2e8f0';
-                hx.fillText(`${LEVELS[selectedLevel].shortName} W${wave}/3`, 8, 90);
-                hx.fillStyle = '#f87171';
-                hx.fillText($('main-msg').textContent.slice(0, 22), 8, 118);
-                hx.fillStyle = '#facc15';
-                hx.fillText(`${totalRounds} ROUNDS LEFT`, 8, 118);
-                htex.needsUpdate = true;
-              }
+          spawnT -= dt;
+          if (queue.length && alive < 15 && spawnT <= 0) {
+            spawn(queue.shift());
+            spawnT = 1.15;
+          }
+
+          const activeBoss = zombies.find(z => z.type === 'boss' && !z.dead);
+          updateBossHealthBar(activeBoss, dt);
+
+          if (activeBoss) {
+            bossT -= dt;
+            if (bossT <= 0) {
+              bossT = 13;
+              spawn('runner');
+              spawn('spitter');
             }
+          }
 
-            // ---------- MAIN GAME LOOP ----------
-            const clock = new THREE.Clock();
-            let hbTimer = 0;
+          // Dynamic Background Music: ducks down to 5% during combat, swells to 50% (fades in/out) between waves
+          if (queue.length > 0 || alive > 0) {
+            if (Math.abs(bgmCurrentScale - 0.05) > 0.01) {
+              setBGMScale(0.05, 1.5);
+            }
+          } else {
+            // All zombies died and going to next wave: music swells up to 50% (fade in/out)!
+            if (Math.abs(bgmCurrentScale - 0.50) > 0.01) {
+              setBGMScale(0.50, 1.8);
+            }
+            if (bgmAudio && bgmAudio.paused && !isMuted) {
+              bgmAudio.play().catch(() => { });
+            }
+          }
 
-            function update(dt) {
-              // Freeze simulation while paused
-              if (state === 'paused') return;
-
-              const w = W[cur], a = ammo ? ammo[cur] : { mag: 0, res: 0 };
-
-              // (Tactical Laser Sight updated below with weapon recoil)
-
-              // Animate floating ash particles
-              const posAttr = ashGeo.attributes.position;
-              for (let i = 0; i < ashCount * 3; i += 3) {
-                posAttr.array[i + 1] -= dt * 1.4;
-                posAttr.array[i] += Math.sin(performance.now() * 0.001 + i) * dt * 0.3;
-                if (posAttr.array[i + 1] < 0) posAttr.array[i + 1] = 28;
-              }
-              posAttr.needsUpdate = true;
-
-              // Dynamic Culling Mask for rock-solid 60/90 FPS
-              updateCullingMask();
-
-              // Roaming Search Helicopters in Downtown City Sky
-              if (currentEnvId === 'city' && cityHelicopters && cityHelicopters.length > 0) {
-                cityHelicopters.forEach(h => {
-                  h.angle += dt * h.speed;
-                  const hx = Math.cos(h.angle) * h.radius;
-                  const hz = Math.sin(h.angle) * (h.radius * 0.85);
-                  h.g.position.set(hx, h.alt + Math.sin(h.angle * 2) * 1.5, hz);
-
-                  // Point forward along trajectory
-                  const nextAngle = h.angle + h.speed * 0.05;
-                  const nx = Math.cos(nextAngle) * h.radius;
-                  const nz = Math.sin(nextAngle) * (h.radius * 0.85);
-                  h.g.lookAt(nx, h.alt, nz);
-                  h.g.rotation.z = -Math.sign(h.speed) * 0.18;
-                  h.g.rotation.x += 0.08;
-
-                  // Spin main & tail rotors
-                  if (h.mainRotor) h.mainRotor.rotation.y += dt * 32;
-                  if (h.tailRotor) h.tailRotor.rotation.x += dt * 38;
-
-                  // Searchlight sweep on city streets
-                  if (h.spotLight && h.spotTarget) {
-                    h.spotTarget.position.set(
-                      hx + Math.sin(h.angle * 3.5) * 16,
-                      0,
-                      hz + Math.cos(h.angle * 3.5) * 16
-                    );
-                  }
-                });
-              }
-
-              if (xr()) {
-                pollVR(dt);
-              } else {
-                trig = mobileMode ? touchState.firing : mouseDown;
-                if (state === 'play') {
-                  let f = 0, r = 0, sprinting = false;
-                  if (mobileMode) {
-                    f = -touchState.joyY;
-                    r = touchState.joyX;
-                    sprinting = touchState.sprinting;
-                  } else {
-                    f = (keys.KeyW ? 1 : 0) - (keys.KeyS ? 1 : 0);
-                    r = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0);
-                    sprinting = !!keys.ShiftLeft;
-                  }
-
-                  const moving = Math.hypot(f, r) > 0.1;
-                  if (moving) {
-                    const y = rig.rotation.y;
-                    const sp = (sprinting ? 4.8 : 3.2) * dt;
-                    const nx = rig.position.x + (-Math.sin(y) * f + Math.cos(y) * r) * sp;
-                    const nz = rig.position.z + (-Math.cos(y) * f - Math.sin(y) * r) * sp;
-                    if (inCorr(nx, nz)) rig.position.set(nx, 0, nz);
-
-                    stepT -= dt * (sprinting ? 1.5 : 1);
-                    if (stepT <= 0) {
-                      stepT = 0.45;
-                      SND.step();
-                    }
-                  }
-                }
-                if (shake > 0) {
-                  camera.position.set(R(-1, 1) * shake * 0.05, 1.7 + R(-1, 1) * shake * 0.05, 0);
-                } else {
-                  camera.position.set(0, 1.7, 0);
-                }
-              }
-
-              shake = Math.max(0, shake - dt);
-              cd -= dt;
-
-              if (state === 'play') {
-                sessionTimeElapsed += dt;
-                const timerBadge = $('hud-timer-badge');
-                if (timerBadge) {
-                  if (sessionDurationLimit > 0) {
-                    const remaining = Math.max(0, sessionDurationLimit - sessionTimeElapsed);
-                    const m = Math.floor(remaining / 60);
-                    const s = Math.floor(remaining % 60);
-                    timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                    if (remaining <= 0) {
-                      state = 'session_over';
-                      stopAllZombieSounds();
-                      if (document.pointerLockElement === dom) document.exitPointerLock();
-                      showStoryModal('SESSION COMPLETED', 'Designated survival mission duration has elapsed!', false, false, false, true);
-                      if (xr()) vrUI.show('session_over');
-                      return;
-                    }
-                  } else {
-                    const m = Math.floor(sessionTimeElapsed / 60);
-                    const s = Math.floor(sessionTimeElapsed % 60);
-                    timerBadge.textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                  }
-                }
-
-                if (trig && (w.auto || !c0)) fire();
-                c0 = trig;
-
-                if (reloading) {
-                  reloading -= dt;
-                  if (reloading <= 0) {
-                    reloading = 0;
-                    const n = Math.min(w.mag - a.mag, a.res);
-                    a.mag += n;
-                    a.res -= n;
-                    updateHUD();
-                  }
-                }
-
-                camera.getWorldPosition(P1);
-                const pp = P1.clone();
-                const alive = zombies.filter(z => !z.dead).length;
-
-                spawnT -= dt;
-                if (queue.length && alive < 15 && spawnT <= 0) {
-                  spawn(queue.shift());
-                  spawnT = 1.15;
-                }
-
-                const activeBoss = zombies.find(z => z.type === 'boss' && !z.dead);
-                updateBossHealthBar(activeBoss, dt);
-
-                if (activeBoss) {
-                  bossT -= dt;
-                  if (bossT <= 0) {
-                    bossT = 13;
-                    spawn('runner');
-                    spawn('spitter');
-                  }
-                }
-
-                // Dynamic Background Music: ducks down to 5% during combat, swells to 50% (fades in/out) between waves
-                if (queue.length > 0 || alive > 0) {
-                  if (Math.abs(bgmCurrentScale - 0.05) > 0.01) {
-                    setBGMScale(0.05, 1.5);
-                  }
-                } else {
-                  // All zombies died and going to next wave: music swells up to 50% (fade in/out)!
-                  if (Math.abs(bgmCurrentScale - 0.50) > 0.01) {
-                    setBGMScale(0.50, 1.8);
-                  }
-                  if (bgmAudio && bgmAudio.paused && !isMuted) {
-                    bgmAudio.play().catch(() => { });
-                  }
-                }
-
-                // Wave / Sector Progression: Continuous 9-Wave Campaign (City 1 -> City 2 -> City 3 -> Victory)
-                if (!queue.length && !alive) {
+          // Wave / Sector Progression: Continuous 9-Wave Campaign (City 1 -> City 2 -> City 3 -> Victory)
+          if (!queue.length && !alive) {
                   if (wave === 3) {
                     if (selectedLevel < LEVELS.length - 1) {
                       // Advance to next location automatically!
@@ -8009,88 +8014,88 @@
                 }
               }
 
-      // Front-Screen VR Wave Announcement Banner (STRICTLY FOR VR ONLY, NOT PC AND MOBILE)
-      if (vrWaveBannerTimer > 0) {
-        vrWaveBannerTimer -= dt;
-        if (vrWaveBannerTimer <= 0 || !xr()) {
-          vrWaveMesh.visible = false;
-        } else {
-          vrWaveMesh.visible = true;
-          camera.getWorldPosition(P1);
-          camera.getWorldQuaternion(Q);
-          P2.set(0, 0, -1).applyQuaternion(Q);
-          vrWaveMesh.position.copy(P1).addScaledVector(P2, 2.4);
-          vrWaveMesh.position.y = P1.y + 0.15;
-          vrWaveMesh.quaternion.copy(Q);
-        }
-      } else {
-        vrWaveMesh.visible = false;
-      }
-
-      updateAudioListener();
-      hudT -= dt;
-      if (hudT <= 0) {
-        hudT = 0.12;
-        updateHUD();
-      }
-    }
-
-              const hurtP = new THREE.Mesh(
-                new THREE.PlaneGeometry(2, 2),
-                new THREE.MeshBasicMaterial({ color: 0xaa0000, transparent: true, opacity: 0, depthTest: false })
-              );
-              hurtP.position.z = -0.3;
-              hurtP.renderOrder = 999;
-              hurtP.frustumCulled = false;
-              camera.add(hurtP);
-
-              renderer.setAnimationLoop(() => {
-                update(Math.min(clock.getDelta(), 0.05));
-                renderer.render(scene, camera);
-              });
-
-              // URL Auto-Capture & Test Param Support
-              function sendScreenshot(name) {
-                try {
-                  const dataUrl = renderer.domElement.toDataURL('image/png');
-                  fetch('/save-screenshot', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, image: dataUrl })
-                  }).then(r => r.json()).then(res => {
-                    console.log('Saved:', res);
-                  }).catch(e => console.error('Save error:', e));
-                } catch (err) {
-                  console.error('Screenshot error:', err);
+              // Front-Screen VR Wave Announcement Banner (STRICTLY FOR VR ONLY, NOT PC AND MOBILE)
+              if (vrWaveBannerTimer > 0) {
+                vrWaveBannerTimer -= dt;
+                if (vrWaveBannerTimer <= 0 || !xr()) {
+                  vrWaveMesh.visible = false;
+                } else {
+                  vrWaveMesh.visible = true;
+                  camera.getWorldPosition(P1);
+                  camera.getWorldQuaternion(Q);
+                  P2.set(0, 0, -1).applyQuaternion(Q);
+                  vrWaveMesh.position.copy(P1).addScaledVector(P2, 2.4);
+                  vrWaveMesh.position.y = P1.y + 0.15;
+                  vrWaveMesh.quaternion.copy(Q);
                 }
+              } else {
+                vrWaveMesh.visible = false;
               }
 
-              if (window.location.search.includes('saveShots=1')) {
-                console.log('[AUTO-SCREENSHOT]: Initiating automated capture sequence...');
-                // Step 1: Capture Main Menu
-                setTimeout(() => {
-                  sendScreenshot('shot_menu.png');
-                  // Step 2: Start Survival Gameplay with laser
-                  setTimeout(() => {
-                    startSurvival();
-                    setTimeout(() => {
-                      sendScreenshot('shot_gameplay_laser.png');
-                      // Step 3: Spawn Boss with 3D Floating Health Bar
-                      setTimeout(() => {
-                        window.spawnBossTest();
-                        setTimeout(() => {
-                          sendScreenshot('shot_boss_healthbar.png');
-                          console.log('All screenshots saved!');
-                        }, 1800);
-                      }, 1400);
-                    }, 1600);
-                  }, 1200);
-                }, 1200);
-              } else if (window.location.search.includes('boss=1')) {
-                setTimeout(() => { if (typeof window.spawnBossTest === 'function') window.spawnBossTest(); }, 600);
-              } else if (window.location.search.includes('play=1')) {
-                setTimeout(() => { if (typeof startSurvival === 'function') startSurvival(); }, 400);
+              updateAudioListener();
+              hudT -= dt;
+              if (hudT <= 0) {
+                hudT = 0.12;
+                updateHUD();
               }
+            }
+
+            const hurtP = new THREE.Mesh(
+              new THREE.PlaneGeometry(2, 2),
+              new THREE.MeshBasicMaterial({ color: 0xaa0000, transparent: true, opacity: 0, depthTest: false })
+            );
+            hurtP.position.z = -0.3;
+            hurtP.renderOrder = 999;
+            hurtP.frustumCulled = false;
+            camera.add(hurtP);
+
+            renderer.setAnimationLoop(() => {
+              update(Math.min(clock.getDelta(), 0.05));
+              renderer.render(scene, camera);
+            });
+
+            // URL Auto-Capture & Test Param Support
+            function sendScreenshot(name) {
+              try {
+                const dataUrl = renderer.domElement.toDataURL('image/png');
+                fetch('/save-screenshot', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name, image: dataUrl })
+                }).then(r => r.json()).then(res => {
+                  console.log('Saved:', res);
+                }).catch(e => console.error('Save error:', e));
+              } catch (err) {
+                console.error('Screenshot error:', err);
+              }
+            }
+
+            if (window.location.search.includes('saveShots=1')) {
+              console.log('[AUTO-SCREENSHOT]: Initiating automated capture sequence...');
+              // Step 1: Capture Main Menu
+              setTimeout(() => {
+                sendScreenshot('shot_menu.png');
+                // Step 2: Start Survival Gameplay with laser
+                setTimeout(() => {
+                  startSurvival();
+                  setTimeout(() => {
+                    sendScreenshot('shot_gameplay_laser.png');
+                    // Step 3: Spawn Boss with 3D Floating Health Bar
+                    setTimeout(() => {
+                      window.spawnBossTest();
+                      setTimeout(() => {
+                        sendScreenshot('shot_boss_healthbar.png');
+                        console.log('All screenshots saved!');
+                      }, 1800);
+                    }, 1400);
+                  }, 1600);
+                }, 1200);
+              }, 1200);
+            } else if (window.location.search.includes('boss=1')) {
+              setTimeout(() => { if (typeof window.spawnBossTest === 'function') window.spawnBossTest(); }, 600);
+            } else if (window.location.search.includes('play=1')) {
+              setTimeout(() => { if (typeof startSurvival === 'function') startSurvival(); }, 400);
+            }
   </script>
 </body>
 
