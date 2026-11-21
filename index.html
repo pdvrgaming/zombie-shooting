@@ -7741,35 +7741,35 @@
 
           // Wave / Sector Progression: Continuous 9-Wave Campaign (City 1 -> City 2 -> City 3 -> Victory)
           if (!queue.length && !alive) {
-                  if (wave === 3) {
-                    if (selectedLevel < LEVELS.length - 1) {
-                      // Advance to next location automatically!
-                      selectedLevel++;
-                      wave = 0;
-                      breakT = 4.5;
-                      say('LOCATION SECURED!', `CONVOY ADVANCING TO ${LEVELS[selectedLevel].shortName}...`, 4.2);
-                      showVRWaveBanner('LOCATION SECURED!', `ADVANCING TO ${LEVELS[selectedLevel].shortName}...`, 4.5);
-                      hp = Math.min(100, hp + 50);
-                      ammo[cur].res += W[cur].mag * 3;
-                      applyLevelTheme(selectedLevel);
-                      updateHUD();
-                    } else {
-                      // Final Wave cleared: Full Campaign Victory!
-                      gameOver(true);
-                    }
-                  } else {
-                    if (!breakT) {
-                      breakT = 5.0;
-                      say('WAVE CLEARED', `PREPARE FOR WAVE ${wave + 1}...`, 4.2);
-                      showVRWaveBanner(`WAVE ${wave} COMPLETED!`, `PREPARE FOR WAVE ${wave + 1} • RESUPPLIED`, 4.5);
-                      hp = Math.min(100, hp + 35);
-                      ammo[cur].res += W[cur].mag * 2;
-                      updateHUD();
-                    }
-                    breakT -= dt;
-                    if (breakT <= 0) startWave();
-                  }
-                }
+            if (wave === 3) {
+              if (selectedLevel < LEVELS.length - 1) {
+                // Advance to next location automatically!
+                selectedLevel++;
+                wave = 0;
+                breakT = 4.5;
+                say('LOCATION SECURED!', `CONVOY ADVANCING TO ${LEVELS[selectedLevel].shortName}...`, 4.2);
+                showVRWaveBanner('LOCATION SECURED!', `ADVANCING TO ${LEVELS[selectedLevel].shortName}...`, 4.5);
+                hp = Math.min(100, hp + 50);
+                ammo[cur].res += W[cur].mag * 3;
+                applyLevelTheme(selectedLevel);
+                updateHUD();
+              } else {
+                // Final Wave cleared: Full Campaign Victory!
+                gameOver(true);
+              }
+            } else {
+              if (!breakT) {
+                breakT = 5.0;
+                say('WAVE CLEARED', `PREPARE FOR WAVE ${wave + 1}...`, 4.2);
+                showVRWaveBanner(`WAVE ${wave} COMPLETED!`, `PREPARE FOR WAVE ${wave + 1} • RESUPPLIED`, 4.5);
+                hp = Math.min(100, hp + 35);
+                ammo[cur].res += W[cur].mag * 2;
+                updateHUD();
+              }
+              breakT -= dt;
+              if (breakT <= 0) startWave();
+            }
+          }
 
                 // Supply Drop Pickups
                 for (let i = drops.length - 1; i >= 0; i--) {
