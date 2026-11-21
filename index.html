@@ -2694,8 +2694,7 @@
 
     // Update Menu Mission Summaries across all panels
     function updateMenuSummaries() {
-      const locNames = ['DOWNTOWN CITY', 'DARK PINE FOREST', 'BIO-LAB COMPOUND', 'GOTHIC CEMETERY', 'BLACKOUT PINE ABYSS'];
-      const locName = locNames[selectedLevel] || 'DOWNTOWN CITY';
+      const locName = (LEVELS[selectedLevel] && (LEVELS[selectedLevel].shortName || LEVELS[selectedLevel].name)) || 'DOWNTOWN CITY';
       const modeName = enemyCategory === 'animals' ? 'MUTANT ANIMALS' : (zombieModelType === 'glb' ? 'ZOMBIES (3D GLB)' : 'ZOMBIES (PROC)');
       const gunName = WEAPON_NAMES[chosenWeapon] || 'GLOCK 17';
       const timeName = sessionDurationLimit > 0 ? `${Math.round(sessionDurationLimit / 60)} MIN` : 'UNLIMITED';
